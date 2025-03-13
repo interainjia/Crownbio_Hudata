@@ -1,0 +1,21 @@
+﻿ .td_left
+    {
+        background-color:rgb(240, 241, 239);
+        font-weight:bold;
+        font-size:13px;
+        text-align:right;
+        padding-right:5px;
+        width:20%;
+    }
+   
+    .td_right
+    {
+        padding-left:5px;
+        background-color:rgb(255, 255, 255);
+        text-align:left;
+        width:30%;
+    }
+    .tb1
+    {
+    background:none repeat scroll 0% 0% rgb(138, 201, 232);
+    }

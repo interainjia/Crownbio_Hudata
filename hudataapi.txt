@@ -1,0 +1,4 @@
+http://localhost:29680/HuData/person.ashx?M=SaveRequest
+http://localhost:29680/api/Hudata/Get?id=1
+http://localhost:29680/HuData/webapitest.aspx
+https://hudata.crownbio.com/HuData/webapitest.aspx

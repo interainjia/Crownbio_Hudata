@@ -1,0 +1,35 @@
+﻿.container {
+    padding-right: 0px;
+    padding-left: 0px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.navbar-default .navbar-brand {
+  color: #FFFFFF;
+}
+
+.navbar-brand {
+  float: left;
+  height: 50px;
+  padding: 15px 15px;
+  font-size: 20px;
+  line-height: 20px;
+}
+.navbar-default {
+  background-color: #FFF;
+  border-color: #e7e7e7;
+}
+
+    .navbar-default .navbar-nav > li > a {
+        color: #056A7B;
+        font-weight:600;
+    }
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+  color: #FF6600;
+  background-color: transparent;
+}
+
+
+.head_logo {background: url(../../../images/logoleft.png) no-repeat; margin :2px; float: left;height: 45px;width: 150px;display: inline;behavior: url("../../../images/iepngfix.htc");}

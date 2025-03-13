@@ -1,0 +1,239 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{566E6706-CFDE-4FE9-BFD0-13D86735DA0D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Crownbio.Model</RootNamespace>
+    <AssemblyName>Crownbio.Model</AssemblyName>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+    <PublishUrl>http://localhost/ZebraSoft.Model/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="APP\APP_ABOUT.cs" />
+    <Compile Include="APP\APP_BLOCK.cs" />
+    <Compile Include="APP\APP_FW.cs" />
+    <Compile Include="APP\APP_HELP.cs" />
+    <Compile Include="APP\APP_HR.cs" />
+    <Compile Include="APP\APP_KEY.cs" />
+    <Compile Include="APP\APP_LANG.cs" />
+    <Compile Include="APP\APP_MSG.cs" />
+    <Compile Include="APP\APP_NEWS.cs" />
+    <Compile Include="APP\APP_NEWS_TYPE.cs" />
+    <Compile Include="APP\APP_ORDER.cs" />
+    <Compile Include="APP\APP_PRODUCT.cs" />
+    <Compile Include="APP\APP_PRODUCT_TYPE.cs" />
+    <Compile Include="APP\APP_USR.cs" />
+    <Compile Include="APP\BASE_TYPE.cs" />
+    <Compile Include="APP\MG_TYPE.cs" />
+    <Compile Include="APP\USER_TYPE.cs" />
+    <Compile Include="Business\S_ORDER.cs" />
+    <Compile Include="CCLE\SYS_USER_GENE.cs" />
+    <Compile Include="CCLE\XENO_DATA.cs" />
+    <Compile Include="CCLE\XENO_ONCOMAP.cs" />
+    <Compile Include="CCLE\XENO_PIC.cs" />
+    <Compile Include="CCLE\XENO_SOC.cs" />
+    <Compile Include="CCLE\XENO_SOCDATA.cs" />
+    <Compile Include="Hubase\CANCERMODEL.cs" />
+    <Compile Include="Hubase\COPYNUMBER_PENNCNV.cs" />
+    <Compile Include="Hubase\COPYNUMBER_PICNIC.cs" />
+    <Compile Include="Hubase\MIRNA_GENEEXPRESSION.cs" />
+    <Compile Include="Hubase\GENEEXPRESSION_AFFYMETRIX.cs" />
+    <Compile Include="Hubase\COPYNUMBER_GENESNP.cs" />
+    <Compile Include="Hubase\GENE.cs" />
+    <Compile Include="Hubase\GENEEXPRESSION_CUSTOM.cs" />
+    <Compile Include="Hubase\GENEEXPRESSIONRNA_AFFYMETRIX.cs" />
+    <Compile Include="Hubase\GENEEXPRESSIONRNA_CUSTOM.cs" />
+    <Compile Include="Hubase\GENEFUSION.cs" />
+    <Compile Include="Hubase\GENENAMEMUTATIONRNA.cs" />
+    <Compile Include="Hubase\GENENAMERNA_AFFYMETRIX.cs" />
+    <Compile Include="Hubase\GENENAMERNA_CUSTOM.cs" />
+    <Compile Include="Hubase\GENE_TWO.cs" />
+    <Compile Include="Hubase\MIRNAGENE.cs" />
+    <Compile Include="Hubase\MUTATION.cs" />
+    <Compile Include="Hubase\MUTATION_RNA.cs" />
+    <Compile Include="Hubase\HUBASE_FUNCTION.cs" />
+    <Compile Include="Hubase\SYS_USER_FUNCTION.cs" />
+    <Compile Include="Hubase\TUMORMODEL.cs" />
+    <Compile Include="Hubase\TUMORMODEL_CN.cs" />
+    <Compile Include="Hubase\TUMORMODEL_MU.cs" />
+    <Compile Include="Hubase\USER_SEARCH_LOG.cs" />
+    <Compile Include="HuData\PROJECTCONSULTING.cs" />
+    <Compile Include="HuData\ENDMODELS.cs" />
+    <Compile Include="HuData\ANIMAL_INFO.cs" />
+    <Compile Include="HuData\ANIMAL_TREE.cs" />
+    <Compile Include="HuData\CANCERTYPE_ABBR.cs" />
+    <Compile Include="HuData\ANIMAL_HANDOVER.cs" />
+    <Compile Include="HuData\MUPRIME.cs" />
+    <Compile Include="HuData\NEWMODEL.cs" />
+    <Compile Include="HuData\NEWMODEL_LOG.cs" />
+    <Compile Include="HuData\ROUTINEMAINTAIN.cs" />
+    <Compile Include="HuData\GENETICTEST.cs" />
+    <Compile Include="HuData\TABLEDISPLAYCOLUMNS.cs" />
+    <Compile Include="HuData\TISSUE_WITHDRAW.cs" />
+    <Compile Include="HuData\SPECIMEN_STOCK.cs" />
+    <Compile Include="HuData\LOCATION.cs" />
+    <Compile Include="HuData\MODELTREE_MAINTAIN.cs" />
+    <Compile Include="HuData\PHARMACOLOGY_EFFECT.cs" />
+    <Compile Include="HuData\PROJECT_MONITOR_DM_WORKLOAD.cs" />
+    <Compile Include="HuData\PROJECT_MONITOR_DAY.cs" />
+    <Compile Include="HuData\DROPDOWNLIST.cs" />
+    <Compile Include="HuData\HUSBANDRY_ANALYSIS.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HuData\PIGGYBACKED.cs" />
+    <Compile Include="HuData\PROJECT_MONITOR_DOSING_ROUTE.cs" />
+    <Compile Include="HuData\PROJECT_MONITOR_STUDY_DESIGN.cs" />
+    <Compile Include="HuData\PDXMODEL_INFO.cs" />
+    <Compile Include="HuData\PROJECT_BOOKING.cs" />
+    <Compile Include="HuData\PROJECT_MONITOR.cs" />
+    <Compile Include="HuData\PROJECT_REVIVE.cs" />
+    <Compile Include="HuData\REQUEST.cs" />
+    <Compile Include="HuData\REQUEST_LOG.cs" />
+    <Compile Include="HuData\RESPOND_MODELS.cs" />
+    <Compile Include="HuData\PROJECT_FURTHER_EXPANDING.cs" />
+    <Compile Include="HuData\HUSBANDRY_DAYS.cs" />
+    <Compile Include="HuData\HUSBANDRY_TEMP.cs" />
+    <Compile Include="HuData\SPONSOR_AX_CODE.cs" />
+    <Compile Include="HuData\SUBTYPE1.cs" />
+    <Compile Include="HuData\SUBTYPE2.cs" />
+    <Compile Include="HuData\USERSELECTCOLUMNS.cs" />
+    <Compile Include="HuData\VALIDATION.cs" />
+    <Compile Include="HuData\PROJECT_MONITOR_ADD.cs" />
+    <Compile Include="HuData\VALIDATIONSTATUS_HUKIME.cs" />
+    <Compile Include="HuData\REVIVAL.cs" />
+    <Compile Include="HuData\VALIDATIONSTATUS_HUPRIME.cs" />
+    <Compile Include="HuData\VALIDATION_LOG.cs" />
+    <Compile Include="HuData\SPECIMEN_STOCK_TEMP.cs" />
+    <Compile Include="HuData\ROUTINEMAINTAIN_LOG.cs" />
+    <Compile Include="HuData\ANIMAL_INFO_LOGS.cs" />
+    <Compile Include="SHOP\SHOP.cs" />
+    <Compile Include="System\APP_FILE.cs" />
+    <Compile Include="System\APP_USER.cs" />
+    <Compile Include="System\BASE_DIGIT.cs" />
+    <Compile Include="System\COMBOX_INFO.cs" />
+    <Compile Include="System\PRO_TITLE_ITEM.cs" />
+    <Compile Include="System\SYS_COLUMN.cs" />
+    <Compile Include="System\SYS_FUNCTION.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="System\SYS_USER_LOG.cs" />
+    <Compile Include="System\SYS_USER_OPTION.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="System\SYS_WEB_MODULE.cs" />
+    <Compile Include="System\SYS_PERM.cs" />
+    <Compile Include="System\SYS_ROLE.cs" />
+    <Compile Include="System\SYS_USER.cs" />
+    <Compile Include="System\SYS_USER_PROJECT.cs" />
+    <Compile Include="System\SYS_USER_ROLE.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{B7B46A70-D401-46BE-81E2-9CA2536BEAC8}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Language\Language.csproj">
+      <Project>{A8FD7498-B1C8-4368-AFDB-63B954B3D164}</Project>
+      <Name>Language</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{967B4E0D-AD0C-4609-AB67-0FA40C0206D8}" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

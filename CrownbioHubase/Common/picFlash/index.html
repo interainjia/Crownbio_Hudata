@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<meta name="keywords" content="JS代码,焦点图,JS广告代码,JS特效代码" />
+<meta name="description" content="此代码内容为大耳朵JS焦点图广告代码，属于站长常用代码，更多焦点图代码请访问模板王JS代码频道。" />
+<title>大耳朵JS焦点图广告代码_模板王</title>
+    
+    <link rel="stylesheet" href="css/page.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/slider.css" type="text/css" media="screen" />
+    
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.easing.1.2.js"></script>
+	<script src="js/jquery.anythingslider.js" type="text/javascript" charset="utf-8"></script>
+
+    <script type="text/javascript">
+    
+        function formatText(index, panel) {
+		  return index + "";
+	    }
+    
+        $(function () {
+        
+            $('.anythingSlider').anythingSlider({
+                easing: "easeInOutExpo",        // Anything other than "linear" or "swing" requires the easing plugin
+                autoPlay: true,                 // This turns off the entire FUNCTIONALY, not just if it starts running or not.
+                delay: 3000,                    // How long between slide transitions in AutoPlay mode
+                startStopped: false,            // If autoPlay is on, this can force it to start stopped
+                animationTime: 600,             // How long the slide transition takes
+                hashTags: true,                 // Should links change the hashtag in the URL?
+                buildNavigation: true,          // If true, builds and list of anchor links to link to each slide
+        		pauseOnHover: true,             // If true, and autoPlay is enabled, the show will pause on hover
+        		startText: "Go",             // Start text
+		        stopText: "Stop",               // Stop text
+		        navigationFormatter: formatText       // Details at the top of the file on this use (advanced use)
+            });
+            
+            $("#slide-jump").click(function(){
+                $('.anythingSlider').anythingSlider(6);
+            });
+            
+        });
+    </script>
+</head>
+
+<body>
+
+<div id="page-wrap">
+        <div class="anythingSlider">
+          <div class="wrapper">
+            <ul>
+               <li>
+                    <img src="images/ChartImg.png" alt="" />
+               </li>
+              <li>
+                 <img src="images/chart.png" alt="" />
+              </li>
+              <li>
+                 <img src="images/slide-civil-2.jpg" alt=""  />
+              </li>
+            </ul>        
+          </div>
+        </div> <!-- END AnythingSlider -->   
+</div>
+        
+</body>
+
+</html>
