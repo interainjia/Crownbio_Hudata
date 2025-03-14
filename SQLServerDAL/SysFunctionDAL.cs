@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
@@ -7,32 +7,32 @@ using Crownbio.Model;
 
 namespace Crownbio.DAL
 {
-	/// <summary>
-    /// Êı¾İ·ÃÎÊÀàSysFunctionDAL¡£
-	/// </summary>
-	public class SysFunctionDAL
-	{
+    /// <summary>
+    /// æ•°æ®è®¿é—®ç±»SysFunctionDALã€‚
+    /// </summary>
+    public class SysFunctionDAL
+    {
         public SysFunctionDAL()
-		{}
-		#region  ³ÉÔ±·½·¨
+        { }
+        #region  æˆå‘˜æ–¹æ³•
 
-		
-		/// <summary>
-		/// Ä¿Â¼¡¢Ä£¿é¡¢¹¦ÄÜÁĞ±í
-		/// </summary>
+
+        /// <summary>
+        /// ç›®å½•ã€æ¨¡å—ã€åŠŸèƒ½åˆ—è¡¨
+        /// </summary>
         public static FunctionCollection GetFunctionList()
-		{
-			StringBuilder strSql=new StringBuilder();
+        {
+            StringBuilder strSql = new StringBuilder();
             strSql.Append("select FUNCTION_ID,FUNCTION_CODE,FUNCTION_NAME,SYS_MODULE.MODULE_CODE AS MODULE_CODE, ");
             strSql.Append("MODULE_NAME,PARENT_CODE from SYS_FUNCTION ");
             strSql.Append(" INNER JOIN SYS_MODULE ON SYS_MODULE.MODULE_CODE=SYS_FUNCTION.MODULE_CODE ");
             //strSql.Append(" WHERE SYS_MODULE.IS_AVAILABLE='N' ");
             strSql.Append(" ORDER BY SYS_MODULE.MODULE_CODE,FUNCTION_CODE ");
-			
+
             DataSet ds = DbHelperSQL.Query(strSql.ToString());
             FunctionCollection funcList = new FunctionCollection();
-			if(ds.Tables[0].Rows.Count>0)
-			{
+            if (ds.Tables[0].Rows.Count > 0)
+            {
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                 {
                     SYS_FUNCTION model = new SYS_FUNCTION();
@@ -45,14 +45,14 @@ namespace Crownbio.DAL
 
                     funcList.Add(model);
                 }
-			}
+            }
 
             return funcList;
-			
-		}
+
+        }
 
         /// <summary>
-        /// Ä¿Â¼¡¢Ä£¿é¡¢¹¦ÄÜÁĞ±í
+        /// ç›®å½•ã€æ¨¡å—ã€åŠŸèƒ½åˆ—è¡¨
         /// </summary>
         public static FunctionCollection GetFunctionList(string module_type)
         {
@@ -86,7 +86,7 @@ namespace Crownbio.DAL
 
         }
 
-		#endregion  ³ÉÔ±·½·¨
-	}
+        #endregion  æˆå‘˜æ–¹æ³•
+    }
 }
 

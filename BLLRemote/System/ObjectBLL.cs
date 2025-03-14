@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Transactions;
 using System.Data;
 using System.Collections;
@@ -17,7 +17,7 @@ using Crownbio.BLL.Rule;
 namespace Crownbio.BLL
 {
     /// <summary>
-    /// Ìá¹©»ùÓÚDataSetµÄ²Ù×÷·½·¨
+    /// æä¾›åŸºäºDataSetçš„æ“ä½œæ–¹æ³•
     /// </summary>
     public class ObjectBLL : MarshalByRefObject
     {
@@ -32,7 +32,7 @@ namespace Crownbio.BLL
 
         #region property
         /// <summary>
-        /// ±íÃû
+        /// è¡¨å
         /// </summary>
         public string TableName(Type dataType)
         {
@@ -40,7 +40,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ±í±ğÃû
+        /// è¡¨åˆ«å
         /// </summary>
         public string TableAliasName(Type dataType)
         {
@@ -48,7 +48,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// »ñÈ¡±í×Ô¶¯Ôö³¤×Ö¶ÎÃû³Æ
+        /// è·å–è¡¨è‡ªåŠ¨å¢é•¿å­—æ®µåç§°
         /// </summary>
         public string RecordIDFieldName(Type dataType)
         {
@@ -56,7 +56,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// »ñÈ¡Auto ID×Ö¶Î
+        /// è·å–Auto IDå­—æ®µ
         /// </summary>
         public ArrayList RecordIDFields(Type dataType)
         {
@@ -64,7 +64,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// »ñÈ¡Key Code×Ö¶ÎÁĞ±í
+        /// è·å–Key Codeå­—æ®µåˆ—è¡¨
         /// </summary>
         public ArrayList KeyFields(Type dataType)
         {
@@ -72,7 +72,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// »ñÈ¡Íâ¼ü×Ö¶ÎÁĞ±í
+        /// è·å–å¤–é”®å­—æ®µåˆ—è¡¨
         /// </summary>
         public ArrayList ForeignKeyFields(Type dataType)
         {
@@ -80,7 +80,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// »ñÈ¡¹ØÁª±íÖĞµÄ×Ö¶ÎÁĞ±í
+        /// è·å–å…³è”è¡¨ä¸­çš„å­—æ®µåˆ—è¡¨
         /// </summary>
         public ArrayList ForeignFields(Type dataType)
         {
@@ -88,7 +88,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// »ñÈ¡ÆÕÍ¨×Ö¶ÎÁĞ±í
+        /// è·å–æ™®é€šå­—æ®µåˆ—è¡¨
         /// </summary>
         public ArrayList DataFields(Type dataType)
         {
@@ -96,7 +96,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// »ñÈ¡SelectÓï¾äÖĞµÄ×Ö¶ÎÁĞ±í
+        /// è·å–Selectè¯­å¥ä¸­çš„å­—æ®µåˆ—è¡¨
         /// </summary>
         public ArrayList SelectFields(Type dataType)
         {
@@ -104,7 +104,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// »ñÈ¡DialogÖĞÏÔÊ¾µÄ×Ö¶Î
+        /// è·å–Dialogä¸­æ˜¾ç¤ºçš„å­—æ®µ
         /// </summary>
         /// <param name="dataType"></param>
         /// <returns></returns>
@@ -117,7 +117,7 @@ namespace Crownbio.BLL
         #region Find\GetID\GetKeyCode\GetKeyCodes
 
         /// <summary>
-        /// ²éÑ¯Ö¸¶¨IDµÄ¼ÇÂ¼ÊÇ·ñ´æÔÚ
+        /// æŸ¥è¯¢æŒ‡å®šIDçš„è®°å½•æ˜¯å¦å­˜åœ¨
         /// </summary>
         /// <param name="recordID"></param>
         /// <returns></returns>
@@ -127,7 +127,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ²éÑ¯Ö¸¶¨KeyÖµµÄ¼ÇÂ¼ÊÇ·ñ´æÔÚ
+        /// æŸ¥è¯¢æŒ‡å®šKeyå€¼çš„è®°å½•æ˜¯å¦å­˜åœ¨
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
@@ -137,7 +137,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ²éÑ¯Ö¸¶¨KeyÖµµÄ¼ÇÂ¼ÊÇ·ñ´æÔÚ
+        /// æŸ¥è¯¢æŒ‡å®šKeyå€¼çš„è®°å½•æ˜¯å¦å­˜åœ¨
         /// </summary>
         /// <param name="codes"></param>
         /// <returns></returns>
@@ -147,7 +147,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ¼ì²é³ıÖ¸¶¨IDÍâµÄKeyCodeÊÇ·ñ´æÔÚ
+        /// æ£€æŸ¥é™¤æŒ‡å®šIDå¤–çš„KeyCodeæ˜¯å¦å­˜åœ¨
         /// </summary>
         /// <param name="recordID"></param>
         /// <param name="code"></param>
@@ -158,7 +158,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ¼ì²é³ıÖ¸¶¨IDÍâµÄKeyCodeÊÇ·ñ´æÔÚ
+        /// æ£€æŸ¥é™¤æŒ‡å®šIDå¤–çš„KeyCodeæ˜¯å¦å­˜åœ¨
         /// </summary>
         /// <param name="recordID"></param>
         /// <param name="codes"></param>
@@ -169,7 +169,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ¼ì²é³ıÖ¸¶¨IDÍâµÄ·ÇKeyCodeÊÇ·ñ´æÔÚ
+        /// æ£€æŸ¥é™¤æŒ‡å®šIDå¤–çš„éKeyCodeæ˜¯å¦å­˜åœ¨
         /// </summary>
         /// <param name="recordID"></param>
         /// <param name="codes"></param>
@@ -180,7 +180,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ¸ù¾İKeyCode·µ»ØID
+        /// æ ¹æ®KeyCodeè¿”å›ID
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
@@ -190,7 +190,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ¸ù¾İµÚÒ»¸öKeyÖµ·µ»ØÖ¸¶¨µÄÀ¸Î»Öµ
+        /// æ ¹æ®ç¬¬ä¸€ä¸ªKeyå€¼è¿”å›æŒ‡å®šçš„æ ä½å€¼
         /// </summary>
         /// <param name="keyCode"></param>
         /// <param name="fieldName"></param>
@@ -202,7 +202,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ¸ù¾İËùÓĞKeyÖµ·µ»ØÖ¸¶¨À¸Î»Öµ
+        /// æ ¹æ®æ‰€æœ‰Keyå€¼è¿”å›æŒ‡å®šæ ä½å€¼
         /// </summary>
         /// <param name="keyCodes"></param>
         /// <param name="fieldName"></param>
@@ -214,7 +214,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ¸ù¾İ²éÑ¯Ìõ¼ş·µ»ØÖ¸¶¨À¸Î»Öµ
+        /// æ ¹æ®æŸ¥è¯¢æ¡ä»¶è¿”å›æŒ‡å®šæ ä½å€¼
         /// </summary>
         /// <param name="_paramCollection"></param>
         /// <param name="fieldName"></param>
@@ -226,7 +226,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ¸ù¾İ²éÑ¯Ìõ¼ş·µ»ØÀ¸Î»Öµ
+        /// æ ¹æ®æŸ¥è¯¢æ¡ä»¶è¿”å›æ ä½å€¼
         /// </summary>
         /// <param name="_paramCollection"></param>
         /// <param name="fieldName"></param>
@@ -239,7 +239,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ¸ù¾İKeyCodes·µ»ØID
+        /// æ ¹æ®KeyCodesè¿”å›ID
         /// </summary>
         /// <param name="keyCodes"></param>
         /// <returns></returns>
@@ -249,7 +249,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ¸ù¾İID·µ»ØKeyCode
+        /// æ ¹æ®IDè¿”å›KeyCode
         /// </summary>
         /// <param name="recordID"></param>
         /// <returns></returns>
@@ -259,7 +259,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ¸ù¾İID·µ»ØËùÓĞKeyCodes
+        /// æ ¹æ®IDè¿”å›æ‰€æœ‰KeyCodes
         /// </summary>
         /// <param name="recordID"></param>
         /// <returns></returns>
@@ -272,7 +272,7 @@ namespace Crownbio.BLL
 
         #region Insert,Update,Delete
         /// <summary>
-        /// ²åÈëÒ»¸öÊµÌåÊı¾İ
+        /// æ’å…¥ä¸€ä¸ªå®ä½“æ•°æ®
         /// </summary>
         /// <param name="instance"></param>
         /// <returns></returns>
@@ -284,7 +284,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ĞŞ¸ÄÒ»¸öÊµÌåÊı¾İ£¬·µ»ØÓ°ÏìµÄĞĞÊı£¬ÊÇĞÂÔöÊ±·µ»ØID
+        /// ä¿®æ”¹ä¸€ä¸ªå®ä½“æ•°æ®ï¼Œè¿”å›å½±å“çš„è¡Œæ•°ï¼Œæ˜¯æ–°å¢æ—¶è¿”å›ID
         /// </summary>
         /// <param name="instance"></param>
         /// <returns></returns>
@@ -295,7 +295,7 @@ namespace Crownbio.BLL
             return ObjectBLLHelper.getTypeDAL(instanceData.GetType()).UpdateInstanceByParam(instanceData);
         }
         /// <summary>
-        /// ĞŞ¸ÄÒ»¸öÊµÌåÊı¾İ£¬·µ»ØÓ°ÏìµÄĞĞÊı£¬ÊÇĞÂÔöÊ±·µ»ØID
+        /// ä¿®æ”¹ä¸€ä¸ªå®ä½“æ•°æ®ï¼Œè¿”å›å½±å“çš„è¡Œæ•°ï¼Œæ˜¯æ–°å¢æ—¶è¿”å›ID
         /// </summary>
         /// <param name="instanceData"></param>
         /// <returns></returns>
@@ -315,7 +315,7 @@ namespace Crownbio.BLL
 
 
         /// <summary>
-        /// É¾³ıÒ»ÌõÊµÌåÊı¾İ£¬·µ»ØÓ°ÏìµÄĞĞÊı
+        /// åˆ é™¤ä¸€æ¡å®ä½“æ•°æ®ï¼Œè¿”å›å½±å“çš„è¡Œæ•°
         /// </summary>
         /// <param name="instance"></param>
         /// <returns></returns>
@@ -327,10 +327,10 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ¸üĞÂÖ÷´Ó±í
+        /// æ›´æ–°ä¸»ä»è¡¨
         /// </summary>
-        /// <param name="masterData">Ö÷±í</param>
-        /// <param name="datas">´Ó±íµÄÊı×é</param>
+        /// <param name="masterData">ä¸»è¡¨</param>
+        /// <param name="datas">ä»è¡¨çš„æ•°ç»„</param>
         public decimal UpdateMasterDetail(BaseObject masterData, BaseList[] datas)
         {
             if (datas == null)
@@ -355,10 +355,10 @@ namespace Crownbio.BLL
             return masterData.ID;
         }
         /// <summary>
-        /// ¸üĞÂÁ÷³ÌÖ÷´Ó±í
+        /// æ›´æ–°æµç¨‹ä¸»ä»è¡¨
         /// </summary>
-        /// <param name="masterData">Ö÷±í</param>
-        /// <param name="datas">´Ó±íµÄÊı×é</param>
+        /// <param name="masterData">ä¸»è¡¨</param>
+        /// <param name="datas">ä»è¡¨çš„æ•°ç»„</param>
         public void UpdateMasterDetail(BaseObject[] masterData, BaseList[] datas)
         {
             if (datas == null)
@@ -367,20 +367,20 @@ namespace Crownbio.BLL
                 return;
             //using (TransactionScope ts = new TransactionScope())
             //{
-                for (int i = 0; i < masterData.Length; i++)
-                {
-                    Update(masterData[i]);
-                }
-                for (int i = 0; i < datas.Length; i++)
-                {
-                    if (datas[i] == null)
-                        continue;
-                    //for (int j = 0; j < datas[i].Count; j++)
-                    //{
-                    //    datas[i][j].PID = masterData.ID;
-                    //}
-                    UpdateAllByParams(datas[i]);
-                }
+            for (int i = 0; i < masterData.Length; i++)
+            {
+                Update(masterData[i]);
+            }
+            for (int i = 0; i < datas.Length; i++)
+            {
+                if (datas[i] == null)
+                    continue;
+                //for (int j = 0; j < datas[i].Count; j++)
+                //{
+                //    datas[i][j].PID = masterData.ID;
+                //}
+                UpdateAllByParams(datas[i]);
+            }
             //    ts.Complete();
             //}
             //return masterData.ID;
@@ -398,10 +398,10 @@ namespace Crownbio.BLL
             //}
         }
 
-        //ÒÔÉÏÎªĞÂÔö·½·¨
+        //ä»¥ä¸Šä¸ºæ–°å¢æ–¹æ³•
 
         /// <summary>
-        /// ¸üĞÂ¶à±í
+        /// æ›´æ–°å¤šè¡¨
         /// </summary>
         /// <param name="datas"></param>
         public void UpdateMultiData(BaseList[] datas)
@@ -426,7 +426,7 @@ namespace Crownbio.BLL
 
 
         /// <summary>
-        /// Ê¹ÓÃ²ÎÊıµÄ·½Ê½¸üĞÂÊı¾İ¼¯
+        /// ä½¿ç”¨å‚æ•°çš„æ–¹å¼æ›´æ–°æ•°æ®é›†
         /// </summary>
         /// <param name="masterData"></param>
         /// <returns></returns>
@@ -458,7 +458,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// Ê¹ÓÃSQLÓï¾äµÄ·½Ê½¸üĞÂÊı¾İ¼¯
+        /// ä½¿ç”¨SQLè¯­å¥çš„æ–¹å¼æ›´æ–°æ•°æ®é›†
         /// </summary>
         /// <param name="masterData"></param>
         /// <returns></returns>
@@ -472,9 +472,9 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ÓÃ²ÎÊı·½Ê½²åÈëÊı¾İ
+        /// ç”¨å‚æ•°æ–¹å¼æ’å…¥æ•°æ®
         /// </summary>
-        /// <param name="masterData">Êı¾İ¼¯ºÏ</param>
+        /// <param name="masterData">æ•°æ®é›†åˆ</param>
         /// <returns></returns>
         public void InsertByParams(BaseList masterData)
         {
@@ -486,7 +486,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ÓÃSQLÓï¾ä·½Ê½²åÈëÊı¾İ
+        /// ç”¨SQLè¯­å¥æ–¹å¼æ’å…¥æ•°æ®
         /// </summary>
         /// <param name="masterData"></param>
         /// <returns></returns>
@@ -500,7 +500,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// Ê¹ÓÃ²ÎÊı·½Ê½¸üĞÂÊı¾İ
+        /// ä½¿ç”¨å‚æ•°æ–¹å¼æ›´æ–°æ•°æ®
         /// </summary>
         /// <param name="masterData"></param>
         /// <returns></returns>
@@ -514,7 +514,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// Ê¹ÓÃSQLÓï¾ä·½Ê½¸üĞÂÊı¾İ
+        /// ä½¿ç”¨SQLè¯­å¥æ–¹å¼æ›´æ–°æ•°æ®
         /// </summary>
         /// <param name="masterData"></param>
         /// <returns></returns>
@@ -528,7 +528,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// É¾³ıÖ¸¶¨Êı¾İ
+        /// åˆ é™¤æŒ‡å®šæ•°æ®
         /// </summary>
         /// <param name="masterData"></param>
         /// <returns></returns>
@@ -549,7 +549,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// Í¨¹ıIDÉ¾³ı¼ÇÂ¼
+        /// é€šè¿‡IDåˆ é™¤è®°å½•
         /// </summary>
         /// <param name="recordID"></param>
         public int Delete(decimal recordID, Type dataType)
@@ -558,7 +558,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ¸ù¾İµÚÒ»¸öKey CodeÖµÉ¾³ı¼ÇÂ¼
+        /// æ ¹æ®ç¬¬ä¸€ä¸ªKey Codeå€¼åˆ é™¤è®°å½•
         /// </summary>
         /// <param name="keyCode"></param>
         /// <returns></returns>
@@ -570,7 +570,7 @@ namespace Crownbio.BLL
 
 
         /// <summary>
-        /// ¸ù¾İËùÓĞKeyCodeÖµÉ¾³ı¼ÇÂ¼
+        /// æ ¹æ®æ‰€æœ‰KeyCodeå€¼åˆ é™¤è®°å½•
         /// </summary>
         /// <param name="keyCodes"></param>
         /// <returns></returns>
@@ -580,7 +580,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// °´Ìõ¼şÉ¾³ı×ÊÁÏ
+        /// æŒ‰æ¡ä»¶åˆ é™¤èµ„æ–™
         /// </summary>
         /// <param name="_paramCollection"></param>
         /// <param name="dataType"></param>
@@ -591,7 +591,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// É¾³ıMaster-DetailÊı¾İ
+        /// åˆ é™¤Master-Detailæ•°æ®
         /// </summary>
         /// <param name="masterdata"></param>
         /// <param name="detailType"></param>
@@ -665,37 +665,37 @@ namespace Crownbio.BLL
         {
             //using (TransactionScope ts = new TransactionScope())
             //{
-                Type _dataType = masterdata[0].GetType();
-                UpdateAllByParams(masterdata);
+            Type _dataType = masterdata[0].GetType();
+            UpdateAllByParams(masterdata);
 
-                string clause = "";
-                PropertyInfo idpropertyInfo = _dataType.GetProperty(keyField);
-                for (int i = 0; i < masterdata.Count; i++)
+            string clause = "";
+            PropertyInfo idpropertyInfo = _dataType.GetProperty(keyField);
+            for (int i = 0; i < masterdata.Count; i++)
+            {
+                BaseObject dr = masterdata[i];
+                if (dr.CurModel == DealModel.Delete)
                 {
-                    BaseObject dr = masterdata[i];
-                    if (dr.CurModel == DealModel.Delete)
-                    {
-                        object keyvalue = idpropertyInfo.GetValue(dr, null);
-                        clause += "'" + keyvalue.ToString() + "',";
-                    }
+                    object keyvalue = idpropertyInfo.GetValue(dr, null);
+                    clause += "'" + keyvalue.ToString() + "',";
                 }
-                if (clause != "")
+            }
+            if (clause != "")
+            {
+                for (int i = 0; i < detailType.Length; i++)
                 {
-                    for (int i = 0; i < detailType.Length; i++)
-                    {
-                        ParamCollection _paramCollection = new ParamCollection();
-                        _paramCollection.Clause = String.Format("({0}.{1} IN ({2}))", ObjectBLLHelper.getTypeDAL((Type)detailType[i]).TableAliasName, keyField, clause.Substring(0, clause.Length - 1));
-                        Delete(_paramCollection, (Type)detailType[i]);
-                    }
+                    ParamCollection _paramCollection = new ParamCollection();
+                    _paramCollection.Clause = String.Format("({0}.{1} IN ({2}))", ObjectBLLHelper.getTypeDAL((Type)detailType[i]).TableAliasName, keyField, clause.Substring(0, clause.Length - 1));
+                    Delete(_paramCollection, (Type)detailType[i]);
                 }
-                UpdateMultiData(data);
+            }
+            UpdateMultiData(data);
             //    ts.Complete();
             //}
         }
 
 
         /// <summary>
-        /// É¾³ı´øÎÄ¼şµÄMaster-detail
+        /// åˆ é™¤å¸¦æ–‡ä»¶çš„Master-detail
         /// </summary>
         /// <param name="masterdata"></param>
         /// <param name="keyField"></param>
@@ -740,7 +740,7 @@ namespace Crownbio.BLL
 
         #endregion
 
-        #region ²éÑ¯²¢·µ»ØÇ¿ÀàĞÍÊı¾İ¼¯
+        #region æŸ¥è¯¢å¹¶è¿”å›å¼ºç±»å‹æ•°æ®é›†
 
         public int GetCount(ParamCollection _paramCollection, Type dataType)
         {
@@ -748,7 +748,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ²éÑ¯Âú×ãÌõ¼şµÄÇ°NÌõ¼ÇÂ¼
+        /// æŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„å‰Næ¡è®°å½•
         /// </summary>
         /// <param name="_paramCollection"></param>
         /// <param name="sort"></param>
@@ -762,7 +762,7 @@ namespace Crownbio.BLL
 
 
         /// <summary>
-        /// ²éÑ¯Âú×ãÌõ¼şµÄ¶Ô»°¿ò¼ÇÂ¼
+        /// æŸ¥è¯¢æ»¡è¶³æ¡ä»¶çš„å¯¹è¯æ¡†è®°å½•
         /// </summary>
         /// <param name="_paramCollection"></param>
         /// <param name="sort"></param>
@@ -775,7 +775,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ·µ»ØGroup byÓï¾äµÄ²éÑ¯½á¹û
+        /// è¿”å›Group byè¯­å¥çš„æŸ¥è¯¢ç»“æœ
         /// </summary>
         /// <param name="_paramCollection"></param>
         /// <param name="groupby"></param>
@@ -787,7 +787,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ·ÖÒ³²éÑ¯
+        /// åˆ†é¡µæŸ¥è¯¢
         /// </summary>
         /// <param name="_paramCollection"></param>
         /// <param name="sort"></param>
@@ -797,13 +797,13 @@ namespace Crownbio.BLL
         /// <returns></returns>
         public BaseList SelectByPageIndex(ParamCollection _paramCollection, string sort, int pageIndex, int pageSize, Type dataType)
         {
-            BaseList list = ObjectBLLHelper.getTypeDAL(dataType).Select(_paramCollection, sort, (pageIndex - 1) * pageSize + 1 , pageIndex * pageSize);
+            BaseList list = ObjectBLLHelper.getTypeDAL(dataType).Select(_paramCollection, sort, (pageIndex - 1) * pageSize + 1, pageIndex * pageSize);
             list.ListCount = ObjectBLLHelper.getTypeDAL(dataType).GetCount(_paramCollection);
             return list;
         }
 
         /// <summary>
-        /// ·µ»ØËùÓĞÊı¾İ
+        /// è¿”å›æ‰€æœ‰æ•°æ®
         /// </summary>
         /// <returns></returns>
         public BaseList Select(Type dataType)
@@ -812,7 +812,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ¸ù¾İÌõ¼ş²éÑ¯Êı¾İ
+        /// æ ¹æ®æ¡ä»¶æŸ¥è¯¢æ•°æ®
         /// </summary>
         /// <param name="criteria"></param>
         /// <returns></returns>
@@ -822,7 +822,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ¸ù¾İID²éÑ¯¼ÇÂ¼¼¯
+        /// æ ¹æ®IDæŸ¥è¯¢è®°å½•é›†
         /// </summary>
         /// <param name="recordID"></param>
         /// <returns></returns>
@@ -832,7 +832,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ¸ù¾İID²éÑ¯¼ÇÂ¼¼¯
+        /// æ ¹æ®IDæŸ¥è¯¢è®°å½•é›†
         /// </summary>
         /// <param name="recordID"></param>
         /// <param name="sort"></param>
@@ -844,7 +844,7 @@ namespace Crownbio.BLL
 
 
         /// <summary>
-        /// »ñÈ¡Âú×ã²éÑ¯Ìõ¼şµÄ¼ÇÂ¼²¢·Åµ½¼ÇÂ¼¼¯
+        /// è·å–æ»¡è¶³æŸ¥è¯¢æ¡ä»¶çš„è®°å½•å¹¶æ”¾åˆ°è®°å½•é›†
         /// </summary>
         /// <param name="criteria"></param>
         /// <param name="sort"></param>
@@ -856,7 +856,7 @@ namespace Crownbio.BLL
 
 
         /// <summary>
-        /// ¸ù¾İKeyCodeÖµ²éÑ¯½á¹û¼¯
+        /// æ ¹æ®KeyCodeå€¼æŸ¥è¯¢ç»“æœé›†
         /// </summary>
         /// <param name="keycode"></param>
         /// <returns></returns>
@@ -866,7 +866,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ¸ù¾İKeyCodeÖµ²éÑ¯½á¹û¼¯
+        /// æ ¹æ®KeyCodeå€¼æŸ¥è¯¢ç»“æœé›†
         /// </summary>
         /// <param name="keycode"></param>
         /// <param name="sort"></param>
@@ -878,7 +878,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ¸ù¾İKeyCodeÖµ²éÑ¯½á¹û¼¯
+        /// æ ¹æ®KeyCodeå€¼æŸ¥è¯¢ç»“æœé›†
         /// </summary>
         /// <param name="keycodes"></param>
         /// <returns></returns>
@@ -888,7 +888,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ¸ù¾İKeyCodeÖµ²éÑ¯½á¹û¼¯
+        /// æ ¹æ®KeyCodeå€¼æŸ¥è¯¢ç»“æœé›†
         /// </summary>
         /// <param name="keycodes"></param>
         /// <param name="sort"></param>
@@ -899,12 +899,12 @@ namespace Crownbio.BLL
 
         }
 
-        #endregion ²éÑ¯²¢·µ»ØÇ¿ÀàĞÍÊı¾İ¼¯
+        #endregion æŸ¥è¯¢å¹¶è¿”å›å¼ºç±»å‹æ•°æ®é›†
 
         #region CheckData
 
         /// <summary>
-        /// ¼ì²éÖ¸¶¨ÀàĞÍµÄCodeÊÇ·ñ´æÔÚ
+        /// æ£€æŸ¥æŒ‡å®šç±»å‹çš„Codeæ˜¯å¦å­˜åœ¨
         /// </summary>
         /// <param name="dataType"></param>
         /// <param name="code"></param>
@@ -918,10 +918,10 @@ namespace Crownbio.BLL
 
         #endregion
 
-        #region ÏµÍ³¹ÜÀí
+        #region ç³»ç»Ÿç®¡ç†
 
         /// <summary>
-        /// ·µ»ØÏµÍ³±àºÅ
+        /// è¿”å›ç³»ç»Ÿç¼–å·
         /// </summary>
         /// <param name="noType"></param>
         /// <returns></returns>
@@ -938,7 +938,7 @@ namespace Crownbio.BLL
 
 
         ///// <summary>
-        ///// ·µ»Ø¹«Ë¾»ù±¾×ÊÁÏ
+        ///// è¿”å›å…¬å¸åŸºæœ¬èµ„æ–™
         ///// </summary>
         ///// <returns></returns>
         //public BASE_COMPANY getCompany()
@@ -971,7 +971,7 @@ namespace Crownbio.BLL
 
 
         /// <summary>
-        /// ÎÄ¼ş¡¢Í¼Æ¬µÄĞÂÔö¡¢ĞŞ¸Ä¡¢É¾³ı
+        /// æ–‡ä»¶ã€å›¾ç‰‡çš„æ–°å¢ã€ä¿®æ”¹ã€åˆ é™¤
         /// </summary>
         /// <param name="filedata"></param>
         /// <returns></returns>
@@ -981,7 +981,7 @@ namespace Crownbio.BLL
         //}
 
         /// <summary>
-        /// »ñÈ¡ÎÄ¼ş×ÊÁÏ
+        /// è·å–æ–‡ä»¶èµ„æ–™
         /// </summary>
         /// <param name="refNo"></param>
         /// <param name="fileType"></param>
@@ -993,10 +993,10 @@ namespace Crownbio.BLL
 
         #endregion
 
-        # region ÓÃ»§È¨ÏŞÄ£¿é
+        # region ç”¨æˆ·æƒé™æ¨¡å—
 
         /// <summary>
-        /// ·µ»ØËùÓĞÈ¨ÏŞÁĞ±í
+        /// è¿”å›æ‰€æœ‰æƒé™åˆ—è¡¨
         /// </summary>
         /// <returns></returns>
         public FunctionCollection getFunctionList(string module_type)
@@ -1005,9 +1005,9 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// È¨ÏŞµ¼Èë
+        /// æƒé™å¯¼å…¥
         /// </summary>
-        /// <param name="roleData">Òªµ¼ÈëµÄÈ¨ÏŞÁĞ±í±ØĞëÖ¸¶¨ImportCode</param>
+        /// <param name="roleData">è¦å¯¼å…¥çš„æƒé™åˆ—è¡¨å¿…é¡»æŒ‡å®šImportCode</param>
         /// <returns></returns>
         public bool ImportRole(BaseList roleData)
         {
@@ -1017,28 +1017,28 @@ namespace Crownbio.BLL
 
                 //using (TransactionScope ts = new TransactionScope())
                 //{
-                    for (int i = 0; i < roleData.Count; i++)
+                for (int i = 0; i < roleData.Count; i++)
+                {
+                    SYS_ROLE role = (SYS_ROLE)roleData[i];
+                    if (role.CurModel == DealModel.New)
                     {
-                        SYS_ROLE role = (SYS_ROLE)roleData[i];
-                        if (role.CurModel == DealModel.New)
-                        {
-                            ojbReportRule.ImportRole(role.IMPORT_CODE, role.ROLE_NO);
-                            role.ID = Update(role);
-                        }
+                        ojbReportRule.ImportRole(role.IMPORT_CODE, role.ROLE_NO);
+                        role.ID = Update(role);
                     }
+                }
 
-                  //  ts.Complete();
-                    IsComplete = true;
+                //  ts.Complete();
+                IsComplete = true;
                 //}
             }
             return IsComplete;
         }
 
         /// <summary>
-        /// ¸üĞÂÓÃ»§È¨ÏŞ
+        /// æ›´æ–°ç”¨æˆ·æƒé™
         /// </summary>
-        /// <param name="_userRow">ÓÃ»§ĞĞ</param>
-        /// <param name="_userRole">½ÇÉ«È¨ÏŞ±í</param>
+        /// <param name="_userRow">ç”¨æˆ·è¡Œ</param>
+        /// <param name="_userRole">è§’è‰²æƒé™è¡¨</param>
         /// <returns></returns>
         public decimal updateUserRole(BaseObject _userRow, BaseList _userRole)
         {
@@ -1046,30 +1046,30 @@ namespace Crownbio.BLL
             //using (TransactionScope ts = new TransactionScope())
             //{
 
-                if (_userRow != null)
+            if (_userRow != null)
+            {
+                _id = Update(_userRow);
+            }
+            if (_userRow.CurModel == DealModel.New)
+            {
+                foreach (SYS_USER_ROLE r in _userRole)
                 {
-                    _id = Update(_userRow);
+                    r.USER_ID = _id;
                 }
-                if (_userRow.CurModel == DealModel.New)
-                {
-                    foreach (SYS_USER_ROLE r in _userRole)
-                    {
-                        r.USER_ID = _id;
-                    }
-                }
-                UpdateAllByParams(_userRole);
+            }
+            UpdateAllByParams(_userRole);
             //    ts.Complete();
             //}
             return _id;
         }
 
         /// <summary>
-        /// ´¦ÀíÓÃ»§µÇÂ¼
+        /// å¤„ç†ç”¨æˆ·ç™»å½•
         /// </summary>
         /// <param name="userName"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public SYS_USER Login(HttpContext context,string userName, string password)
+        public SYS_USER Login(HttpContext context, string userName, string password)
         {
             BaseList userList = new BaseList();
             bool isInAD = false;
@@ -1117,7 +1117,7 @@ namespace Crownbio.BLL
                     userLogin.ErrMsg = LanguageHelper.GetResourceText("USER_PWD") + LanguageHelper.GetResourceText("Incorrect");
                     userLogin.IS_Login = false;
                 }
-                else if ((userLogin.REMARK != null && userLogin.REMARK !="") &&  DateTime.Parse(userLogin.REMARK).AddDays(1) < System.DateTime.Now)
+                else if ((userLogin.REMARK != null && userLogin.REMARK != "") && DateTime.Parse(userLogin.REMARK).AddDays(1) < System.DateTime.Now)
                 {
                     userLogin = new SYS_USER();
                     userLogin.ErrMsg = LanguageHelper.GetResourceText("USER_trial_expired");
@@ -1170,12 +1170,12 @@ namespace Crownbio.BLL
             return userLogin;
         }
 
-      
-       
-     
+
+
+
 
         /// <summary>
-        /// ´¦ÀíÇ°Ì¨ÓÃ»§µÇÂ¼
+        /// å¤„ç†å‰å°ç”¨æˆ·ç™»å½•
         /// </summary>
         /// <param name="userName"></param>
         /// <param name="password"></param>
@@ -1232,10 +1232,10 @@ namespace Crownbio.BLL
         //    userLogin.Permission = PermCollection.converToPermList(ObjectBLLHelper.getTypeDAL(typeof(SYS_PERM)).SelectGroup(_paramCollection, "  SYS_PERM.FUNCTION_ID ", "   MAX(SYS_WEB_MODULE.MODULE_CODE),MAX(SYS_FUNCTION.FUNCTION_CODE) "));
         //    return userLogin;
         //}
-        
+
 
         /// <summary>
-        /// ĞŞ¸Äµ±Ç°µÇÂ¼ÓÃ»§µÄÕÊ»§ÃÜÂë
+        /// ä¿®æ”¹å½“å‰ç™»å½•ç”¨æˆ·çš„å¸æˆ·å¯†ç 
         /// </summary>
         /// <param name="newPassword"></param>
         /// <returns></returns>
@@ -1254,7 +1254,7 @@ namespace Crownbio.BLL
                 strSql.Append("USER_PWD=@USER_PWD");
                 strSql.Append(" where USER_ID=@USER_ID");
                 SqlParameter[] parameters = {
-					new SqlParameter("@USER_PWD", SqlDbType.NVarChar),
+                    new SqlParameter("@USER_PWD", SqlDbType.NVarChar),
                     new SqlParameter("@USER_ID", SqlDbType.Decimal)};
                 parameters[0].Value = newPassword;
                 parameters[1].Value = USER_ID;
@@ -1276,7 +1276,7 @@ namespace Crownbio.BLL
         }
 
         ///// <summary>
-        ///// »ñÈ¡×éÖ¯»ú¹¹ÁĞ±í
+        ///// è·å–ç»„ç»‡æœºæ„åˆ—è¡¨
         ///// </summary>
         ///// <returns></returns>z
         //public List<DEP> getOrganlist()
@@ -1354,12 +1354,12 @@ namespace Crownbio.BLL
 
         #endregion
 
-        #region ÎÄµµ±àÖÆ¼°´òÓ¡
+        #region æ–‡æ¡£ç¼–åˆ¶åŠæ‰“å°
         /// <summary>
-        /// Ö´ĞĞÒ»Ìõ¼ÆËã²éÑ¯½á¹ûÓï¾ä£¬·µ»Ø²éÑ¯½á¹û£¨object£©¡£
+        /// æ‰§è¡Œä¸€æ¡è®¡ç®—æŸ¥è¯¢ç»“æœè¯­å¥ï¼Œè¿”å›æŸ¥è¯¢ç»“æœï¼ˆobjectï¼‰ã€‚
         /// </summary>
-        /// <param name="strSql">¼ÆËã²éÑ¯½á¹ûÓï¾ä</param>
-        /// <returns>²éÑ¯½á¹û£¨object£©</returns>
+        /// <param name="strSql">è®¡ç®—æŸ¥è¯¢ç»“æœè¯­å¥</param>
+        /// <returns>æŸ¥è¯¢ç»“æœï¼ˆobjectï¼‰</returns>
         public object GetSingle(string strSql, ref string strError)
         {
             object value = null;
@@ -1394,13 +1394,13 @@ namespace Crownbio.BLL
 
         #endregion
 
-        #region ÏîÄ¿±ä¸ü
+        #region é¡¹ç›®å˜æ›´
 
         /// <summary>
-        /// ÏîÄ¿±ä¸ü
+        /// é¡¹ç›®å˜æ›´
         /// </summary>
-        /// <param name="_row">±ä¸üĞÅÏ¢</param>
-        /// <param name="list">Òª±£Áô»òÕß´øµ½ĞÂÏîÄ¿µÄÊı¾İ</param>
+        /// <param name="_row">å˜æ›´ä¿¡æ¯</param>
+        /// <param name="list">è¦ä¿ç•™æˆ–è€…å¸¦åˆ°æ–°é¡¹ç›®çš„æ•°æ®</param>
         /// <returns></returns>
         //public decimal UpDataProChange(BaseObject _row,BaseList list,BaseList appFile)
         //{
@@ -1412,133 +1412,133 @@ namespace Crownbio.BLL
         //        PRO_CHANGE change = _row as PRO_CHANGE;
         //        BaseList changeList = new BaseList();
         //        List<PRO_CHANGE_LIST>  changeL = list.ConvertAll<PRO_CHANGE_LIST>(PRO_CHANGE_LIST.Convert);
-        //        if (change.CHANGE_TYPE == "Ô­ÏîÄ¿¸ü¸Ä")
+        //        if (change.CHANGE_TYPE == "åŸé¡¹ç›®æ›´æ”¹")
         //        {
         //            if (changeL.Count > 0)
         //            {
-        //                _changType = ChangeType.ÏîÄ¿ĞÅÏ¢; //±ä¸üÀàĞÍ
-        //                PRO_CHANGE_LIST pro = changeL.Find(findChange);//ÏîÄ¿ĞÅÏ¢
+        //                _changType = ChangeType.é¡¹ç›®ä¿¡æ¯; //å˜æ›´ç±»å‹
+        //                PRO_CHANGE_LIST pro = changeL.Find(findChange);//é¡¹ç›®ä¿¡æ¯
         //                if (pro != null)
         //                {
-        //                    if (pro.IS_SELECTED) //Èç¹ûÓÃ»§Ñ¡Ôñ±£Áô
+        //                    if (pro.IS_SELECTED) //å¦‚æœç”¨æˆ·é€‰æ‹©ä¿ç•™
         //                    {
         //                        BASE_PROJECT proRow = pro.LIST_ROW as BASE_PROJECT;
         //                        if (proRow != null)
         //                        {
         //                            proRow.CurModel = DealModel.Modify;
-        //                            proRow.PROJECT_STATUS = "±ä¸ü";
+        //                            proRow.PROJECT_STATUS = "å˜æ›´";
         //                            proRow.PROJECT_NAME += change.CHANGE_TYPE + "_";
         //                            proRow.CHANGE_VERSION = change.CHANGE_VERSION;
         //                            Update(proRow);
         //                        }
         //                    }
         //                }
-        //                _changType = ChangeType.ÖÊÁ¿¼Æ»®Êé; 
-        //                PRO_CHANGE_LIST proQp = changeL.Find(findChange);//ÖÊÁ¿¼Æ»®Êé(´øÉóÅú)
+        //                _changType = ChangeType.è´¨é‡è®¡åˆ’ä¹¦; 
+        //                PRO_CHANGE_LIST proQp = changeL.Find(findChange);//è´¨é‡è®¡åˆ’ä¹¦(å¸¦å®¡æ‰¹)
         //                if (proQp != null)
         //                { 
         //                    PRO_QUALITY_PLAN qpRow = pro.LIST_ROW as PRO_QUALITY_PLAN;
-        //                    if (proQp.IS_SELECTED)//Èç¹ûÓÃ»§Ñ¡Ôñ±£Áô
+        //                    if (proQp.IS_SELECTED)//å¦‚æœç”¨æˆ·é€‰æ‹©ä¿ç•™
         //                    {
 
         //                    }
-        //                    else //Èç¹û²»±£Áô
+        //                    else //å¦‚æœä¸ä¿ç•™
         //                    {
         //                        if (qpRow != null)
         //                        {
-        //                            //É¾³ıÉóÅúÏà¹Ø
+        //                            //åˆ é™¤å®¡æ‰¹ç›¸å…³
         //                            DelApproval(qpRow.PLAN_NO, qpRow);
         //                        }
         //                    }
         //                }
-        //                _changType = ChangeType.¹¤×÷¼Æ»®Êé;
-        //                PRO_CHANGE_LIST proQp0 = changeL.Find(findChange);//¹¤×÷¼Æ»®Êé(´øÉóÅú)
+        //                _changType = ChangeType.å·¥ä½œè®¡åˆ’ä¹¦;
+        //                PRO_CHANGE_LIST proQp0 = changeL.Find(findChange);//å·¥ä½œè®¡åˆ’ä¹¦(å¸¦å®¡æ‰¹)
         //                if (proQp0 != null)
         //                {
         //                    PRO_WORK_PLAN qpRow0 = pro.LIST_ROW as PRO_WORK_PLAN;
-        //                    if (proQp0.IS_SELECTED)//Èç¹ûÓÃ»§Ñ¡Ôñ±£Áô
+        //                    if (proQp0.IS_SELECTED)//å¦‚æœç”¨æˆ·é€‰æ‹©ä¿ç•™
         //                    {
 
         //                    }
-        //                    else //Èç¹û²»±£Áô
+        //                    else //å¦‚æœä¸ä¿ç•™
         //                    {
         //                        if (qpRow0 != null)
         //                        {
-        //                            //É¾³ıÉóÅúÏà¹Ø
+        //                            //åˆ é™¤å®¡æ‰¹ç›¸å…³
         //                            DelApproval(qpRow0.PLAN_NO, qpRow0);
         //                        }
         //                    }
         //                }
-        //                _changType = ChangeType.ÆÀ¹À»á;
-        //                PRO_CHANGE_LIST proPm = changeL.Find(findChange);//ÆÀ¹À»á(´øÉóÅú)
+        //                _changType = ChangeType.è¯„ä¼°ä¼š;
+        //                PRO_CHANGE_LIST proPm = changeL.Find(findChange);//è¯„ä¼°ä¼š(å¸¦å®¡æ‰¹)
         //                if (proPm != null)
         //                {
         //                    PRO_MEETING qpmRow = pro.LIST_ROW as PRO_MEETING;
-        //                    if (proPm.IS_SELECTED)//Èç¹ûÓÃ»§Ñ¡Ôñ±£Áô
+        //                    if (proPm.IS_SELECTED)//å¦‚æœç”¨æˆ·é€‰æ‹©ä¿ç•™
         //                    {
 
         //                    }
-        //                    else //Èç¹û²»±£Áô
+        //                    else //å¦‚æœä¸ä¿ç•™
         //                    {
         //                        if (qpmRow != null)
         //                        {
-        //                            //É¾³ıÉóÅúÏà¹Ø
+        //                            //åˆ é™¤å®¡æ‰¹ç›¸å…³
         //                            DelApproval(qpmRow.MEETING_CODE, qpmRow);
         //                        }
         //                    }
         //                }
-        //                _changType = ChangeType.ÏîÄ¿ÎÄµµÃ÷Ï¸; 
-        //                List<PRO_CHANGE_LIST> proDoc = changeL.FindAll(findChange);//ÏîÄ¿ÎÄµµ(´øÉóÅú)
+        //                _changType = ChangeType.é¡¹ç›®æ–‡æ¡£æ˜ç»†; 
+        //                List<PRO_CHANGE_LIST> proDoc = changeL.FindAll(findChange);//é¡¹ç›®æ–‡æ¡£(å¸¦å®¡æ‰¹)
         //                if (proDoc.Count > 0)
         //                {
         //                    foreach (PRO_CHANGE_LIST doc in proDoc)
         //                    {
         //                        DCM_DOCUMENT docRow = doc.LIST_ROW as DCM_DOCUMENT;
-        //                        if (doc.IS_SELECTED)//Èç¹ûÓÃ»§Ñ¡Ôñ±£Áô
+        //                        if (doc.IS_SELECTED)//å¦‚æœç”¨æˆ·é€‰æ‹©ä¿ç•™
         //                        {
 
         //                        }
-        //                        else //Èç¹û²»±£Áô
+        //                        else //å¦‚æœä¸ä¿ç•™
         //                        {
         //                            if (docRow != null)
         //                            {
-        //                                //É¾³ıÉóÅúÏà¹Ø
+        //                                //åˆ é™¤å®¡æ‰¹ç›¸å…³
         //                                DelApproval(docRow.DOCUMENT_CODE_R, docRow);
         //                            }
         //                        }
         //                    }
         //                }
-        //                _changType = ChangeType.Ì¤¿±¼ÇÂ¼;
-        //                List<PRO_CHANGE_LIST> proRecon = changeL.FindAll(findChange);//Ì¤¿±¼ÇÂ¼
+        //                _changType = ChangeType.è¸å‹˜è®°å½•;
+        //                List<PRO_CHANGE_LIST> proRecon = changeL.FindAll(findChange);//è¸å‹˜è®°å½•
         //                if (proRecon.Count > 0)
         //                {
-        //                    proRecon.ForEach(UpdataChangeDetail);//¸üĞÂ»òÉ¾³ıÑ¡Ôñ±£ÁôÊı¾İ
+        //                    proRecon.ForEach(UpdataChangeDetail);//æ›´æ–°æˆ–åˆ é™¤é€‰æ‹©ä¿ç•™æ•°æ®
         //                }
 
-        //                _changType = ChangeType.ÆÀ¹À»áÒé³Ì;
-        //                List<PRO_CHANGE_LIST> proPmd = changeL.FindAll(findChange);//ÆÀ¹À»áÒé³Ì
+        //                _changType = ChangeType.è¯„ä¼°ä¼šè®®ç¨‹;
+        //                List<PRO_CHANGE_LIST> proPmd = changeL.FindAll(findChange);//è¯„ä¼°ä¼šè®®ç¨‹
         //                if (proPmd.Count > 0)
         //                {
-        //                    proPmd.ForEach(UpdataChangeDetail);//¸üĞÂ»òÉ¾³ıÑ¡Ôñ±£ÁôÊı¾İ
+        //                    proPmd.ForEach(UpdataChangeDetail);//æ›´æ–°æˆ–åˆ é™¤é€‰æ‹©ä¿ç•™æ•°æ®
         //                }
 
-        //                _changType = ChangeType.¹Ë¿ÍÌá¹©²úÆ·Çåµ¥Ã÷Ï¸;
-        //                List<PRO_CHANGE_LIST> proVide = changeL.FindAll(findChange);//¹Ë¿ÍÌá¹©²úÆ·Çåµ¥Ã÷Ï¸
+        //                _changType = ChangeType.é¡¾å®¢æä¾›äº§å“æ¸…å•æ˜ç»†;
+        //                List<PRO_CHANGE_LIST> proVide = changeL.FindAll(findChange);//é¡¾å®¢æä¾›äº§å“æ¸…å•æ˜ç»†
         //                if (proVide.Count > 0)
         //                {
-        //                    proVide.ForEach(UpdataChangeDetail);//¸üĞÂ»òÉ¾³ıÑ¡Ôñ±£ÁôÊı¾İ
+        //                    proVide.ForEach(UpdataChangeDetail);//æ›´æ–°æˆ–åˆ é™¤é€‰æ‹©ä¿ç•™æ•°æ®
         //                }
-        //                _changType = ChangeType.ÄÚ²¿Íâ²¿½Ó¿Ú¼ÇÂ¼±íÃ÷Ï¸;
-        //                List<PRO_CHANGE_LIST> proInt = changeL.FindAll(findChange);//ÄÚ²¿Íâ²¿½Ó¿Ú¼ÇÂ¼±íÃ÷Ï¸
+        //                _changType = ChangeType.å†…éƒ¨å¤–éƒ¨æ¥å£è®°å½•è¡¨æ˜ç»†;
+        //                List<PRO_CHANGE_LIST> proInt = changeL.FindAll(findChange);//å†…éƒ¨å¤–éƒ¨æ¥å£è®°å½•è¡¨æ˜ç»†
         //                if (proInt.Count > 0)
         //                {
-        //                    proInt.ForEach(UpdataChangeDetail);//¸üĞÂ»òÉ¾³ıÑ¡Ôñ±£ÁôÊı¾İ
+        //                    proInt.ForEach(UpdataChangeDetail);//æ›´æ–°æˆ–åˆ é™¤é€‰æ‹©ä¿ç•™æ•°æ®
         //                }
-        //                _changType = ChangeType.¸½¼şÁĞ±í;
-        //                List<PRO_CHANGE_LIST> proFile = changeL.FindAll(findChange);//¸½¼ş
+        //                _changType = ChangeType.é™„ä»¶åˆ—è¡¨;
+        //                List<PRO_CHANGE_LIST> proFile = changeL.FindAll(findChange);//é™„ä»¶
         //                if (proFile.Count > 0)
         //                {
-        //                    proFile.ForEach(UpdataChangeDetail);//¸üĞÂ»òÉ¾³ıÑ¡Ôñ±£ÁôÊı¾İ
+        //                    proFile.ForEach(UpdataChangeDetail);//æ›´æ–°æˆ–åˆ é™¤é€‰æ‹©ä¿ç•™æ•°æ®
         //                }
         //            }
         //        }
@@ -1547,35 +1547,35 @@ namespace Crownbio.BLL
         //            if (changeL.Count > 0)
         //            {
         //                string _procode = GetSysNo("PRO");
-        //                _changType = ChangeType.ÏîÄ¿ĞÅÏ¢; //±ä¸üÀàĞÍ
-        //                PRO_CHANGE_LIST pro = changeL.Find(findChange);//ÏîÄ¿ĞÅÏ¢
+        //                _changType = ChangeType.é¡¹ç›®ä¿¡æ¯; //å˜æ›´ç±»å‹
+        //                PRO_CHANGE_LIST pro = changeL.Find(findChange);//é¡¹ç›®ä¿¡æ¯
         //                if (pro != null)
         //                {
-        //                    if (pro.IS_SELECTED) //Èç¹ûÓÃ»§Ñ¡Ôñ±£Áô
+        //                    if (pro.IS_SELECTED) //å¦‚æœç”¨æˆ·é€‰æ‹©ä¿ç•™
         //                    {
         //                        BASE_PROJECT proRow = pro.LIST_ROW as BASE_PROJECT;
         //                        if (proRow != null)
         //                        {
         //                            proRow.CurModel = DealModel.Modify;
-        //                            proRow.PROJECT_STATUS = "±ä¸ü";
+        //                            proRow.PROJECT_STATUS = "å˜æ›´";
         //                            proRow.CHANGE_VERSION = change.CHANGE_VERSION;
         //                            Update(proRow);
 
         //                            proRow.CurModel = DealModel.New;
         //                            proRow.PROJECT_CODE = _procode;
         //                            proRow.PROJECT_NAME += change.CHANGE_TYPE + "_";
-        //                            proRow.PROJECT_STATUS = "ÒÑÏÂ´ï";
+        //                            proRow.PROJECT_STATUS = "å·²ä¸‹è¾¾";
         //                            proRow.CHANGE_VERSION = 0;
         //                            Update(proRow);
         //                        }
         //                    }
         //                }
-        //                _changType = ChangeType.ÖÊÁ¿¼Æ»®Êé;
-        //                PRO_CHANGE_LIST proQp = changeL.Find(findChange);//ÖÊÁ¿¼Æ»®Êé(´øÉóÅú)
+        //                _changType = ChangeType.è´¨é‡è®¡åˆ’ä¹¦;
+        //                PRO_CHANGE_LIST proQp = changeL.Find(findChange);//è´¨é‡è®¡åˆ’ä¹¦(å¸¦å®¡æ‰¹)
         //                if (proQp != null)
         //                {
         //                    PRO_QUALITY_PLAN qpRow = proQp.LIST_ROW as PRO_QUALITY_PLAN;
-        //                    if (proQp.IS_SELECTED)//Èç¹ûÓÃ»§Ñ¡Ôñ±£Áô
+        //                    if (proQp.IS_SELECTED)//å¦‚æœç”¨æˆ·é€‰æ‹©ä¿ç•™
         //                    {
         //                        qpRow.CurModel = DealModel.New;
         //                        qpRow.PROJECT_CODE = _procode;
@@ -1583,12 +1583,12 @@ namespace Crownbio.BLL
         //                        Update(qpRow);
         //                    }
         //                }
-        //                _changType = ChangeType.¹¤×÷¼Æ»®Êé;
-        //                PRO_CHANGE_LIST proQp0 = changeL.Find(findChange);//¹¤×÷¼Æ»®Êé(´øÉóÅú)
+        //                _changType = ChangeType.å·¥ä½œè®¡åˆ’ä¹¦;
+        //                PRO_CHANGE_LIST proQp0 = changeL.Find(findChange);//å·¥ä½œè®¡åˆ’ä¹¦(å¸¦å®¡æ‰¹)
         //                if (proQp0 != null)
         //                {
         //                    PRO_WORK_PLAN qpRow0 = proQp0.LIST_ROW as PRO_WORK_PLAN;
-        //                    if (proQp0.IS_SELECTED)//Èç¹ûÓÃ»§Ñ¡Ôñ±£Áô
+        //                    if (proQp0.IS_SELECTED)//å¦‚æœç”¨æˆ·é€‰æ‹©ä¿ç•™
         //                    {
         //                        qpRow0.CurModel = DealModel.New;
         //                        qpRow0.PROJECT_CODE = _procode;
@@ -1596,12 +1596,12 @@ namespace Crownbio.BLL
         //                        Update(qpRow0);
         //                    }
         //                }
-        //                _changType = ChangeType.ÆÀ¹À»á;
-        //                PRO_CHANGE_LIST proPm = changeL.Find(findChange);//ÆÀ¹À»á(´øÉóÅú)
+        //                _changType = ChangeType.è¯„ä¼°ä¼š;
+        //                PRO_CHANGE_LIST proPm = changeL.Find(findChange);//è¯„ä¼°ä¼š(å¸¦å®¡æ‰¹)
         //                if (proQp != null)
         //                {
         //                    PRO_MEETING pmRow = proPm.LIST_ROW as PRO_MEETING;
-        //                    if (proPm.IS_SELECTED)//Èç¹ûÓÃ»§Ñ¡Ôñ±£Áô
+        //                    if (proPm.IS_SELECTED)//å¦‚æœç”¨æˆ·é€‰æ‹©ä¿ç•™
         //                    {
         //                        pmRow.CurModel = DealModel.New;
         //                        pmRow.PROJECT_CODE = _procode;
@@ -1609,14 +1609,14 @@ namespace Crownbio.BLL
         //                        Update(pmRow);
         //                    }
         //                }
-        //                _changType = ChangeType.ÏîÄ¿ÎÄµµÃ÷Ï¸;
-        //                List<PRO_CHANGE_LIST> proDoc = changeL.FindAll(findChange);//ÏîÄ¿ÎÄµµ(´øÉóÅú)
+        //                _changType = ChangeType.é¡¹ç›®æ–‡æ¡£æ˜ç»†;
+        //                List<PRO_CHANGE_LIST> proDoc = changeL.FindAll(findChange);//é¡¹ç›®æ–‡æ¡£(å¸¦å®¡æ‰¹)
         //                if (proDoc.Count > 0)
         //                {
         //                    foreach (PRO_CHANGE_LIST doc in proDoc)
         //                    {
         //                        DCM_DOCUMENT docRow = doc.LIST_ROW as DCM_DOCUMENT;
-        //                        if (doc.IS_SELECTED)//Èç¹ûÓÃ»§Ñ¡Ôñ±£Áô
+        //                        if (doc.IS_SELECTED)//å¦‚æœç”¨æˆ·é€‰æ‹©ä¿ç•™
         //                        {
         //                            docRow.CurModel = DealModel.New;
         //                            docRow.PROJECT_CODE = _procode;
@@ -1625,14 +1625,14 @@ namespace Crownbio.BLL
         //                        }
         //                    }
         //                }
-        //                _changType = ChangeType.Ì¤¿±¼ÇÂ¼;
-        //                List<PRO_CHANGE_LIST> proRecon = changeL.FindAll(findChange);//Ì¤¿±¼ÇÂ¼
+        //                _changType = ChangeType.è¸å‹˜è®°å½•;
+        //                List<PRO_CHANGE_LIST> proRecon = changeL.FindAll(findChange);//è¸å‹˜è®°å½•
         //                if (proRecon.Count > 0)
         //                {
         //                    foreach (PRO_CHANGE_LIST doc in proRecon)
         //                    {
         //                        PRO_PLAN_RECON docRow = doc.LIST_ROW as PRO_PLAN_RECON;
-        //                        if (doc.IS_SELECTED)//Èç¹ûÓÃ»§Ñ¡Ôñ±£Áô
+        //                        if (doc.IS_SELECTED)//å¦‚æœç”¨æˆ·é€‰æ‹©ä¿ç•™
         //                        {
         //                            docRow.CurModel = DealModel.New;
         //                            docRow.PROJECT_CODE = _procode;
@@ -1641,17 +1641,17 @@ namespace Crownbio.BLL
         //                        }
         //                    }
 
-        //                    //proRecon.ForEach(UpdataChangeDetail);//¸üĞÂ»òÉ¾³ıÑ¡Ôñ±£ÁôÊı¾İ
+        //                    //proRecon.ForEach(UpdataChangeDetail);//æ›´æ–°æˆ–åˆ é™¤é€‰æ‹©ä¿ç•™æ•°æ®
         //                }
 
-        //                _changType = ChangeType.ÆÀ¹À»áÒé³Ì;
-        //                List<PRO_CHANGE_LIST> proPmd = changeL.FindAll(findChange);//ÆÀ¹À»áÒé³Ì
+        //                _changType = ChangeType.è¯„ä¼°ä¼šè®®ç¨‹;
+        //                List<PRO_CHANGE_LIST> proPmd = changeL.FindAll(findChange);//è¯„ä¼°ä¼šè®®ç¨‹
         //                if (proPmd.Count > 0)
         //                {
         //                    foreach (PRO_CHANGE_LIST doc in proPmd)
         //                    {
         //                        PRO_MEETING_D docRow = doc.LIST_ROW as PRO_MEETING_D;
-        //                        if (doc.IS_SELECTED)//Èç¹ûÓÃ»§Ñ¡Ôñ±£Áô
+        //                        if (doc.IS_SELECTED)//å¦‚æœç”¨æˆ·é€‰æ‹©ä¿ç•™
         //                        {
         //                            docRow.CurModel = DealModel.New;
         //                            docRow.PROJECT_CODE = _procode;
@@ -1659,49 +1659,49 @@ namespace Crownbio.BLL
         //                        }
         //                    }
 
-        //                    //proRecon.ForEach(UpdataChangeDetail);//¸üĞÂ»òÉ¾³ıÑ¡Ôñ±£ÁôÊı¾İ
+        //                    //proRecon.ForEach(UpdataChangeDetail);//æ›´æ–°æˆ–åˆ é™¤é€‰æ‹©ä¿ç•™æ•°æ®
         //                }
 
-        //                _changType = ChangeType.¹Ë¿ÍÌá¹©²úÆ·Çåµ¥Ã÷Ï¸;
-        //                List<PRO_CHANGE_LIST> proVide = changeL.FindAll(findChange);//¹Ë¿ÍÌá¹©²úÆ·Çåµ¥Ã÷Ï¸
+        //                _changType = ChangeType.é¡¾å®¢æä¾›äº§å“æ¸…å•æ˜ç»†;
+        //                List<PRO_CHANGE_LIST> proVide = changeL.FindAll(findChange);//é¡¾å®¢æä¾›äº§å“æ¸…å•æ˜ç»†
         //                if (proVide.Count > 0)
         //                {
         //                    foreach (PRO_CHANGE_LIST doc in proVide)
         //                    {
         //                        PRO_CUSTOMER_PROVIDE docRow = doc.LIST_ROW as PRO_CUSTOMER_PROVIDE;
-        //                        if (doc.IS_SELECTED)//Èç¹ûÓÃ»§Ñ¡Ôñ±£Áô
+        //                        if (doc.IS_SELECTED)//å¦‚æœç”¨æˆ·é€‰æ‹©ä¿ç•™
         //                        {
         //                            docRow.CurModel = DealModel.New;
         //                            docRow.PROJECT_CODE = _procode;
         //                            Update(docRow);
         //                        }
         //                    }
-        //                    //proVide.ForEach(UpdataChangeDetail);//¸üĞÂ»òÉ¾³ıÑ¡Ôñ±£ÁôÊı¾İ
+        //                    //proVide.ForEach(UpdataChangeDetail);//æ›´æ–°æˆ–åˆ é™¤é€‰æ‹©ä¿ç•™æ•°æ®
         //                }
-        //                _changType = ChangeType.ÄÚ²¿Íâ²¿½Ó¿Ú¼ÇÂ¼±íÃ÷Ï¸;
-        //                List<PRO_CHANGE_LIST> proInt = changeL.FindAll(findChange);//ÄÚ²¿Íâ²¿½Ó¿Ú¼ÇÂ¼±íÃ÷Ï¸
+        //                _changType = ChangeType.å†…éƒ¨å¤–éƒ¨æ¥å£è®°å½•è¡¨æ˜ç»†;
+        //                List<PRO_CHANGE_LIST> proInt = changeL.FindAll(findChange);//å†…éƒ¨å¤–éƒ¨æ¥å£è®°å½•è¡¨æ˜ç»†
         //                if (proInt.Count > 0)
         //                {
         //                    foreach (PRO_CHANGE_LIST doc in proInt)
         //                    {
         //                        PRO_INTERFACE docRow = doc.LIST_ROW as PRO_INTERFACE;
-        //                        if (doc.IS_SELECTED)//Èç¹ûÓÃ»§Ñ¡Ôñ±£Áô
+        //                        if (doc.IS_SELECTED)//å¦‚æœç”¨æˆ·é€‰æ‹©ä¿ç•™
         //                        {
         //                            docRow.CurModel = DealModel.New;
         //                            docRow.PROJECT_CODE = _procode;
         //                            Update(docRow);
         //                        }
         //                    }
-        //                    //proInt.ForEach(UpdataChangeDetail);//¸üĞÂ»òÉ¾³ıÑ¡Ôñ±£ÁôÊı¾İ
+        //                    //proInt.ForEach(UpdataChangeDetail);//æ›´æ–°æˆ–åˆ é™¤é€‰æ‹©ä¿ç•™æ•°æ®
         //                }
-        //                _changType = ChangeType.¸½¼şÁĞ±í;
-        //                List<PRO_CHANGE_LIST> proFile = changeL.FindAll(findChange);//¸½¼ş
+        //                _changType = ChangeType.é™„ä»¶åˆ—è¡¨;
+        //                List<PRO_CHANGE_LIST> proFile = changeL.FindAll(findChange);//é™„ä»¶
         //                if (proFile.Count > 0)
         //                {
         //                    foreach (PRO_CHANGE_LIST doc in proFile)
         //                    {
         //                        APP_FILE docRow = doc.LIST_ROW as APP_FILE;
-        //                        if (doc.IS_SELECTED)//Èç¹ûÓÃ»§Ñ¡Ôñ±£Áô
+        //                        if (doc.IS_SELECTED)//å¦‚æœç”¨æˆ·é€‰æ‹©ä¿ç•™
         //                        {
         //                            docRow.CurModel = DealModel.New;
         //                            docRow.PROJECT_CODE = _procode;
@@ -1709,17 +1709,17 @@ namespace Crownbio.BLL
         //                            Update(docRow);
         //                        }
         //                    }
-        //                    //proFile.ForEach(UpdataChangeDetail);//¸üĞÂ»òÉ¾³ıÑ¡Ôñ±£ÁôÊı¾İ
+        //                    //proFile.ForEach(UpdataChangeDetail);//æ›´æ–°æˆ–åˆ é™¤é€‰æ‹©ä¿ç•™æ•°æ®
         //                }
         //            }
         //        }
         //    }
         //    return id;
         //}
-        //private ChangeType _changType = ChangeType.¿Õ; //²éÕÒÓÃÀàĞÍ±äÁ¿
+        //private ChangeType _changType = ChangeType.ç©º; //æŸ¥æ‰¾ç”¨ç±»å‹å˜é‡
 
         /// <summary>
-        /// ²éÕÒ·½·¨
+        /// æŸ¥æ‰¾æ–¹æ³•
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
@@ -1728,22 +1728,22 @@ namespace Crownbio.BLL
         //    return s.LIST_TYPE == _changType;
         //}
         /// <summary>
-        /// ¸üĞÂ±ä¸üÃ÷Ï¸(·ÇÉóÅú,ÔÚÏÖÓĞ»ù´¡±ä¸ü)
+        /// æ›´æ–°å˜æ›´æ˜ç»†(éå®¡æ‰¹,åœ¨ç°æœ‰åŸºç¡€å˜æ›´)
         /// </summary>
         /// <param name="s"></param>
         //private void UpdataChangeDetail(PRO_CHANGE_LIST s)
         //{
-        //    if (!s.IS_SELECTED) //Èç¹ûÃ»ÓĞÑ¡Ôñ±£Áô
+        //    if (!s.IS_SELECTED) //å¦‚æœæ²¡æœ‰é€‰æ‹©ä¿ç•™
         //    {
         //        Delete(s.LIST_ROW);
         //    }
         //}
 
         /// <summary>
-        /// É¾³ıÉóÅú¼ÇÂ¼
+        /// åˆ é™¤å®¡æ‰¹è®°å½•
         /// </summary>
-        /// <param name="_WorkNo">¹¤×÷±àºÅ</param>
-        /// <param name="_MainRow">Ïà¹Ø¼ÇÂ¼ĞĞ</param>
+        /// <param name="_WorkNo">å·¥ä½œç¼–å·</param>
+        /// <param name="_MainRow">ç›¸å…³è®°å½•è¡Œ</param>
         //public void DelApproval(string _WorkNo,BaseObject _MainRow)
         //{
         //    if (_MainRow != null)
@@ -1761,17 +1761,17 @@ namespace Crownbio.BLL
         //}
         #endregion
 
-        #region ×Ô¶¯¶ÌĞÅ\EAMIL
+        #region è‡ªåŠ¨çŸ­ä¿¡\EAMIL
 
         /// <summary>
-        /// ²éÕÒ²¢ÇÒÑéÖ¤´ı·¢ÏûÏ¢ÒÔ¼°ÏûÏ¢Ïà¹Ø¿É·¢ÊÖ»úºÅ¡¢Email
+        /// æŸ¥æ‰¾å¹¶ä¸”éªŒè¯å¾…å‘æ¶ˆæ¯ä»¥åŠæ¶ˆæ¯ç›¸å…³å¯å‘æ‰‹æœºå·ã€Email
         /// </summary>
         /// <param name="_pc"></param>
         /// <returns></returns>
         //public List<MSG_LIST> searchMsgInfo(ParamCollection _pc)
         //{
         //    List<MSG_LIST> msgList = ojbReportRule.getMsg().ConvertAll<MSG_LIST>(MSG_LIST.Convert);
-            
+
         //    List<SYS_USER> user = SysOrgan.GetUserList1().ConvertAll<SYS_USER>(SYS_USER.Convert);
         //    if (msgList.Count > 0)
         //    {
@@ -1796,7 +1796,7 @@ namespace Crownbio.BLL
         //                            {
         //                                msg.SEND_EMAIL.Add(_user.USR_HOME_EMAIL);
         //                            }
-                                  
+
         //                        }
         //                    }
         //                }
@@ -1828,7 +1828,7 @@ namespace Crownbio.BLL
         //}
         private decimal _uid = -1;
         /// <summary>
-        /// ²éÕÒÓÃ»§ĞÅÏ¢
+        /// æŸ¥æ‰¾ç”¨æˆ·ä¿¡æ¯
         /// </summary>
         /// <param name="_u"></param>
         /// <returns></returns>
@@ -1838,7 +1838,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// ·¢ËÍÏûÏ¢ºó¸üĞÂ±ê¼Ç
+        /// å‘é€æ¶ˆæ¯åæ›´æ–°æ ‡è®°
         /// </summary>
         /// <param name="list"></param>
         //public void updateSendFlag(List<MSG_LIST> list)

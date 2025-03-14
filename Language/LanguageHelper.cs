@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Resources;
@@ -6,14 +6,14 @@ using System.Resources;
 namespace Crownbio.Language
 {
     /// <summary>
-    /// Ìá¹©¶àÓïÑÔ×ÊÔ´¼¯µÄ²Ù×÷
+    /// æä¾›å¤šè¯­è¨€èµ„æºé›†çš„æ“ä½œ
     /// </summary>
     public class LanguageHelper
     {
         private static ResourceManager rm = null;
 
         /// <summary>
-        /// ·µ»Ø×ÊÔ´¹ÜÀíÆ÷
+        /// è¿”å›èµ„æºç®¡ç†å™¨
         /// </summary>
         /// <returns></returns>
         public static ResourceManager GetResourceManager()
@@ -26,22 +26,22 @@ namespace Crownbio.Language
         }
 
         /// <summary>
-        /// ÉèÖÃ×ÊÔ´ÎÄ¼şÎªÖ¸¶¨ÓïÑÔµÄ×ÊÔ´ÎÄ¼ş
+        /// è®¾ç½®èµ„æºæ–‡ä»¶ä¸ºæŒ‡å®šè¯­è¨€çš„èµ„æºæ–‡ä»¶
         /// </summary>
-        /// <param name="lang">ÓïÑÔ±êÊ¶·û</param>
+        /// <param name="lang">è¯­è¨€æ ‡è¯†ç¬¦</param>
         public static void SetResourceManager(string lang)
         {
             try
             {
                 rm = new ResourceManager("Crownbio.Language.Resource_" + lang, typeof(LanguageHelper).Assembly);
             }
-            catch 
+            catch
             {
             }
         }
 
         /// <summary>
-        /// ¸ù¾İResource Key·µ»ØÆä¶ÔÓ¦µÄText
+        /// æ ¹æ®Resource Keyè¿”å›å…¶å¯¹åº”çš„Text
         /// </summary>
         /// <param name="resourceKeyName"></param>
         /// <returns></returns>

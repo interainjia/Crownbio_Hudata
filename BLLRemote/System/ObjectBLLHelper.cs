@@ -1,4 +1,4 @@
-using System;
+锘縰sing System;
 using System.IO;
 using System.Data;
 using System.Collections;
@@ -20,7 +20,7 @@ namespace Crownbio.BLL
     public class ObjectBLLHelper
     {
         /// <summary>
-        /// 生成并缓存一个DALObject访问对像
+        /// 鐢熸垚骞剁紦瀛樹竴涓狣ALObject璁块棶瀵瑰儚
         /// </summary>
         /// <param name="dataType"></param>
         /// <returns></returns>
@@ -51,7 +51,7 @@ namespace Crownbio.BLL
         }
 
         /// <summary>
-        /// 根据动态页面地址返回生成的静态页的文件名
+        /// 鏍规嵁鍔ㄦ�侀〉闈㈠湴鍧�杩斿洖鐢熸垚鐨勯潤鎬侀〉鐨勬枃浠跺悕
         /// </summary>
         /// <param name="URL"></param>
         /// <returns></returns>

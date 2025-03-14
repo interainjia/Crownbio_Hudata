@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Data;
@@ -14,7 +14,7 @@ using Crownbio.Utility;
 namespace Crownbio.DAL
 {
     /// <summary>
-    /// Êı¾İ·ÃÎÊ³éÏó»ù´¡Àà
+    /// æ•°æ®è®¿é—®æŠ½è±¡åŸºç¡€ç±»
     /// Copyright (C) 2004-2008 Crownbio
     /// All rights reserved
     /// </summary>
@@ -29,11 +29,11 @@ namespace Crownbio.DAL
 
         #endregion
 
-        #region ¹«ÓÃ·½·¨
+        #region å…¬ç”¨æ–¹æ³•
 
 
         /// <summary>
-        /// »ñÈ¡±íÄ³¸ö×Ö¶ÎµÄ×î´óÖµ
+        /// è·å–è¡¨æŸä¸ªå­—æ®µçš„æœ€å¤§å€¼
         /// </summary>
         /// <param name="FieldName"></param>
         /// <param name="TableName"></param>
@@ -64,7 +64,7 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// ·µ»ØÊı¾İ¿â·şÎñÆ÷Ê±¼ä
+        /// è¿”å›æ•°æ®åº“æœåŠ¡å™¨æ—¶é—´
         /// </summary>
         /// <returns></returns>
         public static DateTime GetDBSystemDatetime()
@@ -94,7 +94,7 @@ namespace Crownbio.DAL
 
 
         /// <summary>
-        /// ¼ì²âÒ»¸ö¼ÇÂ¼ÊÇ·ñ´æÔÚ(SQLÓï¾ä·½Ê½)
+        /// æ£€æµ‹ä¸€ä¸ªè®°å½•æ˜¯å¦å­˜åœ¨(SQLè¯­å¥æ–¹å¼)
         /// </summary>
         /// <param name="strSql"></param>
         /// <returns></returns>
@@ -131,7 +131,7 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// ¼ì²âÒ»¸ö¼ÇÂ¼ÊÇ·ñ´æÔÚ(SqlParameterÓï¾ä·½Ê½)
+        /// æ£€æµ‹ä¸€ä¸ªè®°å½•æ˜¯å¦å­˜åœ¨(SqlParameterè¯­å¥æ–¹å¼)
         /// </summary>
         /// <param name="strSql"></param>
         /// <param name="cmdParms"></param>
@@ -175,7 +175,7 @@ namespace Crownbio.DAL
         #region Create SqlParameter
 
         /// <summary>
-        /// ´´½¨Ò»¸öSqlParameter
+        /// åˆ›å»ºä¸€ä¸ªSqlParameter
         /// </summary>
         /// <returns></returns>
         public static SqlParameter CreateDataParameter()
@@ -184,10 +184,10 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// ´´½¨Ò»¸öSqlParameter
+        /// åˆ›å»ºä¸€ä¸ªSqlParameter
         /// </summary>
-        /// <param name="name">²ÎÊıÃû</param>
-        /// <param name="dataType">²ÎÊıÀàĞÍ</param>
+        /// <param name="name">å‚æ•°å</param>
+        /// <param name="dataType">å‚æ•°ç±»å‹</param>
         /// <returns></returns>
         public static SqlParameter CreateDataParameter(string name, DbType dataType)
         {
@@ -198,10 +198,10 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// ´´½¨Ò»¸öSqlParameter
+        /// åˆ›å»ºä¸€ä¸ªSqlParameter
         /// </summary>
-        /// <param name="name">²ÎÊıÃû</param>
-        /// <param name="value">²ÎÊıÖµ</param>
+        /// <param name="name">å‚æ•°å</param>
+        /// <param name="value">å‚æ•°å€¼</param>
         /// <returns></returns>
         public static SqlParameter CreateDataParameter(string name, object value)
         {
@@ -209,11 +209,11 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// ´´½¨Ò»¸öSqlParameter
+        /// åˆ›å»ºä¸€ä¸ªSqlParameter
         /// </summary>
-        /// <param name="name">²ÎÊıÃû</param>
-        /// <param name="dataType">²ÎÊıÀàĞÍ</param>
-        /// <param name="value">²ÎÊıÖµ</param>
+        /// <param name="name">å‚æ•°å</param>
+        /// <param name="dataType">å‚æ•°ç±»å‹</param>
+        /// <param name="value">å‚æ•°å€¼</param>
         /// <returns></returns>
         public static SqlParameter CreateDataParameter(string name, DbType dataType, object value)
         {
@@ -237,11 +237,11 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// ´´½¨Ò»¸öSqlParameter
+        /// åˆ›å»ºä¸€ä¸ªSqlParameter
         /// </summary>
-        /// <param name="name">²ÎÊıÃû</param>
-        /// <param name="dataType">²ÎÊıÀàĞÍ</param>
-        /// <param name="size">²ÎÊıÔÊĞíµÄ³¤¶È</param>
+        /// <param name="name">å‚æ•°å</param>
+        /// <param name="dataType">å‚æ•°ç±»å‹</param>
+        /// <param name="size">å‚æ•°å…è®¸çš„é•¿åº¦</param>
         /// <returns></returns>
         public static SqlParameter CreateDataParameter(string name, DbType dataType, int size)
         {
@@ -262,12 +262,12 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// ´´½¨Ò»¸öSqlParameter
+        /// åˆ›å»ºä¸€ä¸ªSqlParameter
         /// </summary>
-        /// <param name="name">²ÎÊıÃû</param>
-        /// <param name="dataType">²ÎÊıÀàĞÍ</param>
-        /// <param name="size">²ÎÊı³¤¶È</param>
-        /// <param name="srcColumn">²ÎÊı¶ÔÓ¦µÄDataSetÁĞÃû</param>
+        /// <param name="name">å‚æ•°å</param>
+        /// <param name="dataType">å‚æ•°ç±»å‹</param>
+        /// <param name="size">å‚æ•°é•¿åº¦</param>
+        /// <param name="srcColumn">å‚æ•°å¯¹åº”çš„DataSetåˆ—å</param>
         /// <returns></returns>
         public static SqlParameter CreateDataParameter(string name, DbType dataType, int size, string srcColumn)
         {
@@ -280,11 +280,11 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// ´´½¨Ò»¸öSqlParameter
+        /// åˆ›å»ºä¸€ä¸ªSqlParameter
         /// </summary>
-        /// <param name="name">²ÎÊıÃû</param>
-        /// <param name="dataType">²ÎÊıÀàĞÍ</param>
-        /// <param name="size">²ÎÊı³¤¶È</param>
+        /// <param name="name">å‚æ•°å</param>
+        /// <param name="dataType">å‚æ•°ç±»å‹</param>
+        /// <param name="size">å‚æ•°é•¿åº¦</param>
         /// <param name="direction"></param>
         /// <param name="isNullable"></param>
         /// <param name="precision"></param>
@@ -311,7 +311,7 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// ´´½¨Ò»¸öSqlParameter
+        /// åˆ›å»ºä¸€ä¸ªSqlParameter
         /// </summary>
         /// <param name="fieldAttribute"></param>
         /// <returns></returns>
@@ -321,10 +321,10 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// ´´½¨Ò»¸öSqlParameter
+        /// åˆ›å»ºä¸€ä¸ªSqlParameter
         /// </summary>
-        /// <param name="fieldAttribute">ÁĞÊôĞÔ</param>
-        /// <param name="srcVersion">°æ±¾</param>
+        /// <param name="fieldAttribute">åˆ—å±æ€§</param>
+        /// <param name="srcVersion">ç‰ˆæœ¬</param>
         /// <returns></returns>
         public static SqlParameter CreateDataParameter(BaseFieldAttribute fieldAttribute, DataRowVersion srcVersion)
         {
@@ -356,7 +356,7 @@ namespace Crownbio.DAL
 
 
         /// <summary>
-        /// ¼ÓÔØ²ÎÊı
+        /// åŠ è½½å‚æ•°
         /// </summary>
         /// <param name="db"></param>
         /// <param name="dbCommand"></param>
@@ -371,7 +371,7 @@ namespace Crownbio.DAL
 
         #endregion
 
-        #region  Ö´ĞĞ¼òµ¥SQLÓï¾ä
+        #region  æ‰§è¡Œç®€å•SQLè¯­å¥
 
         public static int GetCount(string strSql, params SqlParameter[] cmdParms)
         {
@@ -400,7 +400,7 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// Ö´ĞĞSQLÓï¾ä£¬·µ»ØÓ°ÏìµÄ¼ÇÂ¼Êı(¶ÔÓÚ³¤Ê±¼ä²éÑ¯µÄÓï¾ä£¬ÉèÖÃµÈ´ıÊ±¼ä±ÜÃâ²éÑ¯³¬Ê±)
+        /// æ‰§è¡ŒSQLè¯­å¥ï¼Œè¿”å›å½±å“çš„è®°å½•æ•°(å¯¹äºé•¿æ—¶é—´æŸ¥è¯¢çš„è¯­å¥ï¼Œè®¾ç½®ç­‰å¾…æ—¶é—´é¿å…æŸ¥è¯¢è¶…æ—¶)
         /// </summary>
         /// <param name="strSql"></param>
         /// <param name="Times"></param>
@@ -423,7 +423,7 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// Ö´ĞĞ¶àÌõSQLÓï¾ä£¬ÊµÏÖÊı¾İ¿âÊÂÎñ¡£
+        /// æ‰§è¡Œå¤šæ¡SQLè¯­å¥ï¼Œå®ç°æ•°æ®åº“äº‹åŠ¡ã€‚
         /// </summary>
         /// <param name="SQLStringList"></param>
         public static void ExecuteSqlTran(ArrayList SQLStringList)
@@ -455,9 +455,9 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// Ö´ĞĞ²éÑ¯Óï¾ä£¬·µ»ØSqlDataReader ( ×¢Òâ£ºÊ¹ÓÃºóÒ»¶¨Òª¶ÔSqlDataReader½øĞĞClose )
+        /// æ‰§è¡ŒæŸ¥è¯¢è¯­å¥ï¼Œè¿”å›SqlDataReader ( æ³¨æ„ï¼šä½¿ç”¨åä¸€å®šè¦å¯¹SqlDataReaderè¿›è¡ŒClose )
         /// </summary>
-        /// <param name="strSql">²éÑ¯Óï¾ä</param>
+        /// <param name="strSql">æŸ¥è¯¢è¯­å¥</param>
         /// <returns>SqlDataReader</returns>
         public static SqlDataReader ExecuteReader(string strSql)
         {
@@ -493,9 +493,9 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// Ö´ĞĞ²éÑ¯Óï¾ä£¬·µ»ØDataSet
+        /// æ‰§è¡ŒæŸ¥è¯¢è¯­å¥ï¼Œè¿”å›DataSet
         /// </summary>
-        /// <param name="strSql">²éÑ¯Óï¾ä</param>
+        /// <param name="strSql">æŸ¥è¯¢è¯­å¥</param>
         /// <returns>DataSet</returns>
         public static DataSet Query(string strSql)
         {
@@ -513,7 +513,7 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// (¶ÔÓÚ³¤Ê±¼ä²éÑ¯µÄÓï¾ä£¬ÉèÖÃµÈ´ıÊ±¼ä±ÜÃâ²éÑ¯³¬Ê±)
+        /// (å¯¹äºé•¿æ—¶é—´æŸ¥è¯¢çš„è¯­å¥ï¼Œè®¾ç½®ç­‰å¾…æ—¶é—´é¿å…æŸ¥è¯¢è¶…æ—¶)
         /// </summary>
         /// <param name="strSql"></param>
         /// <param name="Times"></param>
@@ -538,7 +538,7 @@ namespace Crownbio.DAL
 
         #region Fill Data
         /// <summary>
-        /// ¸ù¾İSQLÓï¾äÌî³äÊı¾İµ½Ö¸¶¨µÄDataSetÖĞ
+        /// æ ¹æ®SQLè¯­å¥å¡«å……æ•°æ®åˆ°æŒ‡å®šçš„DataSetä¸­
         /// </summary>
         /// <param name="strSql"></param>
         /// <param name="dataSet"></param>
@@ -562,7 +562,7 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// Ê¹ÓÃÖ¸¶¨SQLÓï¾ä¡¢Ö¸¶¨²ÎÊıÌî³äÊı¾İµ½Ö¸¶¨DataSetÖĞ
+        /// ä½¿ç”¨æŒ‡å®šSQLè¯­å¥ã€æŒ‡å®šå‚æ•°å¡«å……æ•°æ®åˆ°æŒ‡å®šDataSetä¸­
         /// </summary>
         /// <param name="strSql"></param>
         /// <param name="dataSet"></param>
@@ -590,13 +590,13 @@ namespace Crownbio.DAL
 
         #endregion
 
-        #region Ö´ĞĞ´ø²ÎÊıµÄSQLÓï¾ä
+        #region æ‰§è¡Œå¸¦å‚æ•°çš„SQLè¯­å¥
 
         /// <summary>
-        /// Ö´ĞĞSQLÓï¾ä£¬·µ»ØÓ°ÏìµÄ¼ÇÂ¼Êı
+        /// æ‰§è¡ŒSQLè¯­å¥ï¼Œè¿”å›å½±å“çš„è®°å½•æ•°
         /// </summary>
         /// <param name="strSql"></param>
-        /// <returns>Ó°ÏìµÄ¼ÇÂ¼Êı</returns>
+        /// <returns>å½±å“çš„è®°å½•æ•°</returns>
         public static int ExecuteSql(string strSql)
         {
             try
@@ -615,7 +615,7 @@ namespace Crownbio.DAL
 
 
         /// <summary>
-        /// Ö´ĞĞSQLÓï¾ä£¬·µ»ØÓ°ÏìµÄ¼ÇÂ¼Êı
+        /// æ‰§è¡ŒSQLè¯­å¥ï¼Œè¿”å›å½±å“çš„è®°å½•æ•°
         /// </summary>
         /// <param name="strSql"></param>
         /// <param name="cmdParms"></param>
@@ -639,9 +639,9 @@ namespace Crownbio.DAL
 
 
         /// <summary>
-        /// Ö´ĞĞ¶àÌõSQLÓï¾ä£¬ÊµÏÖÊı¾İ¿âÊÂÎñ¡£
+        /// æ‰§è¡Œå¤šæ¡SQLè¯­å¥ï¼Œå®ç°æ•°æ®åº“äº‹åŠ¡ã€‚
         /// </summary>
-        /// <param name="SQLStringList">SQLÓï¾äµÄ¹şÏ£±í£¨keyÎªsqlÓï¾ä£¬valueÊÇ¸ÃÓï¾äµÄSqlParameter[]£©</param>
+        /// <param name="SQLStringList">SQLè¯­å¥çš„å“ˆå¸Œè¡¨ï¼ˆkeyä¸ºsqlè¯­å¥ï¼Œvalueæ˜¯è¯¥è¯­å¥çš„SqlParameter[]ï¼‰</param>
         public static void ExecuteSqlTran(Hashtable SQLStringList)
         {
             //using (TransactionScope ts = new TransactionScope())
@@ -675,10 +675,10 @@ namespace Crownbio.DAL
 
 
         /// <summary>
-        /// Ö´ĞĞÒ»Ìõ¼ÆËã²éÑ¯½á¹ûÓï¾ä£¬·µ»Ø²éÑ¯½á¹û£¨object£©¡£
+        /// æ‰§è¡Œä¸€æ¡è®¡ç®—æŸ¥è¯¢ç»“æœè¯­å¥ï¼Œè¿”å›æŸ¥è¯¢ç»“æœï¼ˆobjectï¼‰ã€‚
         /// </summary>
-        /// <param name="strSql">¼ÆËã²éÑ¯½á¹ûÓï¾ä</param>
-        /// <returns>²éÑ¯½á¹û£¨object£©</returns>
+        /// <param name="strSql">è®¡ç®—æŸ¥è¯¢ç»“æœè¯­å¥</param>
+        /// <returns>æŸ¥è¯¢ç»“æœï¼ˆobjectï¼‰</returns>
         public static object GetSingle(string strSql)
         {
             try
@@ -701,7 +701,7 @@ namespace Crownbio.DAL
                 throw new Exception(ex.Message + ",SQL=" + strSql, ex);
             }
         }
-        public static object GetSingle(string strSql,ref string strError)
+        public static object GetSingle(string strSql, ref string strError)
         {
             try
             {
@@ -727,10 +727,10 @@ namespace Crownbio.DAL
 
 
         /// <summary>
-        /// Ö´ĞĞÒ»Ìõ¼ÆËã²éÑ¯½á¹ûÓï¾ä£¬·µ»Ø²éÑ¯½á¹û£¨object£©¡£
+        /// æ‰§è¡Œä¸€æ¡è®¡ç®—æŸ¥è¯¢ç»“æœè¯­å¥ï¼Œè¿”å›æŸ¥è¯¢ç»“æœï¼ˆobjectï¼‰ã€‚
         /// </summary>
-        /// <param name="strSql">¼ÆËã²éÑ¯½á¹ûÓï¾ä</param>
-        /// <returns>²éÑ¯½á¹û£¨object£©</returns>
+        /// <param name="strSql">è®¡ç®—æŸ¥è¯¢ç»“æœè¯­å¥</param>
+        /// <returns>æŸ¥è¯¢ç»“æœï¼ˆobjectï¼‰</returns>
         public static object GetSingle(string strSql, params SqlParameter[] cmdParms)
         {
             try
@@ -757,7 +757,7 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// ·µ»Ø¼ÇÂ¼ID
+        /// è¿”å›è®°å½•ID
         /// </summary>
         /// <param name="strSql"></param>
         /// <param name="cmdParms"></param>
@@ -787,11 +787,11 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// Ö´ĞĞÒ»Ìõ²åÈëÓï¾ä£¬Óï·¨ÈçÏÂ£¬·µ»ØÖ÷¼üID
+        /// æ‰§è¡Œä¸€æ¡æ’å…¥è¯­å¥ï¼Œè¯­æ³•å¦‚ä¸‹ï¼Œè¿”å›ä¸»é”®ID
         /// Insert Into Customers (Name, Address, City, Country, PostalCode) values ([Name], [Address],[City],[Country],[PostalCode]); Select @@IDENTITY;";
         /// </summary>
-        /// <param name="strSql">¼ÆËã²éÑ¯½á¹ûÓï¾ä</param>
-        /// <returns>²éÑ¯½á¹û£¨object£©</returns>
+        /// <param name="strSql">è®¡ç®—æŸ¥è¯¢ç»“æœè¯­å¥</param>
+        /// <returns>æŸ¥è¯¢ç»“æœï¼ˆobjectï¼‰</returns>
         public static decimal ExecuteInsert(string strSql)
         {
             try
@@ -817,11 +817,11 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// Ö´ĞĞÒ»Ìõ²åÈëÓï¾ä£¬Óï·¨ÈçÏÂ£¬·µ»ØÖ÷¼üID
+        /// æ‰§è¡Œä¸€æ¡æ’å…¥è¯­å¥ï¼Œè¯­æ³•å¦‚ä¸‹ï¼Œè¿”å›ä¸»é”®ID
         /// Insert Into Customers (Name, Address, City, Country, PostalCode) values (@Name, @Address, @City, @Country, @PostalCode); Select @@IDENTITY;";
         /// </summary>
-        /// <param name="strSql">¼ÆËã²éÑ¯½á¹ûÓï¾ä</param>
-        /// <returns>²éÑ¯½á¹û£¨object£©</returns>
+        /// <param name="strSql">è®¡ç®—æŸ¥è¯¢ç»“æœè¯­å¥</param>
+        /// <returns>æŸ¥è¯¢ç»“æœï¼ˆobjectï¼‰</returns>
         public static decimal ExecuteInsert(string strSql, params SqlParameter[] cmdParms)
         {
             try
@@ -848,9 +848,9 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// Ö´ĞĞ²éÑ¯Óï¾ä£¬·µ»ØSqlDataReader ( ×¢Òâ£ºÊ¹ÓÃºóÒ»¶¨Òª¶ÔSqlDataReader½øĞĞClose )
+        /// æ‰§è¡ŒæŸ¥è¯¢è¯­å¥ï¼Œè¿”å›SqlDataReader ( æ³¨æ„ï¼šä½¿ç”¨åä¸€å®šè¦å¯¹SqlDataReaderè¿›è¡ŒClose )
         /// </summary>
-        /// <param name="strSql">²éÑ¯Óï¾ä</param>
+        /// <param name="strSql">æŸ¥è¯¢è¯­å¥</param>
         /// <returns>SqlDataReader</returns>
         public static SqlDataReader ExecuteReader(string strSql, params SqlParameter[] cmdParms)
         {
@@ -870,9 +870,9 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// Ö´ĞĞ²éÑ¯Óï¾ä£¬·µ»ØDataSet
+        /// æ‰§è¡ŒæŸ¥è¯¢è¯­å¥ï¼Œè¿”å›DataSet
         /// </summary>
-        /// <param name="strSql">²éÑ¯Óï¾ä</param>
+        /// <param name="strSql">æŸ¥è¯¢è¯­å¥</param>
         /// <returns>DataSet</returns>
         public static DataSet Query(string strSql, params SqlParameter[] cmdParms)
         {
@@ -894,10 +894,10 @@ namespace Crownbio.DAL
 
         #endregion
 
-        #region ´æ´¢¹ı³Ì²Ù×÷
+        #region å­˜å‚¨è¿‡ç¨‹æ“ä½œ
 
         /// <summary>
-        /// Ö´ĞĞ´æ´¢¹ı³Ì£¬·µ»ØÓ°ÏìµÄĞĞÊı       
+        /// æ‰§è¡Œå­˜å‚¨è¿‡ç¨‹ï¼Œè¿”å›å½±å“çš„è¡Œæ•°       
         /// </summary>       
         public static int RunProcedure(string storedProcName)
         {
@@ -915,12 +915,12 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// Ö´ĞĞ´æ´¢¹ı³Ì£¬·µ»ØÊä³ö²ÎÊıµÄÖµºÍÓ°ÏìµÄĞĞÊı       
+        /// æ‰§è¡Œå­˜å‚¨è¿‡ç¨‹ï¼Œè¿”å›è¾“å‡ºå‚æ•°çš„å€¼å’Œå½±å“çš„è¡Œæ•°       
         /// </summary>
-        /// <param name="storedProcName">´æ´¢¹ı³ÌÃû</param>
-        /// <param name="parameters">´æ´¢¹ı³Ì²ÎÊı</param>
-        /// <param name="OutParameter">Êä³ö²ÎÊıÃû³Æ</param>
-        /// <param name="rowsAffected">Ó°ÏìµÄĞĞÊı</param>
+        /// <param name="storedProcName">å­˜å‚¨è¿‡ç¨‹å</param>
+        /// <param name="parameters">å­˜å‚¨è¿‡ç¨‹å‚æ•°</param>
+        /// <param name="OutParameter">è¾“å‡ºå‚æ•°åç§°</param>
+        /// <param name="rowsAffected">å½±å“çš„è¡Œæ•°</param>
         /// <returns></returns>
         public static object RunProcedure(string storedProcName, IDataParameter[] InParameters, SqlParameter OutParameter, int rowsAffected)
         {
@@ -931,7 +931,7 @@ namespace Crownbio.DAL
                 BuildDBParameter(db, dbCommand, (SqlParameter[])InParameters);
                 db.AddOutParameter(dbCommand, OutParameter.ParameterName, OutParameter.DbType, OutParameter.Size);
                 rowsAffected = db.ExecuteNonQuery(dbCommand);
-                return db.GetParameterValue(dbCommand, "@" + OutParameter.ParameterName);  //µÃµ½Êä³ö²ÎÊıµÄÖµ
+                return db.GetParameterValue(dbCommand, "@" + OutParameter.ParameterName);  //å¾—åˆ°è¾“å‡ºå‚æ•°çš„å€¼
             }
             catch (Exception ex)
             {
@@ -941,10 +941,10 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// Ö´ĞĞ´æ´¢¹ı³Ì£¬·µ»ØSqlDataReader ( ×¢Òâ£ºÊ¹ÓÃºóÒ»¶¨Òª¶ÔSqlDataReader½øĞĞClose )
+        /// æ‰§è¡Œå­˜å‚¨è¿‡ç¨‹ï¼Œè¿”å›SqlDataReader ( æ³¨æ„ï¼šä½¿ç”¨åä¸€å®šè¦å¯¹SqlDataReaderè¿›è¡ŒClose )
         /// </summary>
-        /// <param name="storedProcName">´æ´¢¹ı³ÌÃû</param>
-        /// <param name="parameters">´æ´¢¹ı³Ì²ÎÊı</param>
+        /// <param name="storedProcName">å­˜å‚¨è¿‡ç¨‹å</param>
+        /// <param name="parameters">å­˜å‚¨è¿‡ç¨‹å‚æ•°</param>
         /// <returns>SqlDataReader</returns>
         public static SqlDataReader RunProcedure(string storedProcName, SqlParameter[] parameters)
         {
@@ -963,11 +963,11 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// Ö´ĞĞ´æ´¢¹ı³Ì£¬·µ»ØDataSet
+        /// æ‰§è¡Œå­˜å‚¨è¿‡ç¨‹ï¼Œè¿”å›DataSet
         /// </summary>
-        /// <param name="storedProcName">´æ´¢¹ı³ÌÃû</param>
-        /// <param name="parameters">´æ´¢¹ı³Ì²ÎÊı</param>
-        /// <param name="tableName">DataSet½á¹ûÖĞµÄ±íÃû</param>
+        /// <param name="storedProcName">å­˜å‚¨è¿‡ç¨‹å</param>
+        /// <param name="parameters">å­˜å‚¨è¿‡ç¨‹å‚æ•°</param>
+        /// <param name="tableName">DataSetç»“æœä¸­çš„è¡¨å</param>
         /// <returns>DataSet</returns>
         public static DataSet RunProcedure(string storedProcName, SqlParameter[] parameters, string tableName)
         {
@@ -985,7 +985,7 @@ namespace Crownbio.DAL
             }
         }
         /// <summary>
-        /// Ö´ĞĞ´æ´¢¹ı³Ì£¬·µ»Ø×ÜĞĞÊı
+        /// æ‰§è¡Œå­˜å‚¨è¿‡ç¨‹ï¼Œè¿”å›æ€»è¡Œæ•°
         /// </summary>
         /// <param name="storedProcName"></param>
         /// <param name="parameters"></param>
@@ -999,7 +999,7 @@ namespace Crownbio.DAL
                 DbCommand dbCommand = db.GetStoredProcCommand(storedProcName);
                 BuildDBParameter(db, dbCommand, parameters);
                 return db.ExecuteReader(dbCommand);
-                
+
             }
             catch (Exception ex)
             {
@@ -1008,7 +1008,7 @@ namespace Crownbio.DAL
             }
         }
         /// <summary>
-        /// Ö´ĞĞ´æ´¢¹ı³Ì£¬·µ»ØDataSet(Éè¶¨µÈ´ıÊ±¼ä)
+        /// æ‰§è¡Œå­˜å‚¨è¿‡ç¨‹ï¼Œè¿”å›DataSet(è®¾å®šç­‰å¾…æ—¶é—´)
         /// </summary>
         public static DataSet RunProcedure(string storedProcName, IDataParameter[] parameters, string tableName, int Times)
         {
@@ -1028,11 +1028,11 @@ namespace Crownbio.DAL
         }
 
         /// <summary>
-        /// ¹¹½¨SqlCommand ¶ÔÏó(ÓÃÀ´·µ»ØÒ»¸ö½á¹û¼¯£¬¶ø²»ÊÇÒ»¸öÕûÊıÖµ)
+        /// æ„å»ºSqlCommand å¯¹è±¡(ç”¨æ¥è¿”å›ä¸€ä¸ªç»“æœé›†ï¼Œè€Œä¸æ˜¯ä¸€ä¸ªæ•´æ•°å€¼)
         /// </summary>
-        /// <param name="connection">Êı¾İ¿âÁ¬½Ó</param>
-        /// <param name="storedProcName">´æ´¢¹ı³ÌÃû</param>
-        /// <param name="parameters">´æ´¢¹ı³Ì²ÎÊı</param>
+        /// <param name="connection">æ•°æ®åº“è¿æ¥</param>
+        /// <param name="storedProcName">å­˜å‚¨è¿‡ç¨‹å</param>
+        /// <param name="parameters">å­˜å‚¨è¿‡ç¨‹å‚æ•°</param>
         /// <returns>SqlCommand</returns>
         private static SqlCommand BuildQueryCommand(SqlConnection connection, string storedProcName, IDataParameter[] parameters)
         {
@@ -1044,7 +1044,7 @@ namespace Crownbio.DAL
                 {
                     if (parameter != null)
                     {
-                        // ¼ì²éÎ´·ÖÅäÖµµÄÊä³ö²ÎÊı,½«Æä·ÖÅäÒÔDBNull.Value.
+                        // æ£€æŸ¥æœªåˆ†é…å€¼çš„è¾“å‡ºå‚æ•°,å°†å…¶åˆ†é…ä»¥DBNull.Value.
                         if ((parameter.Direction == ParameterDirection.InputOutput || parameter.Direction == ParameterDirection.Input) && (parameter.Value == null))
                         {
                             parameter.Value = DBNull.Value;
@@ -1064,7 +1064,7 @@ namespace Crownbio.DAL
         #endregion
 
 
-        #region ´óÊı¾İµ¼Èësql
+        #region å¤§æ•°æ®å¯¼å…¥sql
         public static void SqlBulkCopyData(DataTable dt, ArrayList columns, string tablename)
         {
             try
