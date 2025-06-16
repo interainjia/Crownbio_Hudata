@@ -155,6 +155,7 @@
                                             <option value="Balb/c nu">Balb/c nu</option>
                                             <option value="B-NSG">B-NSG</option>
                                             <option value="CB17.SCID">CB17.SCID</option>
+                                            <option value="C-NKG">C-NKG</option>
                                             <option value="HGF">HGF</option>
                                             <option value="NCG">NCG</option>
                                             <option value="NOD.SCID">NOD.SCID</option>
