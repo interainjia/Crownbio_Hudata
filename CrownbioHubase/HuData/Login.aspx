@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>Login</title>
-    <link rel="shortcut icon" href="../images/minlogo.png" />
+    <link rel="shortcut icon" href="../images/favicon.svg" />
     <link rel="stylesheet" type="text/css" href="../Common/easyui-1.3.2/themes/particular_blue.css" />
     <script src="../Common/easyui-1.2.5/jquery-1.7.1.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="../Common/easyui-1.2.5/jquery.easyui.min.js"></script>

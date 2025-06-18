@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>User Registration</title>
     <link href="../Common/waiting/showLoading.css" rel="stylesheet" media="screen" />
-    <link rel="shortcut icon" href="../images/minlogo.png" />
+    <link rel="shortcut icon" href="../images/favicon.svg" />
     <script type="text/javascript" src="../Common/easyui-1.3.2/jquery-1.8.0.min.js"></script>
          <script type="text/javascript" src="../Common/easyui-1.2.5/jquery.wresize.js"></script>
 	<link rel="stylesheet" type="text/css" href="../Common/easyui-1.3.2/themes/icon.css" />

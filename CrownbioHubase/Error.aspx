@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head id="Head1" runat="server">
     <title>Error</title>
-     <link rel="shortcut icon" href="../images/minlogo.png" />
+     <link rel="shortcut icon" href="../images/favicon.svg" />
       <link rel="stylesheet" type="text/css" href="Common/css/buttons3.css"/>
 </head>
 <body>

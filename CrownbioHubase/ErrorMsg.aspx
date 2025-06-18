@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width" />
     <title>Error</title>
-      <link rel="shortcut icon" href="../../images/minlogo.png" />
+      <link rel="shortcut icon" href="../../images/favicon.svg" />
      <link rel="stylesheet" href="../../Common/bootstrap-3.3.5-dist/css/bootstrap.min.css" />
 </head>
 <body>
