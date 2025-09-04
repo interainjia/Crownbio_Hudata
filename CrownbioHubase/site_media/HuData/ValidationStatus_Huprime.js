@@ -79,7 +79,7 @@ var Check = function () {
                     + "&txtModel_Type=" + $('#txtModel_Type').val()
                     + "&txtSource=" + $('#txtSource').val()
                     + "&txtProject=" + URLencode($('#txtProject').val())
-
+                    + "&txtArrival_Date=" + $('#txtArrival_Date').datebox('getValue')
                     + "&txtEstablished_Date=" + $('#txtEstablished_Date').datebox('getValue')
                     + "&txtFinalDateofValidation=" + $('#txtFinalDateofValidation').datebox('getValue')
                     + "&txtCryo_PTissue=" + $('#txtCryo_PTissue').datebox('getValue')
@@ -131,6 +131,8 @@ function getdgValidationStatus_Huprime() {
 function AddNew_model() {
     $('#hfValidationStatus_Huprime_ID').val("-1");
     $("#Reset1").click();
+    //add by Jack 2025.09.04
+    $("#txtArrival_Date").datebox('setValue', "");
     $("#txtEstablished_Date").datebox('setValue', "");
     $("#txtFinalDateofValidation").datebox('setValue', "");
     $("#txtCryo_PTissu").datebox('setValue', "");
@@ -166,6 +168,7 @@ function bindGrid() {
             { field: 'Model_Type', title: 'Model_Type', width: 120, sortable: false },
             { field: 'Source', title: 'Source', width: 120, sortable: false },
             { field: 'Project', title: 'Project', width: 120, sortable: false },
+            { field: 'Arrival_Date', title: 'Arrival_Date', width: 120, sortable: false },
             { field: 'Established_Date', title: 'Established_Date', width: 120, sortable: false },
             { field: 'Established_Location', title: 'Established_Location', width: 120, sortable: false },
             { field: 'ValidationStatus', title: 'ValidationStatus', width: 120, sortable: false },

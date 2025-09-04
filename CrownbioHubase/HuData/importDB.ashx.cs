@@ -387,6 +387,7 @@ namespace PDXmodelBase.HuData
             }
         }
 
+        
         public void importValidationStatus_Huprime(HttpContext context)
         {
             if (context.Request.Files.Count > 0)
@@ -418,16 +419,16 @@ namespace PDXmodelBase.HuData
                                 row.MODELID = cells[i, 3].StringValue.Trim();
 
                                 //第一次导入
-                                row.ESTABLISHED_LOCATION = cells[i, 8].StringValue.Trim();
-                                row.VALIDATIONSTATUS = cells[i, 9].StringValue.Trim();
-                                row.FINALDATEOFVALIDATION = cells[i, 10].StringValue.Trim() == "" ? DateTime.MinValue : DateTime.Parse(cells[i, 10].StringValue.Trim());
-                                row.CRYO_PTISSUE = cells[i, 11].StringValue.Trim() == "" ? DateTime.MinValue : DateTime.Parse(cells[i, 11].StringValue.Trim());
-                                row.CRYO_PTISSUE_NUMBER = cells[i, 12].StringValue.Trim();
-                                row.FROZEN_STORAGE = cells[i, 13].StringValue.Trim();
-                                row.FIRST_REVIVAL = cells[i, 14].StringValue.Trim();
-                                row.GC = cells[i, 15].StringValue.Trim();
-                                row.ANIMALROOMNUMBER = cells[i, 16].StringValue.Trim();
-                                row.COMMENT = FormatHelper.doTran(cells[i, 18].StringValue.Trim());
+                                row.ESTABLISHED_LOCATION = cells[i, 9].StringValue.Trim();
+                                row.VALIDATIONSTATUS = cells[i, 10].StringValue.Trim();
+                                row.FINALDATEOFVALIDATION = cells[i, 11].StringValue.Trim() == "" ? DateTime.MinValue : DateTime.Parse(cells[i, 11].StringValue.Trim());
+                                row.CRYO_PTISSUE = cells[i, 12].StringValue.Trim() == "" ? DateTime.MinValue : DateTime.Parse(cells[i, 12].StringValue.Trim());
+                                row.CRYO_PTISSUE_NUMBER = cells[i, 13].StringValue.Trim();
+                                row.FROZEN_STORAGE = cells[i, 14].StringValue.Trim();
+                                row.FIRST_REVIVAL = cells[i, 15].StringValue.Trim();
+                                row.GC = cells[i, 16].StringValue.Trim();
+                                row.ANIMALROOMNUMBER = cells[i, 17].StringValue.Trim();
+                                row.COMMENT = FormatHelper.doTran(cells[i, 19].StringValue.Trim());
                             }
                             else
                             {
@@ -438,8 +439,9 @@ namespace PDXmodelBase.HuData
                             row.MODEL_TYPE = cells[i, 4].StringValue.Trim();
                             row.SOURCE = cells[i, 5].StringValue.Trim();
                             row.PROJECT = FormatHelper.doTran(cells[i, 6].StringValue.Trim());
-                            row.ESTABLISHED_DATE = cells[i, 7].StringValue.Trim() == "" ? DateTime.MinValue : DateTime.Parse(cells[i, 7].StringValue.Trim());
-                            row.DATEOFUPDATE = cells[i, 17].StringValue.Trim() == "" ? DateTime.MinValue : DateTime.Parse(cells[i, 17].StringValue.Trim());
+                            row.ARRIVAL_DATE = cells[i, 7].StringValue.Trim() == "" ? DateTime.MinValue : DateTime.Parse(cells[i, 7].StringValue.Trim());
+                            row.ESTABLISHED_DATE = cells[i, 8].StringValue.Trim() == "" ? DateTime.MinValue : DateTime.Parse(cells[i, 8].StringValue.Trim());
+                            row.DATEOFUPDATE = cells[i, 18].StringValue.Trim() == "" ? DateTime.MinValue : DateTime.Parse(cells[i, 18].StringValue.Trim());
 
                             bll.Update(row);
                         }
@@ -456,6 +458,167 @@ namespace PDXmodelBase.HuData
                 context.Response.Write("Please add file.");
             }
         }
+        
+
+        /*
+        //add by Jack 2025.09.04
+        /// <summary>
+        /// Imports validation status data from an Excel file.
+        /// This improved version finds columns by header name, making it resilient to column order changes.
+        /// </summary>
+        /// <param name="context">The HTTP context containing the uploaded file.</param>
+        public void importValidationStatus_Huprime(HttpContext context)
+        {
+            if (context.Request.Files.Count > 0)
+            {
+                try
+                {
+                    // Assuming updateInfoNew is a method that saves the file and returns its path.
+                    string filePath = updateInfoNew(context);
+                    Workbook book = new Workbook(filePath);
+                    Worksheet sheet = book.Worksheets[0];
+                    Cells cells = sheet.Cells;
+
+                    // 1. Get the header row to create a dynamic mapping
+                    Dictionary<string, int> columnIndexMap = GetColumnMapping(cells);
+
+                    // Check if all required columns exist based on the new provided list
+                    if (!columnIndexMap.ContainsKey("SQ#") || !columnIndexMap.ContainsKey("MODELID*"))
+                    {
+                        context.Response.Write("Error: Required columns 'Sq#' and 'ModelID*' not found.");
+                        return;
+                    }
+
+                    // Assuming bll.Select and VALIDATIONSTATUS_HUPRIME exist
+                    BaseList data = bll.Select(typeof(VALIDATIONSTATUS_HUPRIME));
+                    List<VALIDATIONSTATUS_HUPRIME> lists = data.ConvertAll(VALIDATIONSTATUS_HUPRIME.Convert);
+
+                    // 2. Iterate through data rows using the dynamic mapping
+                    for (int i = 1; i < cells.MaxDataRow + 1; i++) // Start from row 1 to skip headers
+                    {
+                        // Check if the first cell (Sq#) is not empty.
+                        string sqValue = cells[i, columnIndexMap["SQ#"]].StringValue.Trim();
+                        if (!string.IsNullOrEmpty(sqValue))
+                        {
+                            string modelIdValue = cells[i, columnIndexMap["MODELID*"]].StringValue.Trim();
+                            // Assuming this logic is correct for finding an existing row
+                            VALIDATIONSTATUS_HUPRIME row = lists.Find(p => p.SQ == sqValue && p.MODELID == modelIdValue);
+
+                            if (row == null)
+                            {
+                                row = new VALIDATIONSTATUS_HUPRIME(DealModel.New);
+                                row.SQ = sqValue;
+                                row.MODELID = modelIdValue;
+
+                                // Populate fields that are only set on the first import
+                                if (columnIndexMap.ContainsKey("ESTABLISHED LOCATION"))
+                                    row.ESTABLISHED_LOCATION = cells[i, columnIndexMap["ESTABLISHED LOCATION"]].StringValue.Trim();
+                                if (columnIndexMap.ContainsKey("VALIDATIONSTATUS*"))
+                                    row.VALIDATIONSTATUS = cells[i, columnIndexMap["VALIDATIONSTATUS*"]].StringValue.Trim();
+                                if (columnIndexMap.ContainsKey("FINALDATEOFVALIDATION"))
+                                    row.FINALDATEOFVALIDATION = ParseDate(cells[i, columnIndexMap["FINALDATEOFVALIDATION"]].StringValue.Trim());
+                                if (columnIndexMap.ContainsKey("CRYO-PTISSUE(填写第20管日期）*"))
+                                    row.CRYO_PTISSUE = ParseDate(cells[i, columnIndexMap["CRYO-PTISSUE(填写第20管日期）*"]].StringValue.Trim());
+                                if (columnIndexMap.ContainsKey("CRYO-PTISSUE(NUMBER)（填写YES/NO)"))
+                                    row.CRYO_PTISSUE_NUMBER = cells[i, columnIndexMap["CRYO-PTISSUE(NUMBER)（填写YES/NO)"]].StringValue.Trim();
+
+                                if (columnIndexMap.ContainsKey("冻存库存"))
+                                    row.FROZEN_STORAGE = cells[i, columnIndexMap["冻存库存"]].StringValue.Trim();
+
+                                if (columnIndexMap.ContainsKey("1STREVIVAL*"))
+                                    row.FIRST_REVIVAL = cells[i, columnIndexMap["1STREVIVAL*"]].StringValue.Trim();
+                                if (columnIndexMap.ContainsKey("GC*"))
+                                    row.GC = cells[i, columnIndexMap["GC*"]].StringValue.Trim();
+                                if (columnIndexMap.ContainsKey("ANIMALROOMNUMBER*"))
+                                    row.ANIMALROOMNUMBER = cells[i, columnIndexMap["ANIMALROOMNUMBER*"]].StringValue.Trim();
+                                if (columnIndexMap.ContainsKey("COMMENT"))
+                                    row.COMMENT = FormatHelper.doTran(cells[i, columnIndexMap["COMMENT"]].StringValue.Trim());
+                            }
+                            else
+                            {
+                                row.CurModel = DealModel.Modify;
+                            }
+
+                            // Populate fields that are always updated
+                            if (columnIndexMap.ContainsKey("CANCERTYPE*"))
+                                row.CANCERTYPE = cells[i, columnIndexMap["CANCERTYPE*"]].StringValue.Trim();
+                            if (columnIndexMap.ContainsKey("CANCERTYPEABBR"))
+                                row.CANCERTYPEABBR = cells[i, columnIndexMap["CANCERTYPEABBR"]].StringValue.Trim();
+                            if (columnIndexMap.ContainsKey("MODEL TYPE"))
+                                row.MODEL_TYPE = cells[i, columnIndexMap["MODEL TYPE"]].StringValue.Trim();
+                            if (columnIndexMap.ContainsKey("SOURCE*"))
+                                row.SOURCE = cells[i, columnIndexMap["SOURCE*"]].StringValue.Trim();
+                            if (columnIndexMap.ContainsKey("PROJECT#"))
+                                row.PROJECT = FormatHelper.doTran(cells[i, columnIndexMap["PROJECT#"]].StringValue.Trim());
+
+                            // Add the new column "Arrival date*" if it exists.
+                            if (columnIndexMap.ContainsKey("ARRIVAL DATE*"))
+                                row.ARRIVAL_DATE = ParseDate(cells[i, columnIndexMap["ARRIVAL DATE*"]].StringValue.Trim());
+
+                            if (columnIndexMap.ContainsKey("ESTABLISHED DATE*"))
+                                row.ESTABLISHED_DATE = ParseDate(cells[i, columnIndexMap["ESTABLISHED DATE*"]].StringValue.Trim());
+                            if (columnIndexMap.ContainsKey("DATEOFUPDATE*"))
+                                row.DATEOFUPDATE = ParseDate(cells[i, columnIndexMap["DATEOFUPDATE*"]].StringValue.Trim());
+
+                            bll.Update(row);
+                        }
+                    }
+                    context.Response.Write("Import successfully");
+                }
+                catch (Exception ex)
+                {
+                    // Log the exception details for debugging
+                    Console.WriteLine(ex.ToString());
+                    context.Response.Write("Import error");
+                }
+            }
+            else
+            {
+                context.Response.Write("Please add file.");
+            }
+        }
+
+        /// <summary>
+        /// Reads the first row of the worksheet to create a dictionary
+        /// mapping column header names to their zero-based index.
+        /// </summary>
+        /// <param name="cells">The Cells object from the Excel worksheet.</param>
+        /// <returns>A dictionary with column names as keys and indices as values.</returns>
+        private Dictionary<string, int> GetColumnMapping(Cells cells)
+        {
+            var columnIndexMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            for (int j = 0; j < cells.MaxDataColumn + 1; j++)
+            {
+                // Get the header name, clean it up, and add it to the dictionary.
+                string headerName = cells[0, j].StringValue.Trim().ToUpper();
+                if (!string.IsNullOrEmpty(headerName))
+                {
+                    // This 'j' here is where your loop variable would be used to build the map.
+                    columnIndexMap[headerName] = j;
+                }
+            }
+            return columnIndexMap;
+        }
+
+        /// <summary>
+        /// Helper method to safely parse a date string.
+        /// </summary>
+        /// <param name="dateString">The string to parse.</param>
+        /// <returns>A DateTime object or DateTime.MinValue if parsing fails.</returns>
+        private DateTime ParseDate(string dateString)
+        {
+            if (string.IsNullOrEmpty(dateString))
+            {
+                return DateTime.MinValue;
+            }
+            DateTime date;
+            if (DateTime.TryParse(dateString, out date))
+            {
+                return date;
+            }
+            return DateTime.MinValue;
+        }
+        */
 
         public void importValidationStatus_Hukime(HttpContext context)
         {

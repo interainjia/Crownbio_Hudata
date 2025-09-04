@@ -18,7 +18,7 @@
     <script type="text/javascript" src="../Common/css/persontree.js"></script>
     <link rel="stylesheet" type="text/css" href="../Common/easyui-1.3.2/themes/bootstrap/easyui.css" />
     <link rel="stylesheet" type="text/css" href="../Common/easyui-1.3.2/themes/icon.css" />
-    <script type="text/javascript" src="/site_media/HuData/ValidationStatus_Huprime.js?V=3.0"></script>
+    <script type="text/javascript" src="/site_media/HuData/ValidationStatus_Huprime.js?V=3.1"></script>
     <script type="text/javascript" src="/site_media/HuData/export.js"></script>
     <script type="text/javascript" src="../Common/fancyBox/source/jquery.fancybox.js?v=2.1.4"></script>
     <link rel="stylesheet" type="text/css" href="../Common/fancyBox/source/jquery.fancybox.css?v=2.1.4"
@@ -112,19 +112,26 @@
                                     <td class="td_right">
                                         <input id="txtProject"></input>
                                     </td>
+                                    <td class="td_left">Arrival_Date:
+                                    </td>
+                                    <td class="td_right">
+                                        <input id="txtArrival_Date" class="easyui-datebox" data-options="formatter:myformatter"
+                                            editable="false" />
+                                    </td>
                                     <td class="td_left">Established_Date:
                                     </td>
                                     <td class="td_right">
                                         <input id="txtEstablished_Date" class="easyui-datebox" data-options="formatter:myformatter"
                                             editable="false" />
                                     </td>
+                                    
+                                </tr>
+                                <tr>
                                     <td class="td_left">Established_Location:
                                     </td>
                                     <td class="td_right">
                                         <input id="txtEstablished_Location"></input>
                                     </td>
-                                </tr>
-                                <tr>
                                     <td class="td_left">ValidationStatus
                                     </td>
                                     <td class="td_right">
@@ -136,14 +143,15 @@
                                         <input id="txtFinalDateofValidation" class="easyui-datebox" data-options="formatter:myformatter"
                                             editable="false" />
                                     </td>
+                                    
+                                </tr>
+                                <tr>
                                     <td class="td_left">Cryo_PTissue:
                                     </td>
                                     <td class="td_right">
                                         <input id="txtCryo_PTissue" class="easyui-datebox" data-options="formatter:myformatter"
                                             editable="false" />
                                     </td>
-                                </tr>
-                                <tr>
                                     <td class="td_left">Cryo_PTissue_number
                                     </td>
                                     <td class="td_right">
@@ -154,14 +162,15 @@
                                     <td class="td_right">
                                         <input id="txtFrozen_Storage"></input>
                                     </td>
+                                    
+                                </tr>
+                                <tr>
                                     <td class="td_left">First_Revival:
                                     </td>
                                     <td class="td_right">
                                         <input id="txtFirst_Revival" class="easyui-datebox" data-options="formatter:myformatter"
                                             editable="false" />
                                     </td>
-                                </tr>
-                                <tr>
                                     <td class="td_left">GC
                                     </td>
                                     <td class="td_right">
@@ -173,27 +182,25 @@
                                     <td class="td_right">
                                         <input id="txtAnimalRoomNumber"></input>
                                     </td>
+                                    
+                                </tr>
+                                <tr>
                                     <td class="td_left">DateofUpdate:
                                     </td>
                                     <td class="td_right">
                                        <input id="txtDateofUpdate" class="easyui-datebox" data-options="formatter:myformatter"
                                             editable="false" />
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td class="td_left">&nbsp;
-                                    </td>
-                                    <td class="td_right">&nbsp;
-                                    </td>
-                                    <td class="td_left">&nbsp;
-                                    </td>
-                                    <td class="td_right">&nbsp;
-                                    </td>
                                     <td class="td_left">Comments:
                                     </td>
                                     <td class="td_right">
                                         <input id="txtComment"></input>
                                     </td>
+                                    <td class="td_left">&nbsp;
+                                    </td>
+                                    <td class="td_right">&nbsp;
+                                    </td>
+                                    
                                 </tr>
                                 <tr>
                                     <td class="td_left">&nbsp;

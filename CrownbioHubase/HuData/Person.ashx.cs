@@ -5416,6 +5416,8 @@ namespace PDXmodelBase.HuData
                 row.MODEL_TYPE = context.Request["txtMODEL_TYPE"] ?? "";
                 row.SOURCE = context.Request["txtSOURCE"] ?? "";
                 row.PROJECT = FormatHelper.doTran(context.Request["txtPROJECT"]) ?? "";
+                //add by Jack 2025.09.04
+                row.ARRIVAL_DATE = context.Request["txtArrival_Date"] == "" ? DateTime.MinValue : DateTime.Parse(context.Request["txtArrival_Date"]);
                 row.ESTABLISHED_DATE = context.Request["txtESTABLISHED_DATE"] == "" ? DateTime.MinValue : DateTime.Parse(context.Request["txtESTABLISHED_DATE"]);
                 row.ESTABLISHED_LOCATION = context.Request["txtESTABLISHED_LOCATION"] ?? "";
                 row.VALIDATIONSTATUS = context.Request["txtVALIDATIONSTATUS"] ?? "";

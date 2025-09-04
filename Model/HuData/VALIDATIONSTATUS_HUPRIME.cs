@@ -250,6 +250,34 @@ namespace Crownbio.Model
             get { return _project; }
         }
         /// <summary>
+        /// The ARRIVAL_DATE Field of VALIDATIONSTATUS_HUPRIME Table
+        /// </summary>
+        private DateTime _arrival_date;
+        [DataField("ARRIVAL_DATE"
+            , AliasName = "ARRIVAL_DATE"
+            , DataType = DbType.Date
+
+            , IsNullable = true
+            , Size = 3
+            , Width = 100
+            , DisplayInCondition = true
+            , DisplayInMaintain = true
+            , DisplayInDialog = false
+            , ResourceKey = "ARRIVAL_DATE"
+            , GroupFun = "MAX"
+            , AllowEdit = false
+            , Frozen = false
+            , SelectSequence = 24
+            , DialogSequence = -1
+            , IsInsertField = true
+            , IsUpdateField = true
+             )]
+        public DateTime ARRIVAL_DATE
+        {
+            set { _arrival_date = value; }
+            get { return _arrival_date; }
+        }
+        /// <summary>
         /// The ESTABLISHED_DATE Field of VALIDATIONSTATUS_HUPRIME Table
         /// </summary>
         private DateTime _established_date;
