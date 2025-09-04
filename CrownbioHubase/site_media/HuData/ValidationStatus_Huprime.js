@@ -247,6 +247,8 @@ function EditValidationStatus_Huprime(row) {
     $("#txtModel_Type").val(row.Model_Type);
     $("#txtSource").val(row.Source);
     $("#txtProject").val(row.Project);
+    //add by Jack 2025.09.04
+    $("#txtArrival_Date").datebox('setValue', row.Arrival_Date);
     $("#txtEstablished_Date").datebox('setValue', row.Established_Date);
     $("#txtFinalDateofValidation").datebox('setValue', row.FinalDateofValidation);
     $("#txtCryo_PTissue").datebox('setValue', row.Cryo_PTissue);
