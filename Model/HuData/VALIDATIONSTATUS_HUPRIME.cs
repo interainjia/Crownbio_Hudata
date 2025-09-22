@@ -252,14 +252,13 @@ namespace Crownbio.Model
         /// <summary>
         /// The ARRIVAL_DATE Field of VALIDATIONSTATUS_HUPRIME Table
         /// </summary>
-        private DateTime _arrival_date;
+        private string _arrival_date;
         [DataField("ARRIVAL_DATE"
             , AliasName = "ARRIVAL_DATE"
-            , DataType = DbType.Date
-
+            , DataType = DbType.String
             , IsNullable = true
-            , Size = 3
-            , Width = 100
+            , Size = 100
+            , Width = 200
             , DisplayInCondition = true
             , DisplayInMaintain = true
             , DisplayInDialog = false
@@ -272,7 +271,7 @@ namespace Crownbio.Model
             , IsInsertField = true
             , IsUpdateField = true
              )]
-        public DateTime ARRIVAL_DATE
+        public string ARRIVAL_DATE
         {
             set { _arrival_date = value; }
             get { return _arrival_date; }
@@ -617,6 +616,7 @@ namespace Crownbio.Model
         public const String MODEL_TYPE_FIELD = "MODEL_TYPE";
         public const String SOURCE_FIELD = "SOURCE";
         public const String PROJECT_FIELD = "PROJECT";
+        public const String ARRIVAL_DATE_FIELD = "ARRIVAL_DATE";
         public const String ESTABLISHED_DATE_FIELD = "ESTABLISHED_DATE";
         public const String ESTABLISHED_LOCATION_FIELD = "ESTABLISHED_LOCATION";
         public const String VALIDATIONSTATUS_FIELD = "VALIDATIONSTATUS";

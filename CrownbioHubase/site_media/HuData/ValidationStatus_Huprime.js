@@ -79,7 +79,7 @@ var Check = function () {
                     + "&txtModel_Type=" + $('#txtModel_Type').val()
                     + "&txtSource=" + $('#txtSource').val()
                     + "&txtProject=" + URLencode($('#txtProject').val())
-                    + "&txtArrival_Date=" + $('#txtArrival_Date').datebox('getValue')
+                    + "&txtArrival_Date=" + URLencode($('#txtArrival_Date').val())
                     + "&txtEstablished_Date=" + $('#txtEstablished_Date').datebox('getValue')
                     + "&txtFinalDateofValidation=" + $('#txtFinalDateofValidation').datebox('getValue')
                     + "&txtCryo_PTissue=" + $('#txtCryo_PTissue').datebox('getValue')
@@ -131,8 +131,8 @@ function getdgValidationStatus_Huprime() {
 function AddNew_model() {
     $('#hfValidationStatus_Huprime_ID').val("-1");
     $("#Reset1").click();
-    //add by Jack 2025.09.04
-    $("#txtArrival_Date").datebox('setValue', "");
+    ////add by Jack 2025.09.04
+    //$("#txtArrival_Date").datebox('setValue', "");
     $("#txtEstablished_Date").datebox('setValue', "");
     $("#txtFinalDateofValidation").datebox('setValue', "");
     $("#txtCryo_PTissu").datebox('setValue', "");
@@ -247,8 +247,9 @@ function EditValidationStatus_Huprime(row) {
     $("#txtModel_Type").val(row.Model_Type);
     $("#txtSource").val(row.Source);
     $("#txtProject").val(row.Project);
-    //add by Jack 2025.09.04
-    $("#txtArrival_Date").datebox('setValue', row.Arrival_Date);
+    ////add by Jack 2025.09.04
+    ////$("#txtArrival_Date").datebox('setValue', row.Arrival_Date);
+    $("#txtArrival_Date").val(row.Arrival_Date);
     $("#txtEstablished_Date").datebox('setValue', row.Established_Date);
     $("#txtFinalDateofValidation").datebox('setValue', row.FinalDateofValidation);
     $("#txtCryo_PTissue").datebox('setValue', row.Cryo_PTissue);

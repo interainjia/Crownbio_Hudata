@@ -439,7 +439,7 @@ namespace PDXmodelBase.HuData
                             row.MODEL_TYPE = cells[i, 4].StringValue.Trim();
                             row.SOURCE = cells[i, 5].StringValue.Trim();
                             row.PROJECT = FormatHelper.doTran(cells[i, 6].StringValue.Trim());
-                            row.ARRIVAL_DATE = cells[i, 7].StringValue.Trim() == "" ? DateTime.MinValue : DateTime.Parse(cells[i, 7].StringValue.Trim());
+                            row.ARRIVAL_DATE = cells[i, 7].StringValue.Trim();
                             row.ESTABLISHED_DATE = cells[i, 8].StringValue.Trim() == "" ? DateTime.MinValue : DateTime.Parse(cells[i, 8].StringValue.Trim());
                             row.DATEOFUPDATE = cells[i, 18].StringValue.Trim() == "" ? DateTime.MinValue : DateTime.Parse(cells[i, 18].StringValue.Trim());
 
