@@ -4797,8 +4797,10 @@ namespace PDXmodelBase.HuData
                     SYS_USER userLogin = CacheHelper.getCurrentUser();
                     bool cbsd = ojbReportRule.GetUserFunctions(userLogin.Permission, "RoutineMaintain", "CBSD edit only");
                     bool cbsg = ojbReportRule.GetUserFunctions(userLogin.Permission, "RoutineMaintain", "CBSG edit only");
+                    bool cbnc = ojbReportRule.GetUserFunctions(userLogin.Permission, "RoutineMaintain", "CBNC edit only");
                     string _location = context.Request["txtLocation"] ?? "";
-                    row.LOCATION = cbsd == true ? "CBSD" : cbsg == true ? "CBSG" : _location;
+                    //row.LOCATION = cbsd == true ? "CBSD" : cbsg == true ? "CBSG" : _location;
+                    row.LOCATION = cbsd ? "CBSD" : cbsg ? "CBSG" : cbnc ? "CBNC" : _location;
 
                     row.SOURCE_ANIMAL = context.Request["txtSource_Animal"] ?? "";
                     row.OPREATION = context.Request["txtOpreation"] ?? "";
@@ -6413,7 +6415,8 @@ namespace PDXmodelBase.HuData
             string function = context.Request["_modulepPge"] ?? "";
             bool cbsd = ojbReportRule.GetUserFunctions(userLogin.Permission, function, "CBSD edit only");
             bool cbsg = ojbReportRule.GetUserFunctions(userLogin.Permission, function, "CBSG edit only");
-            var res = new { cbsd, cbsg };
+            bool cbnc = ojbReportRule.GetUserFunctions(userLogin.Permission, function, "CBNC edit only");
+            var res = new { cbsd, cbsg, cbnc };
             context.Response.Write(JsonConvert.SerializeObject(res));
         }
        

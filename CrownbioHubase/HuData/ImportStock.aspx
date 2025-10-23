@@ -63,6 +63,7 @@
           <span style="color:Red">Region: </span> <input id="Radio1" type="radio" name="S_region" value="CBCN" checked="checked"/>CBCN
            <input id="Radio2" type="radio" name="S_region" value="CBSD"/>CBSD
              <input id="Radio3" type="radio" name="S_region" value="CBSG"/>CBSG
+           <input id="Radio4" type="radio" name="S_region" value="CBNC"/>CBNC
            </td>
         </tr>
             <tr>

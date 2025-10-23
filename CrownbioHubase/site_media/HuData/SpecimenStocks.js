@@ -394,6 +394,10 @@ var CheckIsRole_Edit = function (callback) {
             $.messager.alert("info", "Permission Denied", "info", null);
             value = false;
         }
+        else if (msg.cbnc && $('#txtRegion').val() != "CBNC") {
+            $.messager.alert("info", "Permission Denied", "info", null);
+            value = false;
+        }
         else {
             value = true;
         }

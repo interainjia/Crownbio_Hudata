@@ -3454,6 +3454,12 @@ namespace PDXmodelBase.HuData
                 column = SPECIMEN_STOCK.REGION_FIELD;
                 Clause += string.Format("AND ({0}.{1} = 'CBSG')", SPECIMEN_STOCK.TABLE_NAME, column);
             }
+            bool havePerm3 = ojbReportRule.GetUserFunctions(userLogin.Permission, "SpecimenStocks", "CBNC view only");
+            if (havePerm3)
+            {
+                column = SPECIMEN_STOCK.REGION_FIELD;
+                Clause += string.Format("AND ({0}.{1} = 'CBNC')", SPECIMEN_STOCK.TABLE_NAME, column);
+            }
             if (context.Request["S_Region"] != null)
             {
                 if (context.Request["S_Region"].ToString() != "")
