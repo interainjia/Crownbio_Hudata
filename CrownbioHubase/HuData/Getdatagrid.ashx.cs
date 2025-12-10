@@ -1924,6 +1924,10 @@ namespace PDXmodelBase.HuData
                 {
                     dc.ColumnName = "Implantation_Method";
                 }
+                else if (dc.ColumnName == "PATIENT_ID")
+                {
+                    dc.ColumnName = "Patient_ID";
+                }
             }
           
             #endregion
@@ -4736,9 +4740,6 @@ namespace PDXmodelBase.HuData
                     //}
                    
                     columns.AppendFormat("{{field:'{0}',title:'{1}',align:'left',width:{2}}},", col.ColumnName, col.ColumnName, width);
-                    
-                   
-                  
                 }
             }
             if (columns.Length > 3)

@@ -1395,6 +1395,8 @@ namespace PDXmodelBase.HuData
                     row.IMPLANTATION_METHOD = context.Request["txtImplantation_Method"] ?? "";
                     row.DEATHRATE = context.Request["txtDeathRate"] ?? "";
 
+                    row.PATIENT_ID = context.Request["txtPatient_ID"] ?? "";
+
                     row.UPDATE_TIME = DateTime.Now;
                     dataPDX.Add(row);
                     decimal id = bll.Update(row);

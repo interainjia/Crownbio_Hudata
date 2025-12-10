@@ -151,6 +151,34 @@ namespace Crownbio.Model
         }
 
         /// <summary>
+        /// The PATIENT_ID Field of PDXMODEL_INFO Table
+        /// </summary>
+        private string _patient_id;
+        [DataField("PATIENT_ID"
+            , AliasName = "PATIENT_ID"
+            , DataType = DbType.String
+            , IsNullable = true
+            , Size = 50
+            , Width = 100
+            , DisplayInCondition = true
+            , DisplayInMaintain = true
+            , DisplayInDialog = false
+            , ResourceKey = "PATIENT_ID"
+            , GroupFun = "MAX"
+            , AllowEdit = false
+            , Frozen = false
+            , SelectSequence = 12
+            , DialogSequence = -1
+            , IsInsertField = true
+            , IsUpdateField = true
+             )]
+        public string PATIENT_ID
+        {
+            set { _patient_id = value; }
+            get { return _patient_id; }
+        }
+
+        /// <summary>
         /// The SOURCE Field of PDXMODEL_INFO Table
         /// </summary>
         private string _source;
@@ -1458,5 +1486,6 @@ namespace Crownbio.Model
         public const String MODEL_FROM_FIELD = "MODEL_FROM";
         public const String IMPLANTATION_METHOD_FIELD = "IMPLANTATION_METHOD";
         public const String DEATHRATE_FIELD = "DEATHRATE";
+        public const String PATIENT_ID_FIELD = "PATIENT_ID";
     }
 }

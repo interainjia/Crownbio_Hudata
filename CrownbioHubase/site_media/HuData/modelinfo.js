@@ -515,6 +515,7 @@ var save = function () {
             + "&txtSource=" + $("#txtSource").combobox('getValue')
             + "&txtImplantation_Method=" + $("#txtImplantation_Method").val()
             + "&txtDeathRate=" + $("#txtDeathRate").val()
+            + "&txtPatient_ID=" + $("#txtPatient_ID").val()
         ,
         success: function (msg) {
             if (msg != "") {
@@ -559,7 +560,8 @@ function EditPDXmodel(row) {
     $('#txtCancer_Type_Abbr').val(row.Cancer_Type_Abbr);
     $('#txtModel_From').combobox('setValue', row.Model_From)
     $('#hfSource').val(row.Source);
-    $('#txtModel_ID').val(row.Model_ID);
+    $('#txtModel_ID').val(row.Model_ID); 
+    $('#txtPatient_ID').val(row.Patient_ID); //add by Jack, 2025.12.10
     $('#txtOrigin').combobox('setValue', row.Origin)
     $('#txtCancer_Type').combobox('setValue', row.Cancer_Type)
     $('#txtSubtype1').combobox('setValue', row.Subtype1)

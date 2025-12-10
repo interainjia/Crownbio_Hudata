@@ -18,7 +18,7 @@
     <script type="text/javascript" src="../Common/css/persontree.js"></script>
     <link rel="stylesheet" type="text/css" href="../Common/easyui-1.3.2/themes/bootstrap/easyui.css" />
     <link rel="stylesheet" type="text/css" href="../Common/easyui-1.3.2/themes/icon.css" />
-    <script type="text/javascript" src="/site_media/HuData/modelinfo.js?v=8.0"></script>
+    <script type="text/javascript" src="/site_media/HuData/modelinfo.js?v=8.2"></script>
     <script type="text/javascript" src="/site_media/HuData/export.js"></script>
     <script type="text/javascript" src="../Common/fancyBox/source/jquery.fancybox.js?v=2.1.4"></script>
     <link rel="stylesheet" type="text/css" href="../Common/fancyBox/source/jquery.fancybox.css?v=2.1.4"
@@ -102,7 +102,13 @@
                                         <input id="txtModel_ID" disabled="disabled"></input>
                                     </td>
                                 </tr>
+                                <!-- New Row 2: Patient ID, Source, Origin (3 items) -->
                                 <tr>
+                                    <td class="td_left">Patient ID:
+                                    </td>
+                                    <td class="td_right">
+                                        <input id="txtPatient_ID"></input>
+                                    </td>
                                     <td class="td_left">Source
                                     </td>
                                     <td class="td_right">
@@ -119,6 +125,9 @@
                                             </select>
                                         </div>
                                     </td>
+                                </tr>
+                                <!-- New Row 3: Cancer Type, Subtype1, Subtype2 (3 items) -->
+                                <tr>
                                     <td class="td_left">Cancer Type:
                                     </td>
                                     <td class="td_right">
@@ -127,8 +136,6 @@
                                             </select>
                                         </div>
                                     </td>
-                                </tr>
-                                <tr>
                                     <td class="td_left">Subtype1:
                                     </td>
                                     <td class="td_right">
@@ -145,6 +152,9 @@
                                             </select>
                                         </div>
                                     </td>
+                                </tr>
+                                <!-- New Row 4: Model Category, Source ID, Source Note (3 items) -->
+                                <tr>
                                     <td class="td_left">Model Category:
                                     </td>
                                     <td class="td_right">
@@ -153,8 +163,6 @@
                                             </select>
                                         </div>
                                     </td>
-                                </tr>
-                                <tr>
                                     <td class="td_left">Source ID:
                                     </td>
                                     <td class="td_right">
@@ -165,13 +173,14 @@
                                     <td class="td_right">
                                         <input id="txtSource_Note"></input>
                                     </td>
+                                </tr>
+                                <!-- New Row 5: PDX QC, STR Consistence, In_Huba (3 items) -->
+                                <tr>
                                     <td class="td_left">PDX QC:
                                     </td>
                                     <td class="td_right">
                                         <input id="txtPDX_QC"></input>
                                     </td>
-                                </tr>
-                                <tr>
                                     <td class="td_left">STR Consistence:
                                     </td>
                                     <td class="td_right">
@@ -186,13 +195,14 @@
                                     <td class="td_right">
                                         <input id="txtIN_HUBA"></input>
                                     </td>
+                                </tr>
+                                <!-- Row 6: Total Revival Success Rate, Time of Revival, Revival Recommended Strain (3 items) -->
+                                <tr>
                                     <td class="td_left">Total Revival Success Rate:
                                     </td>
                                     <td class="td_right">
                                         <input id="txtTotal_Revival_Success_Rate" />
                                     </td>
-                                </tr>
-                                <tr>
                                     <td class="td_left">Time of Revival:
                                     </td>
                                     <td class="td_right">
@@ -203,13 +213,14 @@
                                     <td class="td_right">
                                         <input id="txtRevival_Recommended_Strain"></input>
                                     </td>
+                                </tr>
+                                <!-- Row 7: Time of Model for Transplant, Maintain Recommended Strain, Spare% for CV40 (3 items) -->
+                                <tr>
                                     <td class="td_left">Time of Model for Transplant:
                                     </td>
                                     <td class="td_right">
                                         <input id="txtTime_of_Model_for_Transplant" />
                                     </td>
-                                </tr>
-                                <tr>
                                     <td class="td_left">Maintain Recommended Strain:
                                     </td>
                                     <td class="td_right">
@@ -220,20 +231,19 @@
                                     <td class="td_right">
                                         <input id="txtSpare_for_CV40"></input>
                                     </td>
+                                </tr>
+                                <!-- Row 8: Spare% for CV30, Optimal Overage (2 items + 1 empty slot) -->
+                                <tr>
                                     <td class="td_left">Spare% for CV30:
                                     </td>
                                     <td class="td_right">
                                         <input id="txtSpare_for_CV30" />
                                     </td>
-                                </tr>
-                                <tr>
                                     <td class="td_left">Optimal Overage:
                                     </td>
                                     <td class="td_right">
                                         <input id="txtOptimal_Overage"></input>
                                     </td>
-                                    <td class="td_left"></td>
-                                    <td class="td_right"></td>
                                     <td class="td_left"></td>
                                     <td class="td_right"></td>
                                 </tr>

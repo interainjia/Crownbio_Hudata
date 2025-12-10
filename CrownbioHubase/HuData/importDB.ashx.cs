@@ -2766,6 +2766,8 @@ namespace PDXmodelBase.HuData
                 importData.Columns.Add("Source");
                 importData.Columns.Add("Implantation_Method");
                 importData.Columns.Add("DeathRate");
+                // add by Jack, 202512.10
+                importData.Columns.Add("Patient_ID");
                 BaseList data_AnimalInfo = new BaseList();
 
                 string filePath = updateInfo(context);
@@ -2838,6 +2840,20 @@ namespace PDXmodelBase.HuData
                                     newRow[46] = csv[46];
                                     newRow[47] = csv[47];
                                     newRow[48] = csv[48];
+                                    // add by Jack, 202512.10
+                                    // MODIFIED BLOCK FOR CSV[49] CHECK:
+                                    // CsvReader uses a zero-based index. 
+                                    // Index 49 is the 50th column.
+                                    if (csv.FieldCount > 49)
+                                    {
+                                        // add by Jack, 202512.10
+                                        newRow[49] = csv[49];
+                                    }
+                                    else
+                                    {
+                                        // Set to string.Empty if column 49 (50th column) does not exist
+                                        newRow[49] = string.Empty;
+                                    }
                                     importData.Rows.Add(newRow);
                                 }
                             }
@@ -3027,6 +3043,9 @@ namespace PDXmodelBase.HuData
                                     row.IMPLANTATION_METHOD = cells[i, 47].StringValue;
                                 if (cells[i, 48].StringValue.Trim() != "")
                                     row.DEATHRATE = cells[i, 48].StringValue;
+                                // add by Jack, 202512.10
+                                if (cells[i, 49].StringValue.Trim() != "")
+                                    row.PATIENT_ID = cells[i, 49].StringValue;
                                 bll.Update(row);
                             }                                 
                         }                                     
