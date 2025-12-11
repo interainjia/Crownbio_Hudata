@@ -6859,7 +6859,7 @@ namespace PDXmodelBase.HuData
                 "Source_ID","Source_Note","PDX_QC","STR_Consistence","In_Huba","Exomeseq","Total_Revival_Success_Rate","Time_of_Revival","Revival_Recommended_Strain",
                 "Time_of_Model_for_Transplant","Maintain_Recommended_Strain","Spare_for_CV40","Spare_for_CV30","Optimal_Overage","Dosing_Window","Cryo_P","Snap_Frozen","FFPE","HP2","Times_Used_In_Study"
                 ,"Cachexia_Label","Cachexia","Slight_BW_loss","Normal","Location","Ulceration_Label","Survival_Curve","SOC","Time_of_Update","Implantation_Method","Comments"
-                ,"Total_Revival_Success_Rate_CBSD","Time_of_Revival_CBSD","Revival_Recommended_Strain_CBSD","Treatment_history_1","Treatment_history_2","DeathRate"};
+                ,"Total_Revival_Success_Rate_CBSD","Time_of_Revival_CBSD","Revival_Recommended_Strain_CBSD","Treatment_history_1","Treatment_history_2","DeathRate","Patient_ID"};
                 int i = 0;
                 foreach (string str in columns1)
                 {
