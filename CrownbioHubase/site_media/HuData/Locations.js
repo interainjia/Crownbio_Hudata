@@ -212,16 +212,24 @@ function paste(e) {
 
 
 function onRename(e, treeId, treeNode) {
-    if (treeNode.name.indexOf("(") > 0 || treeNode.name.indexOf(")") > 0) {
+    
+    if (treeNode.name.indexOf("(") < 0 && treeNode.name.indexOf(")") < 0) {
         $.messager.alert("info", "The format is incorrect.", "info", null);
         return;
     }
+    
+    //add by Jack 2025.12.23
+    // Check if parentheses exist; if they do, split the string and take the first part
+    var cleanName = treeNode.name.indexOf("(") > -1
+        ? treeNode.name.split("(")[0]
+        : treeNode.name;
+
     $.ajax({
         type: "POST",
         dataType: "text",
         url: "Person.ashx?M=SaveLocations_Name",
         data: "id=" + treeNode.id
-            + "&name=" + treeNode.name,
+            + "&name=" + cleanName,
         success: function (data) {
             if (data != "") {
                 refreshParentNode(treeNode);

@@ -16,7 +16,7 @@
     <link rel="stylesheet" type="text/css" href="../Common/autocomplete/jquery.autocomplete.css" />
     <link rel="stylesheet" type="text/css" href="../Common/autocomplete/lib/thickbox.css" />
     <link rel="stylesheet" type="text/css" href="/site_media/HuData/css/base.css" />
-    <script type="text/javascript" src="/site_media/HuData/Locations.js"></script>
+    <script type="text/javascript" src="/site_media/HuData/Locations.js?v=1.0.1"></script>
     <script type="text/javascript" src="/site_media/HuData/base.js"></script>
     <link href="../Common/waiting/showLoading.css" rel="stylesheet" media="screen" />
     <script type="text/javascript" src="../Common/waiting/jquery.showLoading.js"></script>
