@@ -18,7 +18,7 @@
     <script type="text/javascript" src="../Common/css/persontree.js"></script>
     <link rel="stylesheet" type="text/css" href="../Common/easyui-1.3.2/themes/bootstrap/easyui.css" />
     <link rel="stylesheet" type="text/css" href="../Common/easyui-1.3.2/themes/icon.css" />
-    <script type="text/javascript" src="/site_media/HuData/modelinfo.js?v=8.2"></script>
+    <script type="text/javascript" src="/site_media/HuData/modelinfo.js?v=8.3"></script>
     <script type="text/javascript" src="/site_media/HuData/export.js"></script>
     <script type="text/javascript" src="../Common/fancyBox/source/jquery.fancybox.js?v=2.1.4"></script>
     <link rel="stylesheet" type="text/css" href="../Common/fancyBox/source/jquery.fancybox.css?v=2.1.4"
@@ -355,20 +355,20 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="td_left">Total_Revival_Success_Rate_CBSD:
+                                    <td class="td_left">Total_Revival_Success_Rate_CBNC:
                                     </td>
                                     <td class="td_right">
-                                        <input id="txtTotal_Revival_Success_Rate_CBSD" />
+                                        <input id="txtTotal_Revival_Success_Rate_CBNC" />
                                     </td>
-                                    <td class="td_left">Time_of_Revival_CBSD:
-                                    </td>
-                                    <td class="td_right">
-                                        <input id="txtTime_of_Revival_CBSD" />
-                                    </td>
-                                    <td class="td_left">Revival_Recommended_Strain_CBSD:
+                                    <td class="td_left">Time_of_Revival_CBNC:
                                     </td>
                                     <td class="td_right">
-                                        <input id="txtRevival_Recommended_Strain_CBSD" />
+                                        <input id="txtTime_of_Revival_CBNC" />
+                                    </td>
+                                    <td class="td_left">Revival_Recommended_Strain_CBNC:
+                                    </td>
+                                    <td class="td_right">
+                                        <input id="txtRevival_Recommended_Strain_CBNC" />
                                     </td>
                                 </tr>
                                 <tr>

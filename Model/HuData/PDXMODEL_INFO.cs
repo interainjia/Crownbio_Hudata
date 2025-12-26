@@ -1237,11 +1237,11 @@ namespace Crownbio.Model
             get { return _location; }
         }
         /// <summary>
-        /// The TOTAL_REVIVAL_SUCCESS_RATE_CBSD Field of PDXMODEL_INFO Table
+        /// The TOTAL_REVIVAL_SUCCESS_RATE_CBNC Field of PDXMODEL_INFO Table
         /// </summary>
         private string _total_revival_success_rate_cbsd;
-        [DataField("TOTAL_REVIVAL_SUCCESS_RATE_CBSD"
-            , AliasName = "TOTAL_REVIVAL_SUCCESS_RATE_CBSD"
+        [DataField("TOTAL_REVIVAL_SUCCESS_RATE_CBNC"
+            , AliasName = "TOTAL_REVIVAL_SUCCESS_RATE_CBNC"
             , DataType = DbType.String
             , IsNullable = true
             , Size = 50
@@ -1249,7 +1249,7 @@ namespace Crownbio.Model
             , DisplayInCondition = true
             , DisplayInMaintain = true
             , DisplayInDialog = false
-            , ResourceKey = "TOTAL_REVIVAL_SUCCESS_RATE_CBSD"
+            , ResourceKey = "TOTAL_REVIVAL_SUCCESS_RATE_CBNC"
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
@@ -1258,17 +1258,17 @@ namespace Crownbio.Model
             , IsInsertField = true
             , IsUpdateField = true
              )]
-        public string TOTAL_REVIVAL_SUCCESS_RATE_CBSD
+        public string TOTAL_REVIVAL_SUCCESS_RATE_CBNC
         {
             set { _total_revival_success_rate_cbsd = value; }
             get { return _total_revival_success_rate_cbsd; }
         }
         /// <summary>
-        /// The TIME_OF_REVIVAL_CBSD Field of PDXMODEL_INFO Table
+        /// The TIME_OF_REVIVAL_CBNC Field of PDXMODEL_INFO Table
         /// </summary>
         private string _time_of_revival_cbsd;
-        [DataField("TIME_OF_REVIVAL_CBSD"
-            , AliasName = "TIME_OF_REVIVAL_CBSD"
+        [DataField("TIME_OF_REVIVAL_CBNC"
+            , AliasName = "TIME_OF_REVIVAL_CBNC"
             , DataType = DbType.String
             , IsNullable = true
             , Size = 50
@@ -1276,7 +1276,7 @@ namespace Crownbio.Model
             , DisplayInCondition = true
             , DisplayInMaintain = true
             , DisplayInDialog = false
-            , ResourceKey = "TIME_OF_REVIVAL_CBSD"
+            , ResourceKey = "TIME_OF_REVIVAL_CBNC"
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
@@ -1285,17 +1285,17 @@ namespace Crownbio.Model
             , IsInsertField = true
             , IsUpdateField = true
              )]
-        public string TIME_OF_REVIVAL_CBSD
+        public string TIME_OF_REVIVAL_CBNC
         {
             set { _time_of_revival_cbsd = value; }
             get { return _time_of_revival_cbsd; }
         }
         /// <summary>
-        /// The REVIVAL_RECOMMENDED_STRAIN_CBSD Field of PDXMODEL_INFO Table
+        /// The REVIVAL_RECOMMENDED_STRAIN_CBNC Field of PDXMODEL_INFO Table
         /// </summary>
         private string _revival_recommended_strain_cbsd;
-        [DataField("REVIVAL_RECOMMENDED_STRAIN_CBSD"
-            , AliasName = "REVIVAL_RECOMMENDED_STRAIN_CBSD"
+        [DataField("REVIVAL_RECOMMENDED_STRAIN_CBNC"
+            , AliasName = "REVIVAL_RECOMMENDED_STRAIN_CBNC"
             , DataType = DbType.String
             , IsNullable = true
             , Size = 50
@@ -1303,7 +1303,7 @@ namespace Crownbio.Model
             , DisplayInCondition = true
             , DisplayInMaintain = true
             , DisplayInDialog = false
-            , ResourceKey = "REVIVAL_RECOMMENDED_STRAIN_CBSD"
+            , ResourceKey = "REVIVAL_RECOMMENDED_STRAIN_CBNC"
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
@@ -1312,7 +1312,7 @@ namespace Crownbio.Model
             , IsInsertField = true
             , IsUpdateField = true
              )]
-        public string REVIVAL_RECOMMENDED_STRAIN_CBSD
+        public string REVIVAL_RECOMMENDED_STRAIN_CBNC
         {
             set { _revival_recommended_strain_cbsd = value; }
             get { return _revival_recommended_strain_cbsd; }
@@ -1476,9 +1476,9 @@ namespace Crownbio.Model
         public const String DATA_TYPE_FIELD = "DATA_TYPE";
         public const String COMMENTS_FIELD = "COMMENTS";
         public const String LOCATION_FIELD = "LOCATION";
-        public const String TOTAL_REVIVAL_SUCCESS_RATE_CBSD_FIELD = "TOTAL_REVIVAL_SUCCESS_RATE_CBSD";
-        public const String TIME_OF_REVIVAL_CBSD_FIELD = "TIME_OF_REVIVAL_CBSD";
-        public const String REVIVAL_RECOMMENDED_STRAIN_CBSD_FIELD = "REVIVAL_RECOMMENDED_STRAIN_CBSD";
+        public const String TOTAL_REVIVAL_SUCCESS_RATE_CBNC_FIELD = "TOTAL_REVIVAL_SUCCESS_RATE_CBNC";
+        public const String TIME_OF_REVIVAL_CBNC_FIELD = "TIME_OF_REVIVAL_CBNC";
+        public const String REVIVAL_RECOMMENDED_STRAIN_CBNC_FIELD = "REVIVAL_RECOMMENDED_STRAIN_CBNC";
         public const String EXOMESEQ_FIELD = "EXOMESEQ";
         public const String TREATMENT_HISTORY_1_FIELD = "TREATMENT_HISTORY_1";
         public const String TREATMENT_HISTORY_2_FIELD = "TREATMENT_HISTORY_2";

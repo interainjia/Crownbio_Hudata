@@ -1892,17 +1892,17 @@ namespace PDXmodelBase.HuData
                 {
                     dc.ColumnName = "Location";
                 }
-                else if (dc.ColumnName == "TOTAL_REVIVAL_SUCCESS_RATE_CBSD")
+                else if (dc.ColumnName == "TOTAL_REVIVAL_SUCCESS_RATE_CBNC")
                 {
-                    dc.ColumnName = "Total_Revival_Success_Rate_CBSD";
+                    dc.ColumnName = "Total_Revival_Success_Rate_CBNC";
                 }
-                else if (dc.ColumnName == "TIME_OF_REVIVAL_CBSD")
+                else if (dc.ColumnName == "TIME_OF_REVIVAL_CBNC")
                 {
-                    dc.ColumnName = "Time_of_Revival_CBSD";
+                    dc.ColumnName = "Time_of_Revival_CBNC";
                 }
-                else if (dc.ColumnName == "REVIVAL_RECOMMENDED_STRAIN_CBSD")
+                else if (dc.ColumnName == "REVIVAL_RECOMMENDED_STRAIN_CBNC")
                 {
-                    dc.ColumnName = "Revival_Recommended_Strain_CBSD";
+                    dc.ColumnName = "Revival_Recommended_Strain_CBNC";
                 }
                 else if (dc.ColumnName == "TREATMENT_HISTORY_1")
                 {

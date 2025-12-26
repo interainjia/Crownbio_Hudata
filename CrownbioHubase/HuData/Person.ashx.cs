@@ -1385,9 +1385,9 @@ namespace PDXmodelBase.HuData
                     row.DATA_TYPE = "PDX";
                     row.COMMENTS = FormatHelper.doTran(context.Request["txtcomments"]) ?? "";
 
-                    row.TOTAL_REVIVAL_SUCCESS_RATE_CBSD = context.Request["txtTotal_Revival_Success_Rate_CBSD"] ?? "";
-                    row.TIME_OF_REVIVAL_CBSD = context.Request["txtTime_of_Revival_CBSD"] ?? "";
-                    row.REVIVAL_RECOMMENDED_STRAIN_CBSD = context.Request["txtRevival_Recommended_Strain_CBSD"] ?? "";
+                    row.TOTAL_REVIVAL_SUCCESS_RATE_CBNC = context.Request["txtTotal_Revival_Success_Rate_CBNC"] ?? "";
+                    row.TIME_OF_REVIVAL_CBNC = context.Request["txtTime_of_Revival_CBNC"] ?? "";
+                    row.REVIVAL_RECOMMENDED_STRAIN_CBNC = context.Request["txtRevival_Recommended_Strain_CBNC"] ?? "";
 
                     row.TREATMENT_HISTORY_1 = context.Request["txtTreatment_history_1"] ?? "";
                     row.TREATMENT_HISTORY_2 = context.Request["txtTreatment_history_2"] ?? "";
@@ -6859,7 +6859,7 @@ namespace PDXmodelBase.HuData
                 "Source_ID","Source_Note","PDX_QC","STR_Consistence","In_Huba","Exomeseq","Total_Revival_Success_Rate","Time_of_Revival","Revival_Recommended_Strain",
                 "Time_of_Model_for_Transplant","Maintain_Recommended_Strain","Spare_for_CV40","Spare_for_CV30","Optimal_Overage","Dosing_Window","Cryo_P","Snap_Frozen","FFPE","HP2","Times_Used_In_Study"
                 ,"Cachexia_Label","Cachexia","Slight_BW_loss","Normal","Location","Ulceration_Label","Survival_Curve","SOC","Time_of_Update","Implantation_Method","Comments"
-                ,"Total_Revival_Success_Rate_CBSD","Time_of_Revival_CBSD","Revival_Recommended_Strain_CBSD","Treatment_history_1","Treatment_history_2","DeathRate","Patient_ID"};
+                ,"Total_Revival_Success_Rate_CBNC","Time_of_Revival_CBNC","Revival_Recommended_Strain_CBNC","Treatment_history_1","Treatment_history_2","DeathRate","Patient_ID"};
                 int i = 0;
                 foreach (string str in columns1)
                 {

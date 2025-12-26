@@ -507,9 +507,9 @@ var save = function () {
             + "&txtNormal=" + $("#txtNormal").val()
             + "&txtSurvival_Curve=" + $('#txtSurvival_Curve').combobox('getValue')
             + "&ddlSOC=" + $('#ddlSOC').combotree('getText')
-            + "&txtTotal_Revival_Success_Rate_CBSD=" + $("#txtTotal_Revival_Success_Rate_CBSD").val()
-            + "&txtTime_of_Revival_CBSD=" + $("#txtTime_of_Revival_CBSD").val()
-            + "&txtRevival_Recommended_Strain_CBSD=" + $("#txtRevival_Recommended_Strain_CBSD").val()
+            + "&txtTotal_Revival_Success_Rate_CBNC=" + $("#txtTotal_Revival_Success_Rate_CBNC").val()
+            + "&txtTime_of_Revival_CBNC=" + $("#txtTime_of_Revival_CBNC").val()
+            + "&txtRevival_Recommended_Strain_CBNC=" + $("#txtRevival_Recommended_Strain_CBNC").val()
             + "&txtTreatment_history_1=" + $("#txtTreatment_history_1").val()
             + "&txtTreatment_history_2=" + $("#txtTreatment_history_2").val()
             + "&txtSource=" + $("#txtSource").combobox('getValue')
@@ -599,9 +599,9 @@ function EditPDXmodel(row) {
     $('#txtSurvival_Curve').combobox('setValue', row.Survival_Curve);
     $('#hfSOC').val(row.SOC);
 
-    $('#txtTotal_Revival_Success_Rate_CBSD').val(row.Total_Revival_Success_Rate_CBSD);
-    $('#txtTime_of_Revival_CBSD').val(row.Time_of_Revival_CBSD);
-    $('#txtRevival_Recommended_Strain_CBSD').val(row.Revival_Recommended_Strain_CBSD);
+    $('#txtTotal_Revival_Success_Rate_CBNC').val(row.Total_Revival_Success_Rate_CBNC);
+    $('#txtTime_of_Revival_CBNC').val(row.Time_of_Revival_CBNC);
+    $('#txtRevival_Recommended_Strain_CBNC').val(row.Revival_Recommended_Strain_CBNC);
 
     $('#txtTreatment_history_1').val(row.Treatment_history_1);
     $('#txtTreatment_history_2').val(row.Treatment_history_2);

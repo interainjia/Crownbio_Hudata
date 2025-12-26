@@ -2757,9 +2757,9 @@ namespace PDXmodelBase.HuData
                 importData.Columns.Add("data_type");
                 importData.Columns.Add("Comments");
                 importData.Columns.Add("Location");
-                importData.Columns.Add("Total_Revival_Success_Rate_CBSD");
-                importData.Columns.Add("Time_of_Revival_CBSD");
-                importData.Columns.Add("Revival_Recommended_Strain_CBSD");
+                importData.Columns.Add("Total_Revival_Success_Rate_CBNC");
+                importData.Columns.Add("Time_of_Revival_CBNC");
+                importData.Columns.Add("Revival_Recommended_Strain_CBNC");
                 importData.Columns.Add("Exomeseq");
                 importData.Columns.Add("Treatment_history_1");
                 importData.Columns.Add("Treatment_history_2");
@@ -3026,11 +3026,11 @@ namespace PDXmodelBase.HuData
                                 if (cells[i, 39].StringValue.Trim() != "")
                                     row.LOCATION = cells[i, 39].StringValue;
                                 if (cells[i, 40].StringValue.Trim() != "")
-                                    row.TOTAL_REVIVAL_SUCCESS_RATE_CBSD = cells[i, 40].StringValue;
+                                    row.TOTAL_REVIVAL_SUCCESS_RATE_CBNC = cells[i, 40].StringValue;
                                 if (cells[i, 41].StringValue.Trim() != "")
-                                    row.TIME_OF_REVIVAL_CBSD = cells[i, 41].StringValue;
+                                    row.TIME_OF_REVIVAL_CBNC = cells[i, 41].StringValue;
                                 if (cells[i, 42].StringValue.Trim() != "")
-                                    row.REVIVAL_RECOMMENDED_STRAIN_CBSD = cells[i, 42].StringValue;
+                                    row.REVIVAL_RECOMMENDED_STRAIN_CBNC = cells[i, 42].StringValue;
                                 if (cells[i, 43].StringValue.Trim() != "")
                                     row.EXOMESEQ = cells[i, 43].StringValue;
                                 if (cells[i, 44].StringValue.Trim() != "")
