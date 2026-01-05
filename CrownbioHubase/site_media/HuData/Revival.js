@@ -40,6 +40,29 @@ function htmlExport_old3() {
 }
 
 
+var CheckIsRole_Edit = function (callback) {
+    var value;
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        async: false,
+        url: "Person.ashx?M=CheckIsRole_Edit&_modulepPge=Revival"
+    }).done(function (msg) {
+        if (msg.cbsd && $('#txtLocation').val() != "SD") {
+            $.messager.alert("info", "Permission Denied", "info", null);
+            value = false;
+        }
+        else if (msg.cbnc && $('#txtLocation').val() != "NC") {
+            $.messager.alert("info", "Permission Denied", "info", null);
+            value = false;
+        }
+        else {
+            value = true;
+        }
+        callback(value);
+    });
+}
+
 
 /***
 * 对 特殊字符进行重新编码(转义)
@@ -65,61 +88,59 @@ var Check = function () {
         }
         else {
             // var type = $('#ddlTumor_Type').combobox('getValue');
+            CheckIsRole_Edit(function (callback) {
+                if (callback) {
+                    $.ajax({
+                        type: "POST",
+                        dataType: "text",
+                        url: "Person.ashx?M=SaveRevival",
+                        data: "hfRevival_ID=" + $('#hfRevival_ID').val()
+                            + "&txtsq1=" + $('#txtsq1').val()
+                            + "&txtSq=" + $('#txtSq').val()
+                            + "&txtCancerType=" + $('#txtCancerType').val()
+                            + "&txtModelID=" + $('#txtModelID').val()
+                            + "&txtDate_of_Tissue_collection=" + $('#txtDate_of_Tissue_collection').datebox('getValue')
+                            + "&txtBatch_of_cryo_p_tissue=" + URLencode($('#txtBatch_of_cryo_p_tissue').val())
+                            + "&txtDate_of_Revival=" + $('#txtDate_of_Revival').datebox('getValue')
+                            + "&txtDuration_in_LiN2=" + $('#txtDuration_in_LiN2').val()
+                            + "&txtLocation=" + $('#txtLocation').val()
+                            + "&txtPre_Rn=" + $('#txtPre_Rn').val()
+                            + "&txtRn=" + $('#txtRn').val()
+                            + "&txtPn=" + $('#txtPn').val()
+                            + "&txtRn_match=" + $('#txtRn_match').val()
+                            + "&txtAnimal_Strain=" + $('#txtAnimal_Strain').val()
+                            + "&txtAnimal_Quantity=" + $('#txtAnimal_Quantity').val()
+                            + "&txtDate_of_Revival_suceeded=" + $('#txtDate_of_Revival_suceeded').datebox('getValue')
+                            + "&txtOutcome=" + $('#txtOutcome').val()
+                            + "&txtDuration_of_Revival=" + $('#txtDuration_of_Revival').val()
+                            + "&txtStudy=" + URLencode($('#txtStudy').val())
+                            + "&txtProject_No=" + $('#txtProject_No').val()
+                            + "&txtComment=" + $('#txtComment').val()
+                            + "&txtPre_Recovery_Pathogen=" + $('#txtPre_Recovery_Pathogen').val()
+                            + "&txtRecovery_Pathogen=" + $('#txtRecovery_Pathogen').val()
+                            + "&txtImplantation_Pathogen=" + $('#txtImplantation_Pathogen').val()
+                            + "&txtRecovery_SNP=" + $('#txtRecovery_SNP').val()
+                            + "&txtImplantation_SNP=" + $('#txtImplantation_SNP').val()
+                        ,
 
-            $.ajax({
-                type: "POST",
-                dataType: "text",
-                url: "Person.ashx?M=SaveRevival",
-                data: "hfRevival_ID=" + $('#hfRevival_ID').val()
-                    + "&txtsq1=" + $('#txtsq1').val()
-                    + "&txtSq=" + $('#txtSq').val()
-                    + "&txtCancerType=" + $('#txtCancerType').val()
-                    + "&txtModelID=" + $('#txtModelID').val()
-                    + "&txtDate_of_Tissue_collection=" + $('#txtDate_of_Tissue_collection').datebox('getValue')
-                    + "&txtBatch_of_cryo_p_tissue=" + URLencode($('#txtBatch_of_cryo_p_tissue').val())
-                    + "&txtDate_of_Revival=" + $('#txtDate_of_Revival').datebox('getValue')
-                    + "&txtDuration_in_LiN2=" + $('#txtDuration_in_LiN2').val()
-                    + "&txtLocation=" + $('#txtLocation').val()
-                    + "&txtPre_Rn=" + $('#txtPre_Rn').val()
-                    + "&txtRn=" + $('#txtRn').val()
-                    + "&txtPn=" + $('#txtPn').val()
-                    + "&txtRn_match=" + $('#txtRn_match').val()
-                    + "&txtAnimal_Strain=" + $('#txtAnimal_Strain').val()
-                    + "&txtAnimal_Quantity=" + $('#txtAnimal_Quantity').val()
-                    + "&txtDate_of_Revival_suceeded=" + $('#txtDate_of_Revival_suceeded').datebox('getValue')
-                    + "&txtOutcome=" + $('#txtOutcome').val()
-                    + "&txtDuration_of_Revival=" + $('#txtDuration_of_Revival').val()
-                    + "&txtStudy=" + URLencode($('#txtStudy').val())
-                    + "&txtProject_No=" + $('#txtProject_No').val()
-                    + "&txtComment=" + $('#txtComment').val()
-                    + "&txtPre_Recovery_Pathogen=" + $('#txtPre_Recovery_Pathogen').val()
-                    + "&txtRecovery_Pathogen=" + $('#txtRecovery_Pathogen').val()
-                    + "&txtImplantation_Pathogen=" + $('#txtImplantation_Pathogen').val()
-                    + "&txtRecovery_SNP=" + $('#txtRecovery_SNP').val()
-                    + "&txtImplantation_SNP=" + $('#txtImplantation_SNP').val()
-                ,
-
-                success: function (msg) {
-                    if (msg == "" || msg == "Send successfully.") {
-                        $.messager.alert("info", "Save successfully.", "info", null);
-                        $("#dgRevival").datagrid('reload');
-                        $("#Reset1").click();
-                        $('#hfRevival_ID').val("-1");
-                        AddNew_model();
-                    }
-                    else {
-                        $.messager.alert("info", msg, "info", null);
-                    }
+                        success: function (msg) {
+                            if (msg == "" || msg == "Send successfully.") {
+                                $.messager.alert("info", "Save successfully.", "info", null);
+                                $("#dgRevival").datagrid('reload');
+                                $("#Reset1").click();
+                                $('#hfRevival_ID').val("-1");
+                                AddNew_model();
+                            }
+                            else {
+                                $.messager.alert("info", msg, "info", null);
+                            }
+                        }
+                    });
                 }
             });
         }
-
-
-
     }
 }
-
-
 
 
 function getdgRevival() {

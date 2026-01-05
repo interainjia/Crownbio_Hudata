@@ -41,9 +41,15 @@ namespace PDXmodelBase.HuData
                 }
                 else
                 {
-                    ScriptManager.RegisterStartupScript(UpdatePanel1, this.GetType(), "key2", "$('#divRevivalImport').css('display','block');document.getElementById('btndelete').style.display = 'inline-block'; ", true);
-                    btnImport += " <a href=\"javascript:void(); \" class=\"easyui-linkbutton\" iconcls=\"icon-search\" onclick='Import();'>Import</a>";
-
+                    bool havePerm4 = ojbReportRule.GetUserFunctions(userLogin.Permission, "Revival", "CBNC edit only");
+                    if (!havePerm4)
+                    {
+                        ScriptManager.RegisterStartupScript(UpdatePanel1, this.GetType(), "key2", "$('#divRevivalImport').css('display','none');document.getElementById('btndelete').style.display = 'none'; ", true);
+                    }
+                    else {
+                        ScriptManager.RegisterStartupScript(UpdatePanel1, this.GetType(), "key2", "$('#divRevivalImport').css('display','block');document.getElementById('btndelete').style.display = 'inline-block'; ", true);
+                        btnImport += " <a href=\"javascript:void(); \" class=\"easyui-linkbutton\" iconcls=\"icon-search\" onclick='Import();'>Import</a>";
+                    }
                 }
 
             }
