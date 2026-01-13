@@ -6418,7 +6418,8 @@ namespace PDXmodelBase.HuData
             bool cbsd = ojbReportRule.GetUserFunctions(userLogin.Permission, function, "CBSD edit only");
             bool cbsg = ojbReportRule.GetUserFunctions(userLogin.Permission, function, "CBSG edit only");
             bool cbnc = ojbReportRule.GetUserFunctions(userLogin.Permission, function, "CBNC edit only");
-            var res = new { cbsd, cbsg, cbnc };
+            bool all = ojbReportRule.GetUserFunctions(userLogin.Permission, function, "edit");
+            var res = new { cbsd, cbsg, cbnc, all };
             context.Response.Write(JsonConvert.SerializeObject(res));
         }
        

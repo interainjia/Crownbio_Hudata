@@ -538,7 +538,10 @@ var CheckIsRole_Edit = function (callback) {
         async: false,
         url: "Person.ashx?M=CheckIsRole_Edit&_modulepPge=PDXModelInfo"
     }).done(function (msg) {
-        if (msg.cbsd && $('#txtLocation').val() != "CBSD") {
+        if (msg.all) {
+            value = true;
+        }
+        else if (msg.cbsd && $('#txtLocation').val() != "CBSD") {
             $.messager.alert("info", "Permission Denied", "info", null);
             value = false;
         }

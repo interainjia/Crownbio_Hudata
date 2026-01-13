@@ -390,7 +390,10 @@ var CheckIsRole_Edit = function (callback) {
         async: false,
         url: "Person.ashx?M=CheckIsRole_Edit&_modulepPge=SpecimenStocks"
     }).done(function (msg) {
-        if (msg.cbsd && $('#txtRegion').val() != "CBSD") {
+        if (msg.all) {
+            value = true;
+        }
+        else if (msg.cbsd && $('#txtRegion').val() != "CBSD") {
             $.messager.alert("info", "Permission Denied", "info", null);
             value = false;
         }

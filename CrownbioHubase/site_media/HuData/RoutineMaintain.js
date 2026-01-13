@@ -238,7 +238,10 @@ var CheckIsRole_Edit = function (callback) {
         async: false,
         url: "Person.ashx?M=CheckIsRole_Edit&_modulepPge=RoutineMaintain"
     }).done(function (msg) {
-        if (msg.cbsd && $('#hfLocation').val() != "CBSD") {
+        if (msg.all) {
+            value = true;
+        }
+        else if (msg.cbsd && $('#hfLocation').val() != "CBSD") {
             $.messager.alert("info", "Permission Denied", "info", null);
             value = false;
         }

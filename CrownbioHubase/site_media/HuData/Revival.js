@@ -48,7 +48,10 @@ var CheckIsRole_Edit = function (callback) {
         async: false,
         url: "Person.ashx?M=CheckIsRole_Edit&_modulepPge=Revival"
     }).done(function (msg) {
-        if (msg.cbsd && $('#txtLocation').val() != "SD") {
+        if (msg.all) {
+            value = true;
+        }
+        else if (msg.cbsd && $('#txtLocation').val() != "SD") {
             $.messager.alert("info", "Permission Denied", "info", null);
             value = false;
         }

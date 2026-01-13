@@ -516,7 +516,10 @@ var CheckIsRole_Edit = function (callback) {
         async: false,
         url: "Person.ashx?M=CheckIsRole_Edit&_modulepPge=Request"
     }).done(function (msg) {
-        if (msg.cbsd && $('#hfSub-Project').val() == -1 && $('#txtProjectNumber').val().indexOf("-SD") == -1) {
+        if (msg.all) {
+            value = true;
+        }
+        else if (msg.cbsd && $('#hfSub-Project').val() == -1 && $('#txtProjectNumber').val().indexOf("-SD") == -1) {
             $.messager.alert("info", "Permission Denied", "info", null);
             value = false;
         }
@@ -524,14 +527,14 @@ var CheckIsRole_Edit = function (callback) {
             $.messager.alert("info", "Permission Denied", "info", null);
             value = false;
         }
-        //else if (msg.cbsg && $('#hfSub-Project').val() == -1 && $('#txtProjectNumber').val().indexOf("-SG") == -1) {
-        //    $.messager.alert("info", "Permission Denied", "info", null);
-        //    value = false;
-        //}
-        //else if (msg.cbsg && $('#hfSub-Project').val() != -1 && $('#hfSub-Project').val().indexOf("-SG") == -1) {
-        //    $.messager.alert("info", "Permission Denied", "info", null);
-        //    value = false;
-        //}
+        if (msg.cbnc && $('#hfSub-Project').val() == -1 && $('#txtProjectNumber').val().indexOf("-NC") == -1) {
+            $.messager.alert("info", "Permission Denied", "info", null);
+            value = false;
+        }
+        else if (msg.cbnc && $('#hfSub-Project').val() != -1 && $('#hfSub-Project').val().indexOf("-NC") == -1) {
+            $.messager.alert("info", "Permission Denied", "info", null);
+            value = false;
+        }
         else {
             value = true;
         }
