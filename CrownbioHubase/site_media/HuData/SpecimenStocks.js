@@ -136,17 +136,45 @@ function deleteStocks2() {
     });
 }
 function getdgSpecimenStocks() {
-    var params = { model_id: $('#searchModel_ID').val()
-    , S_PojectNo: $('#S_PojectNo').val()
-    , S_Region: $('#S_Region').val()
-    , S_Well_ID: $('#S_Well_ID').val()
-      , S_Location_ID: $('#S_Location_ID').val()
-       , S_Site_of_Tissue_Collection: $('#S_Site_of_Tissue_Collection').val()
-        , S_Preserve_Method: $('#S_Preserve_Method').val()
-        , S_Date_of_Tissue_Collection: $('#S_Date_of_Tissue_Collection').datebox('getValue')
-         , S_Animal_Number: $('#S_Animal_Number').val()
-          , S_Pn: $('#S_Pn').val()
-           , S_Tissue_Type: $('#S_Tissue_Type').val()
+    var msg = CheckIsRole_View(); // 同步获取权限信息
+
+    if (!msg) {
+        $.messager.alert("Error", "Failed to check permission.", "error");
+        return;
+    }
+
+    var locationVal = $('#txtRegion').val(); // 默认用用户选的
+
+    // 根据权限强制设置 s_Location
+    if (msg.all === true) {
+        locationVal = $('#txtRegion').val();
+    }
+    else if (msg.cbnc === true) {
+        locationVal = "CBNC";
+    }
+    else if (msg.cbsd === true) {
+        locationVal = "CBSD";
+    }
+    else if (msg.cbsg === true) {
+        locationVal = "CBSG";
+    }
+    else {
+        locationVal = "NA"; // 没有权限查看任何数据
+    }
+
+    var params = {
+        model_id: $('#searchModel_ID').val()
+        ,S_PojectNo: $('#S_PojectNo').val()
+        //, S_Region: $('#S_Region').val()
+        ,S_Region: locationVal
+        ,S_Well_ID: $('#S_Well_ID').val()
+        ,S_Location_ID: $('#S_Location_ID').val()
+        ,S_Site_of_Tissue_Collection: $('#S_Site_of_Tissue_Collection').val()
+        ,S_Preserve_Method: $('#S_Preserve_Method').val()
+        ,S_Date_of_Tissue_Collection: $('#S_Date_of_Tissue_Collection').datebox('getValue')
+        ,S_Animal_Number: $('#S_Animal_Number').val()
+        ,S_Pn: $('#S_Pn').val()
+        ,S_Tissue_Type: $('#S_Tissue_Type').val()
     };
     $("#dgSpecimenStocks").datagrid('load', params);
 }
@@ -381,6 +409,19 @@ function btnSetAnimal() {
         $.messager.alert("info", "Please select an Animal info.", "info", null);
     }
 }
+
+var CheckIsRole_View = function () {
+    var result = null;
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        async: false, // 同步请求（不推荐，但可用）
+        url: "Person.ashx?M=CheckIsRole_View&_modulepPge=Revival"
+    }).done(function (msg) {
+        result = msg; // 把结果存到外层变量
+    });
+    return result; // ✅ 现在可以正确返回
+};
 
 var CheckIsRole_Edit = function (callback) {
     var value;

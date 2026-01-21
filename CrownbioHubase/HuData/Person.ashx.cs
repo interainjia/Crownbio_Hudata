@@ -354,7 +354,9 @@ namespace PDXmodelBase.HuData
                     hfAvailableColumns(context);
                     break;
                 #endregion
-
+                case "CheckIsRole_View":
+                    CheckIsRole_View(context);
+                    break;
 
                 case "CheckIsRole_Edit":
                     CheckIsRole_Edit(context);
@@ -6419,10 +6421,23 @@ namespace PDXmodelBase.HuData
             bool cbsg = ojbReportRule.GetUserFunctions(userLogin.Permission, function, "CBSG edit only");
             bool cbnc = ojbReportRule.GetUserFunctions(userLogin.Permission, function, "CBNC edit only");
             bool all = ojbReportRule.GetUserFunctions(userLogin.Permission, function, "edit");
+            bool pm = ojbReportRule.GetUserFunctions(userLogin.Permission, function, "PM-edit");
+            var res = new { cbsd, cbsg, cbnc, all, pm };
+            context.Response.Write(JsonConvert.SerializeObject(res));
+        }
+
+        public void CheckIsRole_View(HttpContext context)
+        {
+            SYS_USER userLogin = CacheHelper.getCurrentUser();
+            string function = context.Request["_modulepPge"] ?? "";
+            bool cbsd = ojbReportRule.GetUserFunctions(userLogin.Permission, function, "CBSD view only");
+            bool cbsg = ojbReportRule.GetUserFunctions(userLogin.Permission, function, "CBSG view only");
+            bool cbnc = ojbReportRule.GetUserFunctions(userLogin.Permission, function, "CBNC view only");
+            bool all = ojbReportRule.GetUserFunctions(userLogin.Permission, function, "view");
             var res = new { cbsd, cbsg, cbnc, all };
             context.Response.Write(JsonConvert.SerializeObject(res));
         }
-       
+
 
         private ParamCollection querymodel(string model)
         {

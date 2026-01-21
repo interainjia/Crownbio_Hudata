@@ -174,61 +174,62 @@ var Check = function () {
         }
         else {
             // var type = $('#ddlTumor_Type').combobox('getValue');
+            CheckIsRole_Edit(function (callback) {
+                if (callback) {
+                    $.ajax({
+                        type: "POST",
+                        dataType: "text",
+                        url: "Person.ashx?M=SaveNewModel",
+                        data: "hfNewModel_ID=" + $('#hfNewModel_ID').val()
+                            + "&txtSerial=" + $('#txtSerial').val()
+                            + "&txtModel_Type=" + $('#txtModel_Type').combobox('getValue')
+                            + "&txtCancer_Type_Abbr=" + $('#txtCancer_Type_Abbr').combobox('getValue')
+                            + "&txtSubtype1=" + $('#txtSubtype1').combobox('getValue')
+                            + "&txtSubtype2=" + $('#txtSubtype2').combobox('getValue')
+                            + "&txtModel_ID=" + $("#txtModel_ID").val()
+                            + "&txtProject=" + $('#txtProject').combobox('getValue')
+                            + "&txtLocation=" + $('#txtLocation').combobox('getValue')
+                            + "&txtOpreation=" + $('#txtOpreation').combobox('getValue')
+                            + "&txtRn=" + $("#txtRn").val()
+                            + "&txtPn=" + $("#txtPn").val()
+                            + "&txtDate_of_Passage_inoculation=" + $('#txtDate_of_Passage_inoculation').datebox('getValue')
+                            + "&txtAnimal_Strain=" + $('#txtAnimal_Strain').combobox('getValue')
+                            + "&txtAnimal_Sex=" + $('#txtAnimal_Sex').combobox('getValue')
+                            + "&txtCurrent_Animal_Ear_Tag=" + $('#txtCurrent_Animal_Ear_Tag').val()
+                            + "&txtAnimal_Quantity=" + $('#txtAnimal_Quantity').val()
+                            + "&txtPDX_growth_status=" + $('#txtPDX_growth_status').combobox('getValue')
+                            + "&txtDate_of_Passage_Termination=" + $('#txtDate_of_Passage_Termination').datebox('getValue')
+                            //+ "&txtSource_Hospital=" + $('#txtSource_Hospital').combobox('getValue')
+                            //+ "&txtPathology_info_available=" + $('#txtPathology_info_available').combobox('getValue')
+                            //+ "&txtDate_of_Pathology_info_Received=" + $('#txtDate_of_Pathology_info_Received').datebox('getValue')
+                            //+ "&txtPatient_No=" + $('#txtPatient_No').val()
+                            //+ "&txtPatient_Name=" + $('#txtPatient_Name').val()
+                            //+ "&txtPatient_Age=" + $('#txtPatient_Age').val()
+                            //+ "&txtPatient_Sex=" + $('#txtPatient_Sex').val()
+                            //+ "&txtPatient_Pathology_info_Qced=" + $('#txtPatient_Pathology_info_Qced').combobox('getValue')
+                            + "&txtComments=" + $('#txtComments').val()
+                            + "&txtAnimal_Room_Number=" + $('#txtAnimal_Room_Number').val()
+                            + "&txtModel_Tumor_Characteristics=" + $('#txtModel_Tumor_Characteristics').val()
+                        ,
 
-            $.ajax({
-                type: "POST",
-                dataType: "text",
-                url: "Person.ashx?M=SaveNewModel",
-                data: "hfNewModel_ID=" + $('#hfNewModel_ID').val()
-                    + "&txtSerial=" + $('#txtSerial').val()
-                    + "&txtModel_Type=" + $('#txtModel_Type').combobox('getValue')
-                    + "&txtCancer_Type_Abbr=" + $('#txtCancer_Type_Abbr').combobox('getValue')
-                    + "&txtSubtype1=" + $('#txtSubtype1').combobox('getValue')
-                    + "&txtSubtype2=" + $('#txtSubtype2').combobox('getValue')
-                    + "&txtModel_ID=" + $("#txtModel_ID").val()
-                    + "&txtProject=" + $('#txtProject').combobox('getValue')
-                    + "&txtLocation=" + $('#txtLocation').combobox('getValue')
-                    + "&txtOpreation=" + $('#txtOpreation').combobox('getValue')
-                    + "&txtRn=" + $("#txtRn").val()
-                    + "&txtPn=" + $("#txtPn").val()
-                    + "&txtDate_of_Passage_inoculation=" + $('#txtDate_of_Passage_inoculation').datebox('getValue')
-                    + "&txtAnimal_Strain=" + $('#txtAnimal_Strain').combobox('getValue')
-                    + "&txtAnimal_Sex=" + $('#txtAnimal_Sex').combobox('getValue')
-                    + "&txtCurrent_Animal_Ear_Tag=" + $('#txtCurrent_Animal_Ear_Tag').val()
-                    + "&txtAnimal_Quantity=" + $('#txtAnimal_Quantity').val()
-                    + "&txtPDX_growth_status=" + $('#txtPDX_growth_status').combobox('getValue')
-                    + "&txtDate_of_Passage_Termination=" + $('#txtDate_of_Passage_Termination').datebox('getValue')
-                    //+ "&txtSource_Hospital=" + $('#txtSource_Hospital').combobox('getValue')
-                    //+ "&txtPathology_info_available=" + $('#txtPathology_info_available').combobox('getValue')
-                    //+ "&txtDate_of_Pathology_info_Received=" + $('#txtDate_of_Pathology_info_Received').datebox('getValue')
-                    //+ "&txtPatient_No=" + $('#txtPatient_No').val()
-                    //+ "&txtPatient_Name=" + $('#txtPatient_Name').val()
-                    //+ "&txtPatient_Age=" + $('#txtPatient_Age').val()
-                    //+ "&txtPatient_Sex=" + $('#txtPatient_Sex').val()
-                    //+ "&txtPatient_Pathology_info_Qced=" + $('#txtPatient_Pathology_info_Qced').combobox('getValue')
-                    + "&txtComments=" + $('#txtComments').val()
-                    + "&txtAnimal_Room_Number=" + $('#txtAnimal_Room_Number').val()
-                    + "&txtModel_Tumor_Characteristics=" + $('#txtModel_Tumor_Characteristics').val()
-                ,
-
-                success: function (msg) {
-                    if (msg == "" || msg == "Send successfully.") {
-                        $.messager.alert("info", "Save successfully.", "info", null);
-                        $("#dgNewModel").datagrid('reload');
-                        $("#Reset1").click();
-                        $('#hfStudy').val("-1");
-                        $('#hfNewModel_ID').val("-1");
-                        AddNew_model();
-                    }
-                    else {
-                        $.messager.alert("info", msg, "info", null);
-                    }
+                        success: function (msg) {
+                            if (msg == "" || msg == "Send successfully.") {
+                                $.messager.alert("info", "Save successfully.", "info", null);
+                                $("#dgNewModel").datagrid('reload');
+                                $("#Reset1").click();
+                                $('#hfStudy').val("-1");
+                                $('#hfNewModel_ID').val("-1");
+                                AddNew_model();
+                            }
+                            else {
+                                $.messager.alert("info", msg, "info", null);
+                            }
+                        }
+                    });
                 }
             });
+            
         }
-
-
-
     }
 }
 
@@ -238,7 +239,71 @@ function htmlExport_old3() {
     btn.click();
 }
 
+var CheckIsRole_Edit = function (callback) {
+    var value;
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        async: false,
+        url: "Person.ashx?M=CheckIsRole_Edit&_modulepPge=Revival"
+    }).done(function (msg) {
+        if (msg.all) {
+            value = true;
+        }
+        else if (msg.cbsd && $('#txtLocation').val() != "SD") {
+            $.messager.alert("info", "Permission Denied", "info", null);
+            value = false;
+        }
+        else if (msg.cbnc && $('#txtLocation').val() != "NC") {
+            $.messager.alert("info", "Permission Denied", "info", null);
+            value = false;
+        }
+        else {
+            value = true;
+        }
+        callback(value);
+    });
+}
+
+var CheckIsRole_View = function () {
+    var result = null;
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        async: false, // 同步请求（不推荐，但可用）
+        url: "Person.ashx?M=CheckIsRole_View&_modulepPge=Revival"
+    }).done(function (msg) {
+        result = msg; // 把结果存到外层变量
+    });
+    return result; // ✅ 现在可以正确返回
+};
+
 function getdgNewModel() {
+    var msg = CheckIsRole_View(); // 同步获取权限信息
+
+    if (!msg) {
+        $.messager.alert("Error", "Failed to check permission.", "error");
+        return;
+    }
+
+    var locationVal = $('#s_Location').val(); // 默认用用户选的
+
+    // 根据权限强制设置 s_Location
+    if (msg.all === true) {
+        locationVal = $('#s_Location').val();
+    }
+    else if (msg.cbnc === true) {
+        locationVal = "NC";
+    }
+    else if (msg.cbsd === true) {
+        locationVal = "SD";
+    }
+    else if (msg.cbsg === true) {
+        locationVal = "SG";
+    }
+    else {
+        locationVal = "NA"; // 没有权限查看任何数据
+    }
 
     var params = {
         model_id: $('#searchModelID').val()
@@ -246,7 +311,8 @@ function getdgNewModel() {
         , S_Subtype1: $('#S_Subtype1').val()
         , S_Subtype2: $('#S_Subtype2').val()
         , S_Project: $('#S_Project').val()
-        , S_Location: $('#S_Location').val()
+        //, S_Location: $('#S_Location').val()
+        , s_Location: locationVal
         , S_Rn: $('#S_Rn').val()
         , S_Pn: $('#S_Pn').val()
         , S_Date_of_Passage_inoculation: $('#S_Date_of_Passage_inoculation').datebox('getValue')
@@ -522,18 +588,22 @@ function deleteNewModel() {
     var rows = $('#dgNewModel').datagrid('getChecked');
     if (rows.length > 0) {
         if (confirm('Are you confirm this?')) {
-            $.ajax({
-                type: "POST",
-                dataType: "text",
-                url: "Person.ashx?M=deleteNewModel",
-                data: "delNewModel_ID=" + rows[0].NewModel_ID,
-                success: function (msg) {
-                    if (msg != "") {
-                        $.messager.alert("info", msg, "info", null);
-                        $("#dgNewModel").datagrid('load');
-                        getdgAnimalInfo_NewModel(-1);
-                        AddNew_model();
-                    }
+            CheckIsRole_Edit(function (callback) {
+                if (callback) {
+                    $.ajax({
+                        type: "POST",
+                        dataType: "text",
+                        url: "Person.ashx?M=deleteNewModel",
+                        data: "delNewModel_ID=" + rows[0].NewModel_ID,
+                        success: function (msg) {
+                            if (msg != "") {
+                                $.messager.alert("info", msg, "info", null);
+                                $("#dgNewModel").datagrid('load');
+                                getdgAnimalInfo_NewModel(-1);
+                                AddNew_model();
+                            }
+                        }
+                    });
                 }
             });
         }

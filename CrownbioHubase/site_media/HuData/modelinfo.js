@@ -463,6 +463,11 @@ var Check = function () {
             return false;
         }
         else {
+            //CheckIsRole_Edit(function (callback) {
+            //    if (callback) {
+            //        save();
+            //    }
+            //});
             save();
         }
     }
@@ -529,6 +534,19 @@ var save = function () {
         }
     });
 } 
+
+var CheckIsRole_View = function () {
+    var result = null;
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        async: false, // 同步请求（不推荐，但可用）
+        url: "Person.ashx?M=CheckIsRole_View&_modulepPge=Revival"
+    }).done(function (msg) {
+        result = msg; // 把结果存到外层变量
+    });
+    return result; // ✅ 现在可以正确返回
+};
 
 var CheckIsRole_Edit = function (callback) {
     var value;

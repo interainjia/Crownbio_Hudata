@@ -66,6 +66,18 @@ var CheckIsRole_Edit = function (callback) {
     });
 }
 
+var CheckIsRole_View = function () {
+    var result = null;
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        async: false, // 同步请求（不推荐，但可用）
+        url: "Person.ashx?M=CheckIsRole_View&_modulepPge=Revival"
+    }).done(function (msg) {
+        result = msg; // 把结果存到外层变量
+    });
+    return result; // ✅ 现在可以正确返回
+};
 
 /***
 * 对 特殊字符进行重新编码(转义)
@@ -147,11 +159,37 @@ var Check = function () {
 
 
 function getdgRevival() {
+    var msg = CheckIsRole_View(); // 同步获取权限信息
+
+    if (!msg) {
+        $.messager.alert("Error", "Failed to check permission.", "error");
+        return;
+    }
+
+    var locationVal = $('#s_Location').val(); // 默认用用户选的
+
+    // 根据权限强制设置 s_Location
+    if (msg.all === true) {
+        locationVal = $('#s_Location').val();
+    }
+    else if (msg.cbnc === true) {
+        locationVal = "NC";
+    }
+    else if (msg.cbsd === true) {
+        locationVal = "SD";
+    }
+    else if (msg.cbsg === true) {
+        locationVal = "SG";
+    }
+    else {
+        locationVal = "NA"; // 没有权限查看任何数据
+    }
 
     var params = {
         S_Sq: $('#S_Sq').val()
         , S_ModelID: $('#S_ModelID').val()
-        , s_Location: $('#s_Location').val()
+        //, s_Location: $('#s_Location').val()
+        , s_Location: locationVal
         , s_Rn: $('#s_Rn').val()
         , s_Pn: $('#s_Pn').val()
         , s_Animal_Strain: $('#s_Animal_Strain').val()

@@ -519,6 +519,9 @@ var CheckIsRole_Edit = function (callback) {
         if (msg.all) {
             value = true;
         }
+        else if (msg.pm) {
+            value = true;
+        }
         else if (msg.cbsd && $('#hfSub-Project').val() == -1 && $('#txtProjectNumber').val().indexOf("-SD") == -1) {
             $.messager.alert("info", "Permission Denied", "info", null);
             value = false;

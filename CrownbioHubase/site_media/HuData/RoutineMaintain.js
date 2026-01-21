@@ -256,6 +256,18 @@ var CheckIsRole_Edit = function (callback) {
     });
 }
 
+var CheckIsRole_View = function () {
+    var result = null;
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        async: false, // 同步请求（不推荐，但可用）
+        url: "Person.ashx?M=CheckIsRole_View&_modulepPge=Revival"
+    }).done(function (msg) {
+        result = msg; // 把结果存到外层变量
+    });
+    return result; // ✅ 现在可以正确返回
+};
 
 function htmlExport_old3() {
     var btn = document.getElementById('btnExport3');
@@ -263,6 +275,31 @@ function htmlExport_old3() {
 }
 
 function getdgRoutineMaintain() {
+    var msg = CheckIsRole_View(); // 同步获取权限信息
+
+    if (!msg) {
+        $.messager.alert("Error", "Failed to check permission.", "error");
+        return;
+    }
+
+    var locationVal = $('#s_Location').val(); // 默认用用户选的
+
+    // 根据权限强制设置 s_Location
+    if (msg.all === true) {
+        locationVal = $('#s_Location').val();
+    }
+    else if (msg.cbnc === true) {
+        locationVal = "NC";
+    }
+    else if (msg.cbsd === true) {
+        locationVal = "SD";
+    }
+    else if (msg.cbsg === true) {
+        locationVal = "SG";
+    }
+    else {
+        locationVal = "NA"; // 没有权限查看任何数据
+    }
 
     var params = {
         model_id: $('#searchModelID').val()
@@ -270,7 +307,8 @@ function getdgRoutineMaintain() {
         , S_Subtype1: $('#S_Subtype1').val()
         , S_Subtype2: $('#S_Subtype2').val()
         , S_Project: $('#S_Project').val()
-        , S_Location: $('#S_Location').val()
+        //, S_Location: $('#S_Location').val()
+        , s_Location: locationVal
         , S_Rn: $('#S_Rn').val()
         , S_Pn: $('#S_Pn').val()
         , S_Date_of_Passage_inoculation: $('#S_Date_of_Passage_inoculation').datebox('getValue')
