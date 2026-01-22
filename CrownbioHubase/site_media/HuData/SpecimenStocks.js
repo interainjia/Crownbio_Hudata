@@ -416,7 +416,7 @@ var CheckIsRole_View = function () {
         type: "POST",
         dataType: "json",
         async: false, // 同步请求（不推荐，但可用）
-        url: "Person.ashx?M=CheckIsRole_View&_modulepPge=Revival"
+        url: "Person.ashx?M=CheckIsRole_View&_modulepPge=SpecimenStocks"
     }).done(function (msg) {
         result = msg; // 把结果存到外层变量
     });

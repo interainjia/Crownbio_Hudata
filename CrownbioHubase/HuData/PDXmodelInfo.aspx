@@ -18,7 +18,7 @@
     <script type="text/javascript" src="../Common/css/persontree.js"></script>
     <link rel="stylesheet" type="text/css" href="../Common/easyui-1.3.2/themes/bootstrap/easyui.css" />
     <link rel="stylesheet" type="text/css" href="../Common/easyui-1.3.2/themes/icon.css" />
-    <script type="text/javascript" src="/site_media/HuData/modelinfo.js?v=8.4"></script>
+    <script type="text/javascript" src="/site_media/HuData/modelinfo.js?v=8.5"></script>
     <script type="text/javascript" src="/site_media/HuData/export.js"></script>
     <script type="text/javascript" src="../Common/fancyBox/source/jquery.fancybox.js?v=2.1.4"></script>
     <link rel="stylesheet" type="text/css" href="../Common/fancyBox/source/jquery.fancybox.css?v=2.1.4"

@@ -239,7 +239,7 @@ var CheckIsRole_Edit = function (callback) {
         type: "POST",
         dataType: "json",
         async: false,
-        url: "Person.ashx?M=CheckIsRole_Edit&_modulepPge=Revival"
+        url: "Person.ashx?M=CheckIsRole_Edit&_modulepPge=Validation"
     }).done(function (msg) {
         if (msg.all) {
             value = true;
@@ -265,7 +265,7 @@ var CheckIsRole_View = function () {
         type: "POST",
         dataType: "json",
         async: false, // 同步请求（不推荐，但可用）
-        url: "Person.ashx?M=CheckIsRole_View&_modulepPge=Revival"
+        url: "Person.ashx?M=CheckIsRole_View&_modulepPge=Validation"
     }).done(function (msg) {
         result = msg; // 把结果存到外层变量
     });
