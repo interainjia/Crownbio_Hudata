@@ -282,11 +282,11 @@ function getdgRoutineMaintain() {
         return;
     }
 
-    var locationVal = $('#s_Location').val(); // 默认用用户选的
+    var locationVal = $('#S_Location').val(); // 默认用用户选的
 
-    // 根据权限强制设置 s_Location
+    // 根据权限强制设置 S_Location
     if (msg.all === true) {
-        locationVal = $('#s_Location').val();
+        locationVal = $('#S_Location').val();
     }
     else if (msg.cbnc === true) {
         locationVal = "NC";
@@ -308,7 +308,7 @@ function getdgRoutineMaintain() {
         , S_Subtype2: $('#S_Subtype2').val()
         , S_Project: $('#S_Project').val()
         //, S_Location: $('#S_Location').val()
-        , s_Location: locationVal
+        , S_Location: locationVal
         , S_Rn: $('#S_Rn').val()
         , S_Pn: $('#S_Pn').val()
         , S_Date_of_Passage_inoculation: $('#S_Date_of_Passage_inoculation').datebox('getValue')
@@ -344,14 +344,14 @@ function bindGrid() {
     var locationVal = "NA";
 
     if (msg) {
-        if (msg.all === true) locationVal = $('#s_Location').val();
+        if (msg.all === true) locationVal = $('#S_Location').val();
         else if (msg.cbnc === true) locationVal = "NC";
         else if (msg.cbsd === true) locationVal = "SD";
         else if (msg.cbsg === true) locationVal = "SG";
     }
 
     var params = {
-        s_Location: locationVal // 传入处理后的位置权限
+        S_Location: locationVal // 传入处理后的位置权限
     };
 
     $('#dgRoutineMaintain').datagrid({

@@ -298,7 +298,7 @@
                     <div id="divMoreSearch" class="easyui-accordion">
                         <div id="MoreSearch" title="Advancad Search" style="overflow: auto;">
                             Location:
-                        <input id="s_Location" name="s_Location" type="text" />
+                        <input id="S_Location" name="S_Location" type="text" />
                             Rn：
                         <input id="s_Rn" name="s_Rn" type="text" />
                             Pn：

@@ -3699,12 +3699,12 @@ namespace PDXmodelBase.HuData
                     Clause += string.Format("AND ({0}.{1} like '{2}')", REVIVAL.TABLE_NAME, column, "%" + context.Request["S_Sq"].ToString() + "%");
                 }
             }
-            if (context.Request["s_Location"] != null)
+            if (context.Request["S_Location"] != null)
             {
-                if (context.Request["s_Location"].ToString() != "")
+                if (context.Request["S_Location"].ToString() != "")
                 {
                     column = REVIVAL.LOCATION_FIELD;
-                    Clause += string.Format("AND ({0}.{1} = '{2}')", REVIVAL.TABLE_NAME, column, context.Request["s_Location"].ToString());
+                    Clause += string.Format("AND ({0}.{1} = '{2}')", REVIVAL.TABLE_NAME, column, context.Request["S_Location"].ToString());
                 }
             }
             if (context.Request["s_Rn"] != null)
@@ -3770,7 +3770,7 @@ namespace PDXmodelBase.HuData
                 if (context.Request["s_Source"].ToString() != "")
                 {
                     column = GENETICTEST.SOURCE_FIELD;
-                    Clause += string.Format("AND ({0}.{1} = '{2}')", GENETICTEST.TABLE_NAME, column, context.Request["s_Location"].ToString());
+                    Clause += string.Format("AND ({0}.{1} = '{2}')", GENETICTEST.TABLE_NAME, column, context.Request["S_Location"].ToString());
                 }
             }
             if (context.Request["s_RNAseq"] != null)

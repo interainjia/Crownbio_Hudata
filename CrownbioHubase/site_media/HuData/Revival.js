@@ -166,11 +166,11 @@ function getdgRevival() {
         return;
     }
 
-    var locationVal = $('#s_Location').val(); // 默认用用户选的
+    var locationVal = $('#S_Location').val(); // 默认用用户选的
 
-    // 根据权限强制设置 s_Location
+    // 根据权限强制设置 S_Location
     if (msg.all === true) {
-        locationVal = $('#s_Location').val();
+        locationVal = $('#S_Location').val();
     }
     else if (msg.cbnc === true) {
         locationVal = "NC";
@@ -188,8 +188,8 @@ function getdgRevival() {
     var params = {
         S_Sq: $('#S_Sq').val()
         , S_ModelID: $('#S_ModelID').val()
-        //, s_Location: $('#s_Location').val()
-        , s_Location: locationVal
+        //, S_Location: $('#S_Location').val()
+        , S_Location: locationVal
         , s_Rn: $('#s_Rn').val()
         , s_Pn: $('#s_Pn').val()
         , s_Animal_Strain: $('#s_Animal_Strain').val()
@@ -213,14 +213,14 @@ function bindGrid() {
     var locationVal = "NA";
 
     if (msg) {
-        if (msg.all === true) locationVal = $('#s_Location').val();
+        if (msg.all === true) locationVal = $('#S_Location').val();
         else if (msg.cbnc === true) locationVal = "NC";
         else if (msg.cbsd === true) locationVal = "SD";
         else if (msg.cbsg === true) locationVal = "SG";
     }
 
     var params = {
-        s_Location: locationVal // 传入处理后的位置权限
+        S_Location: locationVal // 传入处理后的位置权限
     };
 
     $('#dgRevival').datagrid({

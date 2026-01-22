@@ -145,7 +145,7 @@ function getdgSpecimenStocks() {
 
     var locationVal = $('#txtRegion').val(); // 默认用用户选的
 
-    // 根据权限强制设置 s_Location
+    // 根据权限强制设置 S_Location
     if (msg.all === true) {
         locationVal = $('#txtRegion').val();
     }
