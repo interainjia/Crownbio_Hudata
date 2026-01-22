@@ -27,29 +27,24 @@ namespace PDXmodelBase.HuData
                     Response.Write(" <script language='javascript'>top.location.href='../ErrorMsg.aspx?LoginType=1'</script>");
                     return;
                 }
-                bool havePerm = ojbReportRule.GetUserFunctions(userLogin.Permission, "Revival", "view");
+                //bool havePerm = ojbReportRule.GetUserFunctions(userLogin.Permission, "Revival", "view");
+                bool havePerm = ojbReportRule.GetUserFunctions2(userLogin.Permission, "Revival", AppConfig.UserViewRightList);
                 if (!havePerm)
                 {
                     Response.Write(" <script language='javascript'>location.href='../Error.aspx?LoginType=2'</script>");
                     return;
                 }
 
-                bool havePerm3 = ojbReportRule.GetUserFunctions(userLogin.Permission, "Revival", "edit");
+                //bool havePerm3 = ojbReportRule.GetUserFunctions(userLogin.Permission, "Revival", "edit");
+                bool havePerm3 = ojbReportRule.GetUserFunctions2(userLogin.Permission, "Revival", AppConfig.UserEditRightList);
                 if (!havePerm3)
                 {
                     ScriptManager.RegisterStartupScript(UpdatePanel1, this.GetType(), "key2", "$('#divRevivalImport').css('display','none');document.getElementById('btndelete').style.display = 'none'; ", true);
                 }
                 else
                 {
-                    bool havePerm4 = ojbReportRule.GetUserFunctions(userLogin.Permission, "Revival", "CBNC edit only");
-                    if (!havePerm4)
-                    {
-                        ScriptManager.RegisterStartupScript(UpdatePanel1, this.GetType(), "key2", "$('#divRevivalImport').css('display','none');document.getElementById('btndelete').style.display = 'none'; ", true);
-                    }
-                    else {
-                        ScriptManager.RegisterStartupScript(UpdatePanel1, this.GetType(), "key2", "$('#divRevivalImport').css('display','block');document.getElementById('btndelete').style.display = 'inline-block'; ", true);
-                        btnImport += " <a href=\"javascript:void(); \" class=\"easyui-linkbutton\" iconcls=\"icon-search\" onclick='Import();'>Import</a>";
-                    }
+                    ScriptManager.RegisterStartupScript(UpdatePanel1, this.GetType(), "key2", "$('#divRevivalImport').css('display','block');document.getElementById('btndelete').style.display = 'inline-block'; ", true);
+                    btnImport += " <a href=\"javascript:void(); \" class=\"easyui-linkbutton\" iconcls=\"icon-search\" onclick='Import();'>Import</a>";
                 }
 
             }

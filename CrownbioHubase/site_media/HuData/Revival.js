@@ -208,8 +208,24 @@ function AddNew_model() {
 }
 
 function bindGrid() {
+    // 1. 先获取你之前定义的参数对象
+    var msg = CheckIsRole_View();
+    var locationVal = "NA";
+
+    if (msg) {
+        if (msg.all === true) locationVal = $('#s_Location').val();
+        else if (msg.cbnc === true) locationVal = "NC";
+        else if (msg.cbsd === true) locationVal = "SD";
+        else if (msg.cbsg === true) locationVal = "SG";
+    }
+
+    var params = {
+        s_Location: locationVal // 传入处理后的位置权限
+    };
+
     $('#dgRevival').datagrid({
         url: 'Getdatagrid.ashx?M=getdgRevival',
+        queryParams: params,
         iconCls: 'icon-export',
         width: 'auto',
         height: 'auto',

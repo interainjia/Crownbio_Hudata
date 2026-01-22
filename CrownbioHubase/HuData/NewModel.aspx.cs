@@ -10,12 +10,18 @@ using Crownbio.Common;
 using Crownbio.Utility;
 using System.Data;
 using System.Data.SqlClient;
+using System.Configuration;
 
 namespace PDXmodelBase.HuData
 {
     public partial class NewModel : System.Web.UI.Page
     {
         ObjectBLL bll = new ObjectBLL();
+        // 获取 UserViewRight 的值
+        string viewRight = ConfigurationManager.AppSettings["UserViewRight"];
+
+        // 获取 UserEditRight 的值
+        string editRight = ConfigurationManager.AppSettings["UserEditRight"];
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -26,14 +32,16 @@ namespace PDXmodelBase.HuData
                     Response.Write(" <script language='javascript'>top.location.href='../ErrorMsg.aspx?LoginType=1'</script>");
                     return;
                 }
-                bool havePerm = ojbReportRule.GetUserFunctions(userLogin.Permission, "NewModel", "view");
+                //bool havePerm = ojbReportRule.GetUserFunctions(userLogin.Permission, "NewModel", "view");
+                bool havePerm = ojbReportRule.GetUserFunctions2(userLogin.Permission, "NewModel", AppConfig.UserViewRightList);
                 if (!havePerm)
                 {
                     Response.Write(" <script language='javascript'>location.href='../Error.aspx?LoginType=2'</script>");
                     return;
                 }
 
-                bool havePerm3 = ojbReportRule.GetUserFunctions(userLogin.Permission, "NewModel", "edit");
+                //bool havePerm3 = ojbReportRule.GetUserFunctions(userLogin.Permission, "NewModel", "edit");
+                bool havePerm3 = ojbReportRule.GetUserFunctions2(userLogin.Permission, "NewModel", AppConfig.UserEditRightList);
                 if (!havePerm3)
                 {
                     ScriptManager.RegisterStartupScript(UpdatePanel1, this.GetType(), "key2", "$('#divNewModelImport').css('display','none');document.getElementById('btndelete').style.display = 'none'; ", true);

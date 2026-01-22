@@ -26,13 +26,15 @@ namespace PDXmodelBase.HuData
                     Response.Write(" <script language='javascript'>top.location.href='../ErrorMsg.aspx?LoginType=1'</script>");
                     return;
                 }
-                bool havePerm = ojbReportRule.GetUserFunctions(userLogin.Permission, "SpecimenStocks", "view");
+                //bool havePerm = ojbReportRule.GetUserFunctions(userLogin.Permission, "SpecimenStocks", "view");
+                bool havePerm = ojbReportRule.GetUserFunctions2(userLogin.Permission, "SpecimenStocks", AppConfig.UserViewRightList);
                 if (!havePerm)
                 {
                     Response.Write(" <script language='javascript'>location.href='../Error.aspx?LoginType=2'</script>");
                     return;
                 }
-                bool havePerm3 = ojbReportRule.GetUserFunctions(userLogin.Permission, "SpecimenStocks", "edit");
+                //bool havePerm3 = ojbReportRule.GetUserFunctions(userLogin.Permission, "SpecimenStocks", "edit");
+                bool havePerm3 = ojbReportRule.GetUserFunctions2(userLogin.Permission, "SpecimenStocks", AppConfig.UserEditRightList);
                 if (!havePerm3)
                 {
                     ScriptManager.RegisterStartupScript(UpdatePanel1, this.GetType(), "key2", "$('#divStocksImport').css('display','none');document.getElementById('btndelete').style.display = 'none'; ", true);

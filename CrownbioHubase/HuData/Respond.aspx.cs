@@ -25,7 +25,8 @@ namespace PDXmodelBase.HuData
                     Response.Write(" <script language='javascript'>top.location.href='../ErrorMsg.aspx?LoginType=1'</script>");
                     return;
                 }
-                bool havePerm = ojbReportRule.GetUserFunctions(userLogin.Permission, "Respond", "view");
+                //bool havePerm = ojbReportRule.GetUserFunctions(userLogin.Permission, "Respond", "view");
+                bool havePerm = ojbReportRule.GetUserFunctions2(userLogin.Permission, "Respond", AppConfig.UserViewRightList);
                 if (!havePerm)
                 {
                     Response.Write(" <script language='javascript'>location.href='../Error.aspx?LoginType=2'</script>");

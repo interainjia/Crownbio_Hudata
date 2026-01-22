@@ -81,6 +81,7 @@
       <HintPath>bin\OpenFlashChart.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
@@ -2520,6 +2521,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="CommonClass\AppConfig.cs" />
     <Compile Include="HudataController.cs" />
     <Compile Include="HuData\ChangeUsers.aspx.cs">
       <DependentUpon>ChangeUsers.aspx</DependentUpon>
@@ -2896,7 +2898,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BLLRemote\BLL.csproj">
-      <Project>{7E819ECD-3E88-41AF-BEF6-CAEC4D9DDBB3}</Project>
+      <Project>{7e819ecd-3e88-41af-bef6-caec4d9ddbb3}</Project>
       <Name>BLL</Name>
     </ProjectReference>
     <ProjectReference Include="..\Common\Common.csproj">

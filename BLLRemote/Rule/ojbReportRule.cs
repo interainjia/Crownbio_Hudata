@@ -581,8 +581,25 @@ namespace Crownbio.BLL
             return _dealPerm;
         }
 
-    
-       
+        public static bool GetUserFunctions2(PermCollection perm, string fname, List<string> Operates)
+        {
+            ObjectBLL bll = new ObjectBLL();
+            bool _dealPerm = false;
+            foreach (string op in Operates)
+            {
+                BaseList dataf = bll.Select(queryF(fname, op), typeof(HUBASE_FUNCTION));
+                if (dataf.Count > 0)
+                {
+                    if (perm.Find(dataf[0].ID.ToString()) != null)
+                    {
+                        _dealPerm = true;
+                        break;
+                    }
+                }
+            }
+            return _dealPerm;
+        }
+
         private static ParamCollection queryF(string fname, string Operat)
         {
             ParamCollection paraList = new ParamCollection();
@@ -600,7 +617,7 @@ namespace Crownbio.BLL
             paraList.Clause = Clause;
             return paraList;
         }
-       
+
         #endregion
 
 

@@ -43,7 +43,8 @@ namespace PDXmodelBase.HuData
                 }
                 else
                 {
-                    bool havePerm = ojbReportRule.GetUserFunctions(userLogin.Permission, "DataImport", "view");
+                    //bool havePerm = ojbReportRule.GetUserFunctions(userLogin.Permission, "DataImport", "view");
+                    bool havePerm = ojbReportRule.GetUserFunctions2(userLogin.Permission, "DataImport", AppConfig.UserViewRightList);
                     if (havePerm)
                     {
                         IsUsers = "<li><a id=\"Users\" href=\"javascript:void(0);\" onclick=\"addTab('System Management','SysManagement.aspx')\">Admin</a></li>";

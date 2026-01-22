@@ -3446,24 +3446,33 @@ namespace PDXmodelBase.HuData
             }
            
             SYS_USER userLogin = CacheHelper.getCurrentUser();
-            bool havePerm = ojbReportRule.GetUserFunctions(userLogin.Permission, "SpecimenStocks", "CBSD view only");
-            if (havePerm)
+            bool havePerm0 = ojbReportRule.GetUserFunctions(userLogin.Permission, "SpecimenStocks", "view");
+            if (!havePerm0)
             {
-                column = SPECIMEN_STOCK.REGION_FIELD;
-                Clause += string.Format("AND ({0}.{1} = 'CBSD')", SPECIMEN_STOCK.TABLE_NAME, column);
+                bool havePerm = ojbReportRule.GetUserFunctions(userLogin.Permission, "SpecimenStocks", "CBSD view only");
+                if (havePerm)
+                {
+                    column = SPECIMEN_STOCK.REGION_FIELD;
+                    Clause += string.Format("AND ({0}.{1} = 'CBSD')", SPECIMEN_STOCK.TABLE_NAME, column);
+                }
+                else {
+                    bool havePerm2 = ojbReportRule.GetUserFunctions(userLogin.Permission, "SpecimenStocks", "CBSG view only");
+                    if (havePerm2)
+                    {
+                        column = SPECIMEN_STOCK.REGION_FIELD;
+                        Clause += string.Format("AND ({0}.{1} = 'CBSG')", SPECIMEN_STOCK.TABLE_NAME, column);
+                    }
+                    else {
+                        bool havePerm3 = ojbReportRule.GetUserFunctions(userLogin.Permission, "SpecimenStocks", "CBNC view only");
+                        if (havePerm3)
+                        {
+                            column = SPECIMEN_STOCK.REGION_FIELD;
+                            Clause += string.Format("AND ({0}.{1} = 'CBNC')", SPECIMEN_STOCK.TABLE_NAME, column);
+                        }
+                    }
+                }
             }
-            bool havePerm2 = ojbReportRule.GetUserFunctions(userLogin.Permission, "SpecimenStocks", "CBSG view only");
-            if (havePerm2)
-            {
-                column = SPECIMEN_STOCK.REGION_FIELD;
-                Clause += string.Format("AND ({0}.{1} = 'CBSG')", SPECIMEN_STOCK.TABLE_NAME, column);
-            }
-            bool havePerm3 = ojbReportRule.GetUserFunctions(userLogin.Permission, "SpecimenStocks", "CBNC view only");
-            if (havePerm3)
-            {
-                column = SPECIMEN_STOCK.REGION_FIELD;
-                Clause += string.Format("AND ({0}.{1} = 'CBNC')", SPECIMEN_STOCK.TABLE_NAME, column);
-            }
+            
             if (context.Request["S_Region"] != null)
             {
                 if (context.Request["S_Region"].ToString() != "")
