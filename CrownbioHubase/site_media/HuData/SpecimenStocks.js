@@ -143,11 +143,11 @@ function getdgSpecimenStocks() {
         return;
     }
 
-    var locationVal = $('#txtRegion').val(); // 默认用用户选的
+    var locationVal = $('#S_Region').val(); // 默认用用户选的
 
     // 根据权限强制设置 S_Location
     if (msg.all === true) {
-        locationVal = $('#txtRegion').val();
+        locationVal = $('#S_Region').val();
     }
     else if (msg.cbnc === true) {
         locationVal = "CBNC";
@@ -180,8 +180,24 @@ function getdgSpecimenStocks() {
 }
 
 function bindGrid() {
+    // 1. 先获取你之前定义的参数对象
+    var msg = CheckIsRole_View();
+    var locationVal = "NA";
+
+    if (msg) {
+        if (msg.all === true) locationVal = $('#S_Region').val();
+        else if (msg.cbnc === true) locationVal = "CBNC";
+        else if (msg.cbsd === true) locationVal = "CBSD";
+        else if (msg.cbsg === true) locationVal = "CBSG";
+    }
+
+    var params = {
+        S_Location: locationVal // 传入处理后的位置权限
+    };
+
     $('#dgSpecimenStocks').datagrid({
         url: 'Getdatagrid.ashx?M=getdgTissueStock',
+        queryParams: params,
         iconCls: 'icon-export',
         width: 'auto',
         height: 'auto',
