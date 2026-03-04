@@ -19,7 +19,7 @@
     <script type="text/javascript" src="../Common/css/persontree.js"></script>
     <link rel="stylesheet" type="text/css" href="../Common/easyui-1.3.2/themes/bootstrap/easyui.css" />
     <link rel="stylesheet" type="text/css" href="../Common/easyui-1.3.2/themes/icon.css" />
-    <script type="text/javascript" src="/site_media/HuData/TissueWithdraw.js"></script>
+    <script type="text/javascript" src="/site_media/HuData/TissueWithdraw.js?v=1.0.1"></script>
     <script type="text/javascript" src="/site_media/HuData/export.js"></script>
     <script type="text/javascript" src="../Common/fancyBox/source/jquery.fancybox.js?v=2.1.4"></script>
     <link rel="stylesheet" type="text/css" href="../Common/fancyBox/source/jquery.fancybox.css?v=2.1.4"
@@ -73,8 +73,8 @@
                 Model ID:
                 <input id="searchModel_ID" name="searchModel_ID" type="text" />
                 Date of Withdraw:
-                 <input id="S_Date_of_Withdraw"  name="S_Date_of_Withdraw"  class="easyui-datebox" data-options="formatter:myformatter"
-                                        />
+                 <input id="S_Date_of_Withdraw"  name="S_Date_of_Withdraw"  class="easyui-datebox" data-options="formatter:myformatter" />
+                Site of Tissue Collection:<input id="S_Site_of_Tissue_Collection" type="text" name="S_Site_of_Tissue_Collection" />
                 <a href="javascript:void();" class="easyui-linkbutton" iconcls="icon-search" onclick="getdgTissueWithdraw();">
                     Search</a> <a id="aExport1" class="easyui-linkbutton" href="javascript:void();" iconcls="icon-save"
                         onclick="htmlExport_old();">Export</a>
@@ -104,8 +104,8 @@
                 <input id="searchProjectNumber2" name="searchProjectNumber2" type="text" />
                 Model ID:
                 <input id="searchModel_ID2" name="searchModel_ID2" type="text" />
-                 Date of Withdraw:<input id="S_Date_of_Withdraw2"  name="S_Date_of_Withdraw2"  class="easyui-datebox" data-options="formatter:myformatter"
-                                        />
+                 Date of Withdraw:<input id="S_Date_of_Withdraw2"  name="S_Date_of_Withdraw2"  class="easyui-datebox" data-options="formatter:myformatter" />
+                Site of Tissue Collection:<input id="S_Site_of_Tissue_Collection2" type="text" name="S_Site_of_Tissue_Collection2" />
                 <a href="javascript:void();" class="easyui-linkbutton" iconcls="icon-search" onclick="getdgTissueWithdraw_Completed();">
                     Search</a> <a id="a1" class="easyui-linkbutton" href="javascript:void();" iconcls="icon-save" onclick="htmlExport_old2();">
                         Export</a>

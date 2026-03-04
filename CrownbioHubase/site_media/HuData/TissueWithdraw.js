@@ -12,6 +12,7 @@ function getdgTissueWithdraw() {
     var params = { model_id: $('#searchModel_ID').val()
      , searchProjectNumber: $('#searchProjectNumber').val()
      , S_Date_of_Withdraw: $('#S_Date_of_Withdraw').datebox('getValue')
+     , S_Site_of_Tissue_Collection: $('#S_Site_of_Tissue_Collection').val()
     };
     $("#dgTissueWithdraw").datagrid('load', params);
 }
@@ -80,7 +81,8 @@ function bindGrid() {
 function getdgTissueWithdraw_Completed() {
     var params = { model_id: $('#searchModel_ID2').val()
        , searchProjectNumber: $('#searchProjectNumber2').val()
-        , S_Date_of_Withdraw2: $('#S_Date_of_Withdraw2').datebox('getValue')
+       , S_Date_of_Withdraw2: $('#S_Date_of_Withdraw2').datebox('getValue')
+       , S_Site_of_Tissue_Collection2: $('#S_Site_of_Tissue_Collection2').val()
     };
     $("#dgTissueWithdraw_Completed").datagrid('load', params);
 }

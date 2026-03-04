@@ -4134,6 +4134,14 @@ namespace PDXmodelBase.HuData
                     Clause += string.Format("AND ({0}.{1} = '{2}')", TISSUE_WITHDRAW.TABLE_NAME, column, context.Request["S_Date_of_Withdraw"].ToString());
                 }
             }
+            if (context.Request["S_Site_of_Tissue_Collection"] != null)
+            {
+                if (context.Request["S_Site_of_Tissue_Collection"].ToString() != "")
+                {
+                    column = TISSUE_WITHDRAW.SITE_OF_TISSUE_COLLECTION_FIELD;
+                    Clause += string.Format("AND ({0}.{1} like '{2}')", TISSUE_WITHDRAW.TABLE_NAME, column, "%" + context.Request["S_Site_of_Tissue_Collection"].ToString() + "%");
+                }
+            }
             column = TISSUE_WITHDRAW.CONFIRM_FIELD;
             Clause += string.Format(" AND ({0}.{1} = 'No')", TISSUE_WITHDRAW.TABLE_NAME, column);
 
@@ -4169,6 +4177,14 @@ namespace PDXmodelBase.HuData
                 {
                     column = TISSUE_WITHDRAW.WITHDRAW_DATE_FIELD;
                     Clause += string.Format("AND ({0}.{1} = '{2}')", TISSUE_WITHDRAW.TABLE_NAME, column,  context.Request["S_Date_of_Withdraw2"].ToString());
+                }
+            }
+            if (context.Request["S_Site_of_Tissue_Collection2"] != null)
+            {
+                if (context.Request["S_Site_of_Tissue_Collection2"].ToString() != "")
+                {
+                    column = TISSUE_WITHDRAW.SITE_OF_TISSUE_COLLECTION_FIELD;
+                    Clause += string.Format("AND ({0}.{1} like '{2}')", TISSUE_WITHDRAW.TABLE_NAME, column, "%" + context.Request["S_Site_of_Tissue_Collection2"].ToString() + "%");
                 }
             }
             column = TISSUE_WITHDRAW.CONFIRM_FIELD;
