@@ -163,3 +163,4 @@ $RECYCLE.BIN/
 /CloudBagOffline/CloudBag.HermesControl
 /wwwroot/
 CrownbioHubase/ServerLog.txt
+**/uploaduser/*.csv

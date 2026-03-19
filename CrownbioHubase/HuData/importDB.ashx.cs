@@ -1163,9 +1163,11 @@ namespace PDXmodelBase.HuData
             DataTable importData = new DataTable();
             context.Session["temp_tissue"] = null;
             context.Session["temp_Withdraw"] = null;
+
+            // 添加数据列
             importData.Columns.Add("Specimen_Stock_ID");
             importData.Columns.Add("Model_ID");
-            importData.Columns.Add("Confirm"); 
+            importData.Columns.Add("Confirm");
             importData.Columns.Add("Rn");
             importData.Columns.Add("Pn");
             importData.Columns.Add("Date_of_Inoculation", typeof(DateTime));
@@ -1180,8 +1182,8 @@ namespace PDXmodelBase.HuData
             importData.Columns.Add("Well_ID");
             importData.Columns.Add("Export_Date", typeof(DateTime));
             importData.Columns.Add("Export_Project_Number");
-          
-            //importData.Columns.Add("have_animal"); 
+            //importData.Columns.Add("have_animal");
+
             string filePath = updateInfo2(context);
             try
             {
@@ -1190,62 +1192,94 @@ namespace PDXmodelBase.HuData
 
                 Cells cells = sheet.Cells;
 
-
                 BaseList animalInfo = bll.Select(typeof(ANIMAL_INFO));
                 List<ANIMAL_INFO> animals = animalInfo.ConvertAll<ANIMAL_INFO>(ANIMAL_INFO.Convert);
                 context.Session["temp_tissue"] = null;
+
                 for (int i = 0; i < cells.MaxDataRow + 1; i++)
                 {
                     if (cells[i, 0].StringValue != "Model ID")
                     {
                         #region 判断是否已出库
                         ParamCollection paralist = new ParamCollection();
-                        SqlParameter[] para = new SqlParameter[] { new SqlParameter("@Location_ID", cells[i, 11].StringValue.Replace("\t", "")), new SqlParameter("@Well_ID", cells[i, 12].StringValue) };
+                        SqlParameter[] para = new SqlParameter[] {
+                    new SqlParameter("@Location_ID", cells[i, 11].StringValue.Replace("\t", "")),
+                    new SqlParameter("@Well_ID", cells[i, 12].StringValue)
+                };
                         DataTable haveData = ojbReportRule.GetGrid("GetCheck_SpecimenStocks", para);
+
                         if (haveData.Rows.Count == 0)
                         {
-                            msg = "The well ID of " + i + "row is empty.";
-                            break;
+                            msg = "The well ID of row " + i + " is empty or not found.";
+                            break; // 没找到位置数据，直接跳出循环
                         }
                         #endregion
 
+                        bool isMatchFound = false; // 用于记录当前行是否成功找到了Model和Animal都匹配的数据
 
-                        DataRow newRow = importData.NewRow();
-                        newRow[0] = haveData.Rows[0]["Specimen_Stock_ID"].ToString();
-                        newRow[1] = cells[i, 0].StringValue;
-                        newRow[2] = "Yes";
-                        newRow[3] = cells[i, 1].StringValue;
-                        newRow[4] = cells[i, 2].StringValue;
-                        newRow[5] = cells[i, 3].StringValue == "" ? DateTime.MinValue : DateTime.Parse(cells[i, 3].StringValue);
-                        newRow[6] = cells[i, 4].StringValue;
-                        newRow[7] = cells[i, 5].StringValue;
-                        newRow[8] = cells[i, 6].StringValue == "" ? DateTime.MinValue : DateTime.Parse(cells[i, 6].StringValue);
-                        newRow[9] = cells[i, 7].StringValue;
-                        newRow[10] = cells[i, 8].StringValue;
-                        newRow[11] = cells[i, 9].StringValue;
-                        newRow[12] = cells[i, 10].StringValue;
-                        newRow[13] = cells[i, 11].StringValue.Replace("\t", "");
-                        newRow[14] = cells[i, 12].StringValue;
-                        newRow[15] = cells[i, 15].StringValue == "" ? DateTime.MinValue : DateTime.Parse(cells[i, 15].StringValue);
-                        newRow[16] = FormatHelper.doRemoveEmpty(cells[i, 16].StringValue);
+                        // 遍历 haveData 中的所有记录，比对 Model_ID 和 Animal_Number
+                        foreach (DataRow dbRow in haveData.Rows)
+                        {
+                            // 先去除首尾空格
+                            string dbModelId = dbRow["Model_ID"].ToString().Trim();
+                            string dbAnimalNum = dbRow["Animal_Number"].ToString().Trim();
+                            string excelModelId = cells[i, 0].StringValue.Trim();
+                            string excelAnimalNum = cells[i, 4].StringValue.Trim();
 
-                        importData.Rows.Add(newRow);
+                            // 使用 StringComparison.OrdinalIgnoreCase 进行高性能的忽略大小写对比
+                            if (string.Equals(dbModelId, excelModelId, StringComparison.OrdinalIgnoreCase) &&
+                                string.Equals(dbAnimalNum, excelAnimalNum, StringComparison.OrdinalIgnoreCase))
+                            {
+                                DataRow newRow = importData.NewRow();
+
+                                // 动态获取当前遍历到的数据库记录的 Specimen_Stock_ID
+                                newRow[0] = dbRow["Specimen_Stock_ID"].ToString();
+
+                                newRow[1] = cells[i, 0].StringValue;
+                                newRow[2] = "Yes";
+                                newRow[3] = cells[i, 1].StringValue;
+                                newRow[4] = cells[i, 2].StringValue;
+                                newRow[5] = cells[i, 3].StringValue == "" ? DateTime.MinValue : DateTime.Parse(cells[i, 3].StringValue);
+                                newRow[6] = cells[i, 4].StringValue;
+                                newRow[7] = cells[i, 5].StringValue;
+                                newRow[8] = cells[i, 6].StringValue == "" ? DateTime.MinValue : DateTime.Parse(cells[i, 6].StringValue);
+                                newRow[9] = cells[i, 7].StringValue;
+                                newRow[10] = cells[i, 8].StringValue;
+                                newRow[11] = cells[i, 9].StringValue;
+                                newRow[12] = cells[i, 10].StringValue;
+                                newRow[13] = cells[i, 11].StringValue.Replace("\t", "");
+                                newRow[14] = cells[i, 12].StringValue;
+                                newRow[15] = cells[i, 15].StringValue == "" ? DateTime.MinValue : DateTime.Parse(cells[i, 15].StringValue);
+                                newRow[16] = FormatHelper.doRemoveEmpty(cells[i, 16].StringValue);
+
+                                importData.Rows.Add(newRow);
+                                isMatchFound = true; // 标记找到了匹配项
+                            }
+                        }
+
+                        // 如果位置对了，但是 Model_ID 或 Animal_Number 没对上，给用户一个提示
+                        if (!isMatchFound)
+                        {
+                            msg = "Location found for row " + i + ", but Model ID or Animal Number mismatch.";
+                            break; // 中断循环，等待用户排查 Excel 数据
+                        }
                     }
                 }
-                context.Session["temp_Withdraw"] = importData;
-                if (importData.Rows.Count > 0)
-                { msg = "Import cache."; }
-             
-                
 
+                context.Session["temp_Withdraw"] = importData;
+
+                // 只有在没有报错信息（为空）且有导入数据的情况下，才提示成功
+                if (importData.Rows.Count > 0 && string.IsNullOrEmpty(msg))
+                {
+                    msg = "Import cache.";
+                }
 
                 context.Response.Write(msg);
             }
             catch (Exception ex)
             {
-                context.Response.Write(ex.Message);
+                context.Response.Write("Error: " + ex.Message);
             }
-
         }
 
         public void SpecimenStock(HttpContext context)
