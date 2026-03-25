@@ -1171,7 +1171,112 @@ namespace Crownbio.BLL
         }
 
 
+        /// <summary>
+        /// 处理用户登录
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        public SYS_USER LoginSSO(HttpContext context, string userName, string password)
+        {
+            BaseList userList = new BaseList();
+            bool isInAD = false;
+            #region not in AD
+            ParamCollection paraList = new ParamCollection();
+            paraList.Clause = "email ='" + userName + "' and (email not like '%@crownbio.com%' or email is null)";
+            userList = Select(paraList, typeof(SYS_USER));
+            if (userList.Count == 0)
+            {
+                paraList.Clause = "USER_CODE ='" + userName.Trim() + "' and (email not like '%crownbio%' or email is null)";
+                userList = Select(paraList, typeof(SYS_USER));
+            }
+            #endregion
 
+            if (userList.Count == 0)
+            {
+                //if (ActiveDirectoryConnector.IsUserLoggedIn(userName, DEncryptHelper.Decrypt(password)))
+                //{
+                    #region in AD
+                    if (userName.IndexOf("crownbio", StringComparison.CurrentCultureIgnoreCase) < 0)
+                    {
+                        userName = userName + "@crownbio.com";
+                    }
+                    ParamCollection paraList2 = new ParamCollection();
+                    paraList2.Clause = SYS_USER.EMAIL_FIELD + "='" + userName + "'";
+                    userList = Select(paraList2, typeof(SYS_USER));
+                    isInAD = true;
+                    #endregion
+                //}
+            }
+
+            SYS_USER userLogin = null;
+            if (userList.Count > 0)
+            {
+                userLogin = (SYS_USER)userList[0];
+                if (userLogin.IS_AVAILABLE == "N")
+                {
+                    userLogin = new SYS_USER();
+                    userLogin.ErrMsg = LanguageHelper.GetResourceText("USER_NOT_AVAILABLE");
+                    userLogin.IS_Login = false;
+                }
+                else if (!isInAD && DEncryptHelper.Decrypt(userLogin.USER_PWD) != DEncryptHelper.Decrypt(password))
+                {
+                    userLogin = new SYS_USER();
+                    userLogin.ErrMsg = LanguageHelper.GetResourceText("USER_PWD") + LanguageHelper.GetResourceText("Incorrect");
+                    userLogin.IS_Login = false;
+                }
+                else if ((userLogin.REMARK != null && userLogin.REMARK != "") && DateTime.Parse(userLogin.REMARK).AddDays(1) < System.DateTime.Now)
+                {
+                    userLogin = new SYS_USER();
+                    userLogin.ErrMsg = LanguageHelper.GetResourceText("USER_trial_expired");
+                    userLogin.IS_Login = false;
+                }
+                else
+                {
+                    bool sameIP = false;
+                    //if (userLogin.IS_ADMIN == "N" && userLogin.ROLE_TYPE =="03")
+                    //{
+                    //    BaseList bl = ObjectBLLHelper.getTypeDAL(typeof(SYS_USER_LOG)).Select(userName.Trim());
+                    //    if (bl.Count > 0)
+                    //    {
+                    //        SYS_USER_LOG ip = (SYS_USER_LOG)bl[0];
+                    //        if (context.Request.UserHostAddress != ip.IP)
+                    //        {
+                    //            userLogin = new SYS_USER();
+                    //            userLogin.ErrMsg = "You can only in the same IP next login";
+                    //            userLogin.IS_Login = false;
+                    //            sameIP = true;
+                    //        }
+                    //    }
+                    //}
+                    if (sameIP != true)
+                    {
+                        userLogin.IS_Login = true;
+                        userLogin.Token = Guid.NewGuid().ToString();
+                        userLogin.LoginTime = System.DateTime.Now;
+                        userLogin.ErrMsg = LanguageHelper.GetResourceText("Successful login");
+                        //ParamCollection _paramCollection = new ParamCollection();
+                        //_paramCollection.Clause = String.Format("{0}.{1} IN (SELECT {2}.ROLE_NO FROM {2} WHERE {2}.USER_ID = {3} ) AND SYS_WEB_MODULE.IS_AVAILABLE = 'Y' "
+                        ////_paramCollection.Clause = String.Format("{0}.{1} IN ('R00001')"
+                        //    , new object[] { SYS_PERM.TABLE_NAME, SYS_PERM.ROLE_NO_FIELD, SYS_USER_ROLE.TABLE_NAME, userLogin.USER_ID });
+                        //userLogin.Permission = PermCollection.converToPermList(ObjectBLLHelper.getTypeDAL(typeof(SYS_PERM)).SelectGroup(_paramCollection, "  SYS_PERM.FUNCTION_ID ", "    MAX(SYS_WEB_MODULE.MODULE_CODE),MAX(SYS_FUNCTION.FUNCTION_CODE) "));
+                        ParamCollection _paramCollection = new ParamCollection();
+                        _paramCollection.Clause = String.Format("{0}.{1} IN (SELECT {2}.ROLE_NO FROM {2} WHERE {2}.USER_ID = {3} ) "
+                            , new object[] { SYS_PERM.TABLE_NAME, SYS_PERM.ROLE_NO_FIELD, SYS_USER_ROLE.TABLE_NAME, userLogin.USER_ID });
+                        userLogin.Permission = PermCollection.converToPermList(ObjectBLLHelper.getTypeDAL(typeof(SYS_PERM)).SelectGroup(_paramCollection, "  SYS_PERM.FUNCTION_ID ", "    MAX(SYS_PERM.FUNCTION_ID) "));
+                    }
+
+                }
+            }
+            else
+            {
+                userLogin = new SYS_USER();
+                userLogin.ErrMsg = LanguageHelper.GetResourceText("USER_NOT_EXIST");
+                userLogin.IS_Login = false;
+            }
+
+            return userLogin;
+        }
 
 
         /// <summary>

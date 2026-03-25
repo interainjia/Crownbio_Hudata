@@ -54,7 +54,28 @@ namespace PDXmodelBase.HuData
                 bll.Update(sl);
                 sl.CurModel = DealModel.None;
             }
+
+            // 1. 清除本地系统的 Session
             context.Session["HudataUserInfo"] = null;
+
+            // ==============================================================
+            // 2. 新增：清除 Azure AD 的 identity_token，打破自动登录死循环
+            // ==============================================================
+            if (context.Request.Cookies["identity_token"] != null)
+            {
+                HttpCookie ssoCookie = new HttpCookie("identity_token");
+
+                // 将过期时间设置为昨天，强制浏览器删除
+                ssoCookie.Expires = DateTime.Now.AddDays(-1);
+
+                // 【关键】必须加上跨域的 Domain，否则无法跨域删除！
+                ssoCookie.Domain = ".crownbio.com";
+
+                context.Response.Cookies.Add(ssoCookie);
+            }
+            // ==============================================================
+
+            // 3. 告诉前端跳转回登录页
             context.Response.Write("Login.aspx");
 
         }

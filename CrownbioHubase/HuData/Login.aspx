@@ -70,7 +70,7 @@
             background-image: -ms-linear-gradient(top, #fff, #eee);
             background-image: -o-linear-gradient(top, #fff, #eee);
             background-image: linear-gradient(top, #fff, #eee);
-            height: 240px;
+            height: 300px;
             width: 400px;
             margin: -150px 0 0 -230px;
             padding: 30px;
@@ -333,6 +333,40 @@
 
 
     <script type="text/javascript">
+        function userLogin_auto(isAzureAd) {
+            var name = $('#username').val();
+            var pwd = $('#password').val();
+            var remember = "true";
+            if ($('#id_remember').attr("checked") != "checked") {
+                remember = "false";
+            }
+            if (isAzureAd || (name != "" && pwd != "")) {
+                $.ajax({
+                    type: "POST",
+                    url: "userLogin.ashx?M=userLoginAuto",
+                    data: "name=" + name + "&pwd=" + URLencode(pwd) + "&remember=" + remember,
+                    success: function (results) {
+                        //表示从start，到end之间的字符串，包括start位置的字符但是不包括end位置的字符
+                        var msg = results.substring(0, results.indexOf(':'));
+                        //表示从start位置开始取length个字符串
+                        var days = results.substr(results.indexOf(':') + 1, results.length - results.indexOf(':') - 1);
+                        if (results == "Successful login") {
+                            window.location.href = "index.aspx";
+                        }
+                        else if (msg == "User Trial") {
+                            $.messager.alert("login", days + " days remaining for your trial period", "info", function () {
+                                window.location.href = "index.aspx";
+                            });
+                        }
+                        else {
+                            //$.messager.alert("info", results, "info", null);
+                            // 已改为控制台输出，不再弹出提示框
+                            console.log("登录失败信息：", results);
+                        }
+                    }
+                })
+            }
+        }
         function userLogin_click() {
             var name = $('#username').val();
             var pwd = $('#password').val();
@@ -424,18 +458,37 @@
                             Remember Me</label></td>
 
                 </tr>
+                <tr>
+                    <td style="width: 280px;">
+                        <a href="https://uc.crownbio.com/sysuser/loginazure?r=hudata.crownbio.com/HuData/Login.aspx&amp;s=1&amp;l=en-US" 
+                           style="float: left;margin:5px">
+                           Sign In With Azure
+                        </a>
+                    </td>
+                    <td style="width: 200px">
+                        &nbsp;
+                    </td>
+                </tr>
             </table>
             <table>
                 <tr>
                     <td style="width: 280px;">
-                        <a style="float: left" href="Register.aspx">Not a user? Register now!</a>
+                        <a style="float: left;margin:5px" href="Register.aspx">Not a user? Register now!</a>
                     </td>
                     <td style="width: 200px">
-                        <a style="float: left" href="http://password.crownbio.com">Forgot your password?</a>
+                        &nbsp;
                     </td>
                 </tr>
                 <tr>
-                    <td style="padding-top: 10px" colspan="2">We recommend Google Chrome or Firefox for the best browser experience on this website.</td>
+                    <td style="width: 200px">
+                        <a style="float: left;margin:5px" href="http://password.crownbio.com">Forgot your password?</a>
+                    </td>
+                    <td style="width: 200px">
+                        &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td style="margin:5px" colspan="2">We recommend Google Chrome or Firefox for the best browser experience on this website.</td>
                 </tr>
             </table>
 

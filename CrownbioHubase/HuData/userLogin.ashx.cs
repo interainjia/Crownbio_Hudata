@@ -109,6 +109,9 @@ namespace PDXmodelBase.HuData
                 case "userLogin":
                     ReturnLogin(context, name, pwd);
                     break;
+                case "userLoginAuto":
+                    ReturnLoginAuto(context, name, pwd);
+                    break;
                 case "register":
                     Returnregister(context, First_name, Last_name, Position, Department, Institution, Street_Address, City, Country, Phone, Fax, Email, Password, Interest);
                     break;
@@ -315,6 +318,64 @@ namespace PDXmodelBase.HuData
                 context.Response.Write(msg);
             }
         }
+
+        public void ReturnLoginAuto(HttpContext context, string name, string pwd)
+        {
+            string remember = "";
+            if (context.Request["remember"] != null)
+            {
+                remember = context.Request["remember"].ToString();
+            }
+
+            SYS_USER loginUser = bll.LoginSSO(context, name, DEncryptHelper.Encrypt(pwd));
+            if (!loginUser.IS_Login)
+            {
+                context.Response.Write(loginUser.ErrMsg);
+            }
+            else
+            {
+                string msg = loginUser.ErrMsg;
+                //if (loginUser.ROLE_TYPE == "01" && loginUser.PART_MENT != "Y")//试用账户第一次登录
+                //{
+                //    loginUser.UPDATE_TIME = loginUser.LoginTime;
+                //    loginUser.PART_MENT = "Y";
+                //    decimal id = bll.Update(loginUser);
+                //    loginUser.CurModel = DealModel.None;
+                //}
+                if (loginUser.REMARK != null && loginUser.REMARK != "")
+                {
+                    string day = ((DateTime.Parse(loginUser.REMARK) - System.DateTime.Now).Days + 1).ToString();
+                    msg = "User Trial:" + day;
+                }
+
+                //login_LOG
+                SYS_USER_LOG sl = null;
+                sl = new SYS_USER_LOG(DealModel.New);
+                sl.LOGIN_TIME = loginUser.LoginTime;
+                sl.IP = context.Request.UserHostAddress;
+                sl.USER_CODE = loginUser.USER_CODE;
+                sl.USER_NAME = loginUser.FIRST_NAME + " " + loginUser.LAST_NAME;
+                sl.EMAIL = loginUser.EMAIL;
+                sl.ROLE_TYPE = loginUser.ROLE_TYPE;
+                bll.Update(sl);
+                sl.CurModel = DealModel.None;
+
+
+                if (remember == "true")
+                {
+                    context.Response.Cookies["Hudatausername"].Value = name;
+                    context.Response.Cookies["Hudatapassword"].Value = pwd;
+                    context.Response.Cookies["HudatauserName"].Expires = DateTime.Now.AddDays(7);//设置过期时间
+                    context.Response.Cookies["Hudatapassword"].Expires = DateTime.Now.AddDays(7);//设置过期时间
+                }
+
+                //FormsAuthentication.SetAuthCookie(name, false);
+                //   Session["DigitData"] = new ObjectBLL().Select(typeof(BASE_DIGIT));
+                context.Session["HudataUserInfo"] = loginUser;
+                context.Response.Write(msg);
+            }
+        }
+
         public void ReturnTrial(HttpContext context)
         {
             SYS_USER loginUser = bll.Login(context, "AACR@2013.org", DEncryptHelper.Encrypt("2013aacr"));
