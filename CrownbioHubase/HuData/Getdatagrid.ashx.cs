@@ -2786,13 +2786,25 @@ namespace PDXmodelBase.HuData
                 string S_Date_of_update_to = context.Request["S_Date_of_update_to"] ?? "";
                 string S_Mortality_Observation = context.Request["S_Mortality_Observation"] ?? "";
                 ParamCollection pl = new ParamCollection();
-                if (S_Mortality_Observation != "")
+                pl.Clause = "1=1";
+                //Add by Jack 2026.04.02
+                //if (S_Mortality_Observation != "")
+                //{
+                //    pl.Clause = ANIMAL_INFO_LOGS.MORTALITY_OBSERVATION_FIELD + "='" + S_Mortality_Observation + "'";
+                //}
+                //else
+                //{
+                //    pl.Clause = ANIMAL_INFO_LOGS.MODEL_ID_FIELD + "='" + mid + "'";
+                //}
+                if (S_Mortality_Observation == "")
                 {
-                    pl.Clause = ANIMAL_INFO_LOGS.MORTALITY_OBSERVATION_FIELD + "='" + S_Mortality_Observation + "'";
+                    pl.Clause = ANIMAL_INFO_LOGS.MODEL_ID_FIELD + "='" + mid + "'";
                 }
                 else
                 {
-                    pl.Clause = ANIMAL_INFO_LOGS.MODEL_ID_FIELD + "='" + mid + "'";
+                    if (S_Mortality_Observation != "All") {
+                        pl.Clause = ANIMAL_INFO_LOGS.MORTALITY_OBSERVATION_FIELD + "='" + S_Mortality_Observation + "'";
+                    }
                 }
                 if (S_DOI_from != "" && S_DOI_to != "")
                 {

@@ -208,6 +208,7 @@
                                         <input id="S_Date_of_update_to" class="easyui-datebox" data-options="formatter:myformatter" editable="false" />
                                                         Mortality_Observation:<select id="S_Mortality_Observation">
                                                                                     <option value=""  selected="selected"></option>
+                                                                                    <option value="All">All</option>
                                                                                     <option value="D">D</option>
                                                                               </select>
                                                         <a href="javascript:void();" class="easyui-linkbutton"iconcls="icon-search" onclick="filter_date();">Filter</a>
