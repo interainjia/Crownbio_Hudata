@@ -238,18 +238,18 @@ var CheckIsRole_Edit = function (callback) {
         async: false,
         url: "Person.ashx?M=CheckIsRole_Edit&_modulepPge=RoutineMaintain"
     }).done(function (msg) {
+        // 先拿值 -> 去掉前后空格 -> 统一转成大写
+        var locationVal = $.trim($('#hfLocation').val()).toUpperCase();
+
         if (msg.all) {
             value = true;
-        }
-        else if (msg.cbsd && $('#hfLocation').val() != "CBSD") {
+        } else if (msg.cbsd && (locationVal !== "SD" && locationVal !== "CBSD")) {
             $.messager.alert("info", "Permission Denied", "info", null);
             value = false;
-        }
-        else if (msg.cbnc && $('#hfLocation').val() != "CBNC") {
+        } else if (msg.cbnc && (locationVal !== "NC" && locationVal !== "CBNC")) {
             $.messager.alert("info", "Permission Denied", "info", null);
             value = false;
-        }
-        else {
+        } else {
             value = true;
         }
         callback(value);
