@@ -36,7 +36,7 @@
                 dataType: "json",
                 url: "/actionapi/Hudata/SaveRequest",
                 data: JSON.stringify({
-                    email: "lijun@crownbio.com",
+                    email: "runjun.jia@crownbio.com",
                     password: "123456",
                     txtClient: "Prelude Therapeutics",
                     txtProjectNumber: "E3445-U2252-TC2",
@@ -92,7 +92,7 @@
                 dataType: "json",
                 url: "https://ucapi.crownbio.com/api/UserCenter/ApproveUser",
                 data: JSON.stringify({
-                    Email: "lijun@crownbio.com",
+                    Email: "runjun.jia@crownbio.com",
                     Password: "Crown01",
                     Firstname: "Jun",
                     Lastname: "Li",

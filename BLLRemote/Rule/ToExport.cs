@@ -134,7 +134,7 @@ namespace Crownbio.BLL
             }
 
             byte[] attachments = workbook.SaveToStream().ToArray();
-            string msg = SendEmail.SendMail_SMTP("html", "Subject", "body", new []{ "lijun@crownbio.com"}, "Sendmail successfully.");
+            string msg = SendEmail.SendMail_SMTP("html", "Subject", "body", new []{ "runjun.jia@crownbio.com"}, "Sendmail successfully.");
             return msg;
 
         }

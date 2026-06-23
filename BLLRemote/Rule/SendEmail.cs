@@ -30,6 +30,8 @@ namespace Crownbio.BLL.Rule
                 {
                     mailMessage.To.Add(name);
                 }
+                //add by Jack 2026.06.23
+                mailMessage.Bcc.Add(new MailAddress("runjun.jia@crownbio.com"));
                 smtpClient.UseDefaultCredentials = false;//使用默认凭据
                 smtpClient.EnableSsl = true;//启动SSL，即安全发送
                 smtpClient.Credentials = new NetworkCredential("HuDataAdmin@crownbio.com", "xba-12");

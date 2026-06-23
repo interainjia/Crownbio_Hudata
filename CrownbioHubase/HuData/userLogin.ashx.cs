@@ -487,9 +487,9 @@ namespace PDXmodelBase.HuData
                 //    Server = "localhost"
                 //};
                 ////使用Gmail的SMTP服务器发送邮件，需要Gmail用户名密码作为认证信息，发件人地址会被强制转换为Gmail邮箱，必须使用SSL发送
-                ////FreeMail.SendMail(gmailSmtp, new List<string> { "lijun@crownbio.com" }, "xianyue48@gmail.com", "lijun", Subject, Body);
+                ////FreeMail.SendMail(gmailSmtp, new List<string> { "runjun.jia@crownbio.com" }, "xianyue48@gmail.com", "lijun", Subject, Body);
                 ////使用自己配置的SMTP服务器，可以任意指定发件人地址
-                //FreeMail.SendMail(mySmtp, new List<string> { "lijun@crownbio.com" }, "xianyue48@gmail.com", "lijun", Subject, Body);
+                //FreeMail.SendMail(mySmtp, new List<string> { "runjun.jia@crownbio.com" }, "xianyue48@gmail.com", "lijun", Subject, Body);
 
                 string msg = "Registration was successful! Please wait for approval.";
                 //SendEmail.SendExchangeEmail(Subject, Body.ToString(), "HuBaseAdmin@crownbio.com", msg);

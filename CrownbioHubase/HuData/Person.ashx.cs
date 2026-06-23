@@ -6025,7 +6025,7 @@ namespace PDXmodelBase.HuData
 
                 string Subject = string.Format("New HuData Request");
                 string title = requestEmailtitle(txtEmail);
-                string[] toMails = { "lijun@crownbio.com" };
+                string[] toMails = { "runjun.jia@crownbio.com" };
                 msg = SendEmail.SendMail_SMTP("html", Subject, title, toMails, "Send successfully.");
             }
             catch (Exception ex)
