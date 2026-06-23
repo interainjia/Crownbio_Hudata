@@ -1075,12 +1075,15 @@ namespace Crownbio.BLL
             bool isInAD = false;
             #region not in AD
             ParamCollection paraList = new ParamCollection();
-            paraList.Clause = "email ='" + userName + "' and (email not like '%@crownbio.com%' or email is null)";
+            paraList.Clause = "email = @loginEmail and (email not like '%@crownbio.com%' or email is null)";
+            paraList.Add(new ParamData("loginEmail", DbType.String, userName));
             userList = Select(paraList, typeof(SYS_USER));
             if (userList.Count == 0)
             {
-                paraList.Clause = "USER_CODE ='" + userName.Trim() + "' and (email not like '%crownbio%' or email is null)";
-                userList = Select(paraList, typeof(SYS_USER));
+                ParamCollection paraListCode = new ParamCollection();
+                paraListCode.Clause = "USER_CODE = @loginCode and (email not like '%crownbio%' or email is null)";
+                paraListCode.Add(new ParamData("loginCode", DbType.String, userName.Trim()));
+                userList = Select(paraListCode, typeof(SYS_USER));
             }
             #endregion
 
@@ -1094,7 +1097,8 @@ namespace Crownbio.BLL
                         userName = userName + "@crownbio.com";
                     }
                     ParamCollection paraList2 = new ParamCollection();
-                    paraList2.Clause = SYS_USER.EMAIL_FIELD + "='" + userName + "'";
+                    paraList2.Clause = SYS_USER.EMAIL_FIELD + " = @adEmail";
+                    paraList2.Add(new ParamData("adEmail", DbType.String, userName));
                     userList = Select(paraList2, typeof(SYS_USER));
                     isInAD = true;
                     #endregion
@@ -1183,12 +1187,15 @@ namespace Crownbio.BLL
             bool isInAD = false;
             #region not in AD
             ParamCollection paraList = new ParamCollection();
-            paraList.Clause = "email ='" + userName + "' and (email not like '%@crownbio.com%' or email is null)";
+            paraList.Clause = "email = @loginEmail and (email not like '%@crownbio.com%' or email is null)";
+            paraList.Add(new ParamData("loginEmail", DbType.String, userName));
             userList = Select(paraList, typeof(SYS_USER));
             if (userList.Count == 0)
             {
-                paraList.Clause = "USER_CODE ='" + userName.Trim() + "' and (email not like '%crownbio%' or email is null)";
-                userList = Select(paraList, typeof(SYS_USER));
+                ParamCollection paraListCode = new ParamCollection();
+                paraListCode.Clause = "USER_CODE = @loginCode and (email not like '%crownbio%' or email is null)";
+                paraListCode.Add(new ParamData("loginCode", DbType.String, userName.Trim()));
+                userList = Select(paraListCode, typeof(SYS_USER));
             }
             #endregion
 
@@ -1202,7 +1209,8 @@ namespace Crownbio.BLL
                         userName = userName + "@crownbio.com";
                     }
                     ParamCollection paraList2 = new ParamCollection();
-                    paraList2.Clause = SYS_USER.EMAIL_FIELD + "='" + userName + "'";
+                    paraList2.Clause = SYS_USER.EMAIL_FIELD + " = @adEmail";
+                    paraList2.Add(new ParamData("adEmail", DbType.String, userName));
                     userList = Select(paraList2, typeof(SYS_USER));
                     isInAD = true;
                     #endregion
