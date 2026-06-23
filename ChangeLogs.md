@@ -1,3 +1,15 @@
+# 2026.06.23 (3)
+
+## 修复 UserFunction.ashx.cs SQL 注入（C1 第二批）
+- `SaveDropDownList`：`hfddlID` → `@ddlId`
+- `DeleteUser`：`uid` (USER_ID) → `@userId`
+- `DeleteRole`：`uid` (roleID) → `@roleId`
+- `EditUser`：`uid` (User_ID) → `@editUserId`
+- `ShowUser`：子查询中 `id` (USER_ID) → `@showUserId`（额外发现，来自 request）
+- `ReturnPRO_SYS_USER`：子查询中 `user.USER_ID` → `@roleUserId`（一致性修复）
+
+---
+
 # 2026.06.23 (2)
 
 ## 修复登录接口 SQL 注入（C1 首批）

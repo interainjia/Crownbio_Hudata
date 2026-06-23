@@ -82,7 +82,8 @@ namespace PDXmodelBase.HuData
             string hfddlID = context.Request["hfddlID"] ?? "";
             string ddlcontext = context.Request["txtContext"] ?? "";
             ParamCollection paraList = new ParamCollection();
-            paraList.Clause += string.Format(" (DropDownList_ID = '{0}' )", hfddlID);
+            paraList.Clause = "DropDownList_ID = @ddlId";
+            paraList.Add(new ParamData("ddlId", DbType.String, hfddlID));
 
             BaseList data = bll.Select(paraList, typeof(DROPDOWNLIST));
             if (data.Count > 0)
@@ -157,7 +158,8 @@ namespace PDXmodelBase.HuData
             string uid = context.Request["USER_ID"] ?? "";
 
             ParamCollection paraList = new ParamCollection();
-            paraList.Clause += string.Format(" (USER_ID = '{0}' )", uid);
+            paraList.Clause = "USER_ID = @userId";
+            paraList.Add(new ParamData("userId", DbType.String, uid));
 
             BaseList data = bll.Select(paraList, typeof(SYS_USER));
             if (data.Count > 0)
@@ -175,7 +177,8 @@ namespace PDXmodelBase.HuData
             string uid = context.Request["roleID"] ?? "";
 
             ParamCollection paraList = new ParamCollection();
-            paraList.Clause += string.Format(" (ROLE_ID = '{0}' )", uid);
+            paraList.Clause = "ROLE_ID = @roleId";
+            paraList.Add(new ParamData("roleId", DbType.String, uid));
 
             BaseList dataRole = bll.Select(paraList, typeof(SYS_ROLE));
             List<BaseObject> deldata = new List<BaseObject>();
@@ -200,8 +203,9 @@ namespace PDXmodelBase.HuData
         public void ShowUser(HttpContext context, string id)
         {
             ParamCollection _paramCollection = new ParamCollection();
-            _paramCollection.Clause = String.Format("{0}.{1} IN (SELECT {2}.ROLE_NO FROM {2} WHERE {2}.USER_ID = {3} ) "
-                , new object[] { SYS_ROLE.TABLE_NAME, SYS_ROLE.ROLE_NO_FIELD, SYS_USER_ROLE.TABLE_NAME, id });
+            _paramCollection.Clause = String.Format("{0}.{1} IN (SELECT {2}.ROLE_NO FROM {2} WHERE {2}.USER_ID = @showUserId) "
+                , SYS_ROLE.TABLE_NAME, SYS_ROLE.ROLE_NO_FIELD, SYS_USER_ROLE.TABLE_NAME);
+            _paramCollection.Add(new ParamData("showUserId", DbType.String, id));
             BaseList perdata = bll.Select(_paramCollection,typeof(SYS_ROLE));
             ArrayList rolename = new ArrayList();
             foreach (SYS_ROLE name in perdata)
@@ -258,8 +262,9 @@ namespace PDXmodelBase.HuData
             foreach (SYS_USER user in alldata)
             {
                 ParamCollection _paramCollection = new ParamCollection();
-                _paramCollection.Clause = String.Format("{0}.{1} IN (SELECT {2}.ROLE_NO FROM {2} WHERE {2}.USER_ID = {3} ) "
-                    , new object[] { SYS_ROLE.TABLE_NAME, SYS_ROLE.ROLE_NO_FIELD, SYS_USER_ROLE.TABLE_NAME, user.USER_ID });
+                _paramCollection.Clause = String.Format("{0}.{1} IN (SELECT {2}.ROLE_NO FROM {2} WHERE {2}.USER_ID = @roleUserId) "
+                    , SYS_ROLE.TABLE_NAME, SYS_ROLE.ROLE_NO_FIELD, SYS_USER_ROLE.TABLE_NAME);
+                _paramCollection.Add(new ParamData("roleUserId", DbType.String, user.USER_ID));
                 BaseList perdata = bll.Select(_paramCollection, typeof(SYS_ROLE));
                 ArrayList rolename = new ArrayList();
                 foreach (SYS_ROLE name in perdata)
@@ -279,7 +284,8 @@ namespace PDXmodelBase.HuData
             string msg = "";
             string uid = context.Request["User_ID"] ?? "";
             ParamCollection paralist = new ParamCollection();
-            paralist.Clause += SYS_USER.USER_ID_FIELD + "='" + uid + "'";
+            paralist.Clause = SYS_USER.USER_ID_FIELD + " = @editUserId";
+            paralist.Add(new ParamData("editUserId", DbType.String, uid));
             BaseList data = bll.Select(paralist,  typeof(SYS_USER));
             if (data.Count > 0)
             {
