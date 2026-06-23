@@ -1885,9 +1885,9 @@ namespace PDXmodelBase.HuData
                 pl1.Clause = "DropDownList_Name = 'AnimalRoom Management'";
                 BaseList rooms = bll.Select(pl1, typeof(DROPDOWNLIST));
                 DROPDOWNLIST r = (DROPDOWNLIST)rooms[0];
-                foreach (string nodes in r.DROPDOWNLIST_CONTEXT.Split(';'))
+                foreach (string nodes in r.DROPDOWNLIST_CONTEXT.Split(new char[] { ';', '；' }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    string[] aa = nodes.Split(',');
+                    string[] aa = nodes.Split(new char[] { ',', '，' }, StringSplitOptions.RemoveEmptyEntries);
                     if (aa[0].Contains(((ANIMAL_INFO)animal[0]).ANIMAL_ROOM_NUMBER + "-" + ((ANIMAL_INFO)animal[0]).LOCATION_OF_LIVE_ANIMAL))
                     {
                         string[] toMails = { aa[2] };
@@ -6513,7 +6513,7 @@ namespace PDXmodelBase.HuData
             if (data.Count > 0)
             {
                 DROPDOWNLIST row = (DROPDOWNLIST)data[0];
-                foreach (string node in row.DROPDOWNLIST_CONTEXT.Split(','))
+                foreach (string node in row.DROPDOWNLIST_CONTEXT.Split(new char[] { ',', '，' }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     resultStr += "{";
                     resultStr += string.Format("\"id\": \"{0}\", \"text\": \"{1}\"", node.Replace("\\n", ""), node.Replace("\\n", ""));
@@ -6940,7 +6940,7 @@ namespace PDXmodelBase.HuData
                 resultStr += ",\"children\":";
                 resultStr += "[";
                 DROPDOWNLIST row = (DROPDOWNLIST)data[0];
-                foreach (string node in row.DROPDOWNLIST_CONTEXT.Split(','))
+                foreach (string node in row.DROPDOWNLIST_CONTEXT.Split(new char[] { ',', '，' }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     resultStr += "{";
                     resultStr += string.Format("\"id\": \"{0}\", \"text\": \"{1}\"", node.Replace("\\n", ""), node.Replace("\\n", ""));
@@ -6974,7 +6974,7 @@ namespace PDXmodelBase.HuData
             {
                 resultStr += ",\"children\":";
                 resultStr += "[";
-                string[] strs = ((DROPDOWNLIST)data[0]).DROPDOWNLIST_CONTEXT.Split(',');
+                string[] strs = ((DROPDOWNLIST)data[0]).DROPDOWNLIST_CONTEXT.Split(new char[] { ',', '，' }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (string node in strs)
                 {
                     resultStr += "{";

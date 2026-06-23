@@ -3452,9 +3452,9 @@ namespace PDXmodelBase.HuData
                                                     pls.Clause = "DropDownList_Name = 'AnimalRoom Management'";
                                                     BaseList data = bll.Select(pls, typeof(DROPDOWNLIST));
                                                     DROPDOWNLIST row = (DROPDOWNLIST)data[0];
-                                                    foreach (string nodes in row.DROPDOWNLIST_CONTEXT.Split(';'))
+                                                    foreach (string nodes in row.DROPDOWNLIST_CONTEXT.Split(new char[] { ';', '；' }, StringSplitOptions.RemoveEmptyEntries))
                                                     {
-                                                        string[] aa = nodes.Split(',');
+                                                        string[] aa = nodes.Split(new char[] { ',', '，' }, StringSplitOptions.RemoveEmptyEntries);
                                                         if (aa[0].Contains(newRow.ANIMAL_ROOM_NUMBER + "-" + newRow.LOCATION_OF_LIVE_ANIMAL))
                                                         {
                                                             DataRow new1 = tb_email1.NewRow();
@@ -3539,9 +3539,9 @@ namespace PDXmodelBase.HuData
                                             pls.Clause = "DropDownList_Name = 'AnimalRoom Management'";
                                             BaseList data = bll.Select(pls, typeof(DROPDOWNLIST));
                                             DROPDOWNLIST row = (DROPDOWNLIST)data[0];
-                                            foreach (string nodes in row.DROPDOWNLIST_CONTEXT.Split(';'))
+                                            foreach (string nodes in row.DROPDOWNLIST_CONTEXT.Split(new char[] { ';', '；' }, StringSplitOptions.RemoveEmptyEntries))
                                             {
-                                                string[] aa = nodes.Split(',');
+                                                string[] aa = nodes.Split(new char[] { ',', '，' }, StringSplitOptions.RemoveEmptyEntries);
                                                 if (aa[0].Contains(newRow.ANIMAL_ROOM_NUMBER + "-" + newRow.LOCATION_OF_LIVE_ANIMAL))
                                                 {
                                                     DataRow new1 = tb_email2.NewRow();
