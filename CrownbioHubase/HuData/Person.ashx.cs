@@ -372,8 +372,9 @@ namespace PDXmodelBase.HuData
             string Table = context.Request["Table"] ?? "-1";
             SYS_USER userLogin = CacheHelper.getCurrentUser();
             ParamCollection paralist = new ParamCollection();
-            paralist.Clause = USERSELECTCOLUMNS.USER_ID_FIELD + "='" + userLogin.USER_ID.ToString() + "'";
-            paralist.Clause += " and " + USERSELECTCOLUMNS.SELECTTABLENAME_FIELD + "= '" + Table + "'";
+            paralist.Clause = USERSELECTCOLUMNS.USER_ID_FIELD + " = @scUserId and " + USERSELECTCOLUMNS.SELECTTABLENAME_FIELD + " = @scTable";
+            paralist.Add(new ParamData("scUserId", DbType.String, userLogin.USER_ID.ToString()));
+            paralist.Add(new ParamData("scTable", DbType.String, Table));
             BaseList data = bll.Select(paralist, typeof(USERSELECTCOLUMNS));
             if (data.Count == 0)
             {
@@ -401,7 +402,8 @@ namespace PDXmodelBase.HuData
             string delMuPrime_ID = context.Request["delMuPrime_ID"] ?? "";
 
             ParamCollection paraList = new ParamCollection();
-            paraList.Clause += string.Format(" (PDXMODEL_INFO_ID = '{0}' )", delMuPrime_ID);
+            paraList.Clause = "PDXMODEL_INFO_ID = @delMuPrimeId";
+            paraList.Add(new ParamData("delMuPrimeId", DbType.String, delMuPrime_ID));
 
             BaseList data = bll.Select(paraList, typeof(PDXMODEL_INFO));
             if (data.Count > 0)
@@ -419,9 +421,13 @@ namespace PDXmodelBase.HuData
             try
             {
                 ParamCollection paralist = new ParamCollection();
-                string checks = context.Request["id"];
+                string checks = context.Request["id"] ?? "";
+                var _twIds1 = checks.Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                var _twParams1 = _twIds1.Select((_, i) => "@twId1_" + i).ToArray();
+                paralist.Clause = "Tissue_Withdraw_ID in (" + string.Join(",", _twParams1) + ")";
+                for (int i = 0; i < _twIds1.Length; i++)
+                    paralist.Add(new ParamData("twId1_" + i, DbType.String, _twIds1[i]));
 
-                paralist.Clause = "Tissue_Withdraw_ID in (" + checks + ")";
                 BaseList data = bll.Select(paralist, typeof(TISSUE_WITHDRAW));
                 foreach (TISSUE_WITHDRAW dr in data)
                 {
@@ -442,9 +448,12 @@ namespace PDXmodelBase.HuData
             try
             {
                 ParamCollection paralist = new ParamCollection();
-                string checks = context.Request["id"];
-
-                paralist.Clause = "Tissue_Withdraw_ID in (" + checks + ")";
+                string checks = context.Request["id"] ?? "";
+                var _twIds2 = checks.Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                var _twParams2 = _twIds2.Select((_, i) => "@twId2_" + i).ToArray();
+                paralist.Clause = "Tissue_Withdraw_ID in (" + string.Join(",", _twParams2) + ")";
+                for (int i = 0; i < _twIds2.Length; i++)
+                    paralist.Add(new ParamData("twId2_" + i, DbType.String, _twIds2[i]));
                 BaseList data = bll.Select(paralist, typeof(TISSUE_WITHDRAW));
                 foreach (TISSUE_WITHDRAW dr in data)
                 {
@@ -475,9 +484,13 @@ namespace PDXmodelBase.HuData
             try
             {
                 ParamCollection paralist = new ParamCollection();
-                string checks = context.Request["id"];
+                string checks = context.Request["id"] ?? "";
                 string pn = context.Request["pn"];
-                paralist.Clause = "Specimen_Stock_ID in (" + checks + ")";
+                var _ssIds = checks.Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                var _ssParams = _ssIds.Select((_, i) => "@ssId" + i).ToArray();
+                paralist.Clause = "Specimen_Stock_ID in (" + string.Join(",", _ssParams) + ")";
+                for (int i = 0; i < _ssIds.Length; i++)
+                    paralist.Add(new ParamData("ssId" + i, DbType.String, _ssIds[i]));
 
 
                 BaseList IsHaveData = bll.Select(paralist, typeof(TISSUE_WITHDRAW));
@@ -795,7 +808,8 @@ namespace PDXmodelBase.HuData
             {
                 BaseList deltetData = new BaseList();
                 ParamCollection query1 = new ParamCollection();
-                query1.Clause = LOCATION.AID_FIELD + " = '" + id + "'";
+                query1.Clause = LOCATION.AID_FIELD + " = @locId";
+                query1.Add(new ParamData("locId", DbType.String, id));
                 BaseList data = bll.Select(query1, typeof(LOCATION));
                 if (data.Count > 0)
                 {
@@ -824,7 +838,8 @@ namespace PDXmodelBase.HuData
 
             BaseList deltetData = new BaseList();
             ParamCollection query1 = new ParamCollection();
-            query1.Clause = SPECIMEN_STOCK.LOCATION_ID_FIELD + " = '" + id + "'";
+            query1.Clause = SPECIMEN_STOCK.LOCATION_ID_FIELD + " = @sspLocId";
+            query1.Add(new ParamData("sspLocId", DbType.String, id));
             BaseList data = bll.Select(query1, typeof(SPECIMEN_STOCK));
             if (data.Count > 0)
             {
@@ -844,7 +859,8 @@ namespace PDXmodelBase.HuData
             {
                 BaseList deltetData = new BaseList();
                 ParamCollection query1 = new ParamCollection();
-                query1.Clause = LOCATION.AID_FIELD + " = '" + id + "'";
+                query1.Clause = LOCATION.AID_FIELD + " = @editLocId";
+                query1.Add(new ParamData("editLocId", DbType.String, id));
                 BaseList data = bll.Select(query1, typeof(LOCATION));
                 if (data.Count > 0)
                 {
@@ -895,7 +911,8 @@ namespace PDXmodelBase.HuData
             {
                 BaseList deltetData = new BaseList();
                 ParamCollection query1 = new ParamCollection();
-                query1.Clause = ANIMAL_TREE.AID_FIELD + " = '" + id + "'";
+                query1.Clause = ANIMAL_TREE.AID_FIELD + " = @rmTreeId";
+                query1.Add(new ParamData("rmTreeId", DbType.String, id));
                 BaseList data = bll.Select(query1, typeof(ANIMAL_TREE));
                 if (data.Count > 0)
                 {
@@ -920,7 +937,8 @@ namespace PDXmodelBase.HuData
         public void delete_ModelTree_Node(string id, ANIMAL_TREE rows, BaseList deltetData)
         {
             ParamCollection query1 = new ParamCollection();
-            query1.Clause = ANIMAL_TREE.P_ID_FIELD + " = '" + id + "'";
+            query1.Clause = ANIMAL_TREE.P_ID_FIELD + " = @delTreePid";
+            query1.Add(new ParamData("delTreePid", DbType.String, id));
             BaseList data = bll.Select(query1, typeof(ANIMAL_TREE));
             foreach (ANIMAL_TREE child in data)
             {
@@ -941,7 +959,8 @@ namespace PDXmodelBase.HuData
             {
                 BaseList deltetData = new BaseList();
                 ParamCollection query1 = new ParamCollection();
-                query1.Clause = LOCATION.AID_FIELD + " = '" + id + "'";
+                query1.Clause = LOCATION.AID_FIELD + " = @rmLocId";
+                query1.Add(new ParamData("rmLocId", DbType.String, id));
                 BaseList data = bll.Select(query1, typeof(LOCATION));
                 if (data.Count > 0)
                 {
@@ -968,7 +987,8 @@ namespace PDXmodelBase.HuData
         public void delete_location(string id, LOCATION rows, BaseList deltetData)
         {
             ParamCollection query1 = new ParamCollection();
-            query1.Clause = LOCATION.P_ID_FIELD + " = '" + id + "'";
+            query1.Clause = LOCATION.P_ID_FIELD + " = @delLocPid";
+            query1.Add(new ParamData("delLocPid", DbType.String, id));
             BaseList data = bll.Select(query1, typeof(LOCATION));
             foreach (LOCATION child in data)
             {
@@ -989,7 +1009,8 @@ namespace PDXmodelBase.HuData
             try
             {
                 ParamCollection query1 = new ParamCollection();
-                query1.Clause = LOCATION.AID_FIELD + " = '" + id + "'";
+                query1.Clause = LOCATION.AID_FIELD + " = @saveLocId";
+                query1.Add(new ParamData("saveLocId", DbType.String, id));
                 BaseList data = bll.Select(query1, typeof(LOCATION));
                 if (data.Count > 0)
                 {
@@ -1020,7 +1041,8 @@ namespace PDXmodelBase.HuData
         public void edit_locationName(string id,LOCATION rows)
         {
             ParamCollection query1 = new ParamCollection();
-            query1.Clause = LOCATION.P_ID_FIELD + " = '" + id + "'";
+            query1.Clause = LOCATION.P_ID_FIELD + " = @editLocPid";
+            query1.Add(new ParamData("editLocPid", DbType.String, id));
             BaseList data = bll.Select(query1, typeof(LOCATION));
             foreach (LOCATION child in data)
             {
@@ -1044,7 +1066,8 @@ namespace PDXmodelBase.HuData
               try
               {
                   ParamCollection query1 = new ParamCollection();
-                  query1.Clause = LOCATION.AID_FIELD + " = '" + curSrcNode + "'";
+                  query1.Clause = LOCATION.AID_FIELD + " = @copySrcNode";
+                  query1.Add(new ParamData("copySrcNode", DbType.String, curSrcNode));
                   BaseList data = bll.Select(query1, typeof(LOCATION));
                   if (data.Count > 0)
                   {
@@ -1083,7 +1106,8 @@ namespace PDXmodelBase.HuData
         public void copyChild_location(string curSrcNode, LOCATION newRow, decimal id)
         {
             ParamCollection query2 = new ParamCollection();
-            query2.Clause = LOCATION.P_ID_FIELD + " = '" + curSrcNode + "'";
+            query2.Clause = LOCATION.P_ID_FIELD + " = @copyChildSrc";
+            query2.Add(new ParamData("copyChildSrc", DbType.String, curSrcNode));
             BaseList data2 = bll.Select(query2, typeof(LOCATION));
             LOCATION childRow = null;
             BaseList chidlData = new BaseList();
@@ -1117,11 +1141,13 @@ namespace PDXmodelBase.HuData
                 string hf_Pharmacology_Effect = context.Request["hf_Pharmacology_Effect"] ?? "";
 
                 ParamCollection query1 = new ParamCollection();
-                query1.Clause = ANIMAL_TREE.AID_FIELD + " = '" + hf_Pharmacology_Effect + "'";
+                query1.Clause = ANIMAL_TREE.AID_FIELD + " = @pharmTreeId";
+                query1.Add(new ParamData("pharmTreeId", DbType.String, hf_Pharmacology_Effect));
                 BaseList dataTree = bll.Select(query1, typeof(ANIMAL_TREE));
 
                 ParamCollection query2 = new ParamCollection();
-                query2.Clause = PHARMACOLOGY_EFFECT.ANIMALTREE_ID_FIELD + " = '" + hf_Pharmacology_Effect + "'";
+                query2.Clause = PHARMACOLOGY_EFFECT.ANIMALTREE_ID_FIELD + " = @pharmEffectId";
+                query2.Add(new ParamData("pharmEffectId", DbType.String, hf_Pharmacology_Effect));
 
                 BaseList data = bll.Select(query2, typeof(PHARMACOLOGY_EFFECT));
                 PHARMACOLOGY_EFFECT row = null;
@@ -1153,7 +1179,8 @@ namespace PDXmodelBase.HuData
             resultStr += "[";
             string ddlname = context.Request["Table"] ?? "";
             ParamCollection paralist = new ParamCollection();
-            paralist.Clause = TABLEDISPLAYCOLUMNS.TABLENAME_FIELD + " = '" + ddlname + "'";
+            paralist.Clause = TABLEDISPLAYCOLUMNS.TABLENAME_FIELD + " = @tblName";
+            paralist.Add(new ParamData("tblName", DbType.String, ddlname));
             BaseList data = bll.Select(paralist, typeof(TABLEDISPLAYCOLUMNS));
             if (data.Count > 0)
             {
@@ -1428,7 +1455,8 @@ namespace PDXmodelBase.HuData
             string moveIDs = context.Request["moveIDs"] ?? "";
             string subprojects = context.Request["subprojects"] ?? "";
             ParamCollection paralist = new ParamCollection();
-            paralist.Clause = REQUEST.PROJECT_NUMBER_FIELD + "='" + subprojects + "'";
+            paralist.Clause = REQUEST.PROJECT_NUMBER_FIELD + " = @subproj";
+            paralist.Add(new ParamData("subproj", DbType.String, subprojects));
             BaseList todata = bll.Select(paralist, typeof(REQUEST));
             if (todata.Count > 0)
             {
@@ -1444,7 +1472,8 @@ namespace PDXmodelBase.HuData
                 bll.Update(toRow);
             }
             ParamCollection paralist1 = new ParamCollection();
-            paralist1.Clause = REQUEST.REQUEST_ID_FIELD + "='" + Requestid + "'";
+            paralist1.Clause = REQUEST.REQUEST_ID_FIELD + " = @reqId";
+            paralist1.Add(new ParamData("reqId", DbType.String, Requestid));
             BaseList olddata = bll.Select(paralist1, typeof(REQUEST));
             if (olddata.Count > 0)
             {
@@ -1471,26 +1500,22 @@ namespace PDXmodelBase.HuData
             string cbxToProject = context.Request["cbxToProject"] ?? "";
             
             ParamCollection pl = new ParamCollection();
-            pl.Clause = PROJECT_MONITOR.PROJECT_MONITOR_ID_FIELD + "='" + Monitor_id + "'";
+            pl.Clause = PROJECT_MONITOR.PROJECT_MONITOR_ID_FIELD + " = @monId";
+            pl.Add(new ParamData("monId", DbType.String, Monitor_id));
             BaseList mdata = bll.Select(pl, typeof(PROJECT_MONITOR));
             PROJECT_MONITOR fromRow = (PROJECT_MONITOR)mdata[0];
 
             ParamCollection pl2 = new ParamCollection();
-           
-            
-            pl2.Clause = PROJECT_MONITOR.PROJECT_NUMBER_FIELD + "='" + cbxToProject + "'";
+            pl2.Clause = PROJECT_MONITOR.PROJECT_NUMBER_FIELD + " = @cbxProj";
+            pl2.Add(new ParamData("cbxProj", DbType.String, cbxToProject));
             if (cbxToModelID != "")
             {
-                string ids = "";
-                foreach (string a in cbxToModelID.Split(','))
-                {
-                    if (a != "")
-                    {
-                        ids += "'" + a + "',";
-                    }
-                }
-               string column = PROJECT_MONITOR.MODEL_ID_FIELD;
-               pl2.Clause += string.Format(" AND ({0}.{1} in ({2}) )", PROJECT_MONITOR.TABLE_NAME, column, ids.TrimEnd(','));
+                var _mids = cbxToModelID.Split(',').Where(a => !string.IsNullOrEmpty(a)).ToArray();
+                var _mparams = _mids.Select((_, i) => "@mid" + i).ToArray();
+                string column = PROJECT_MONITOR.MODEL_ID_FIELD;
+                pl2.Clause += string.Format(" AND ({0}.{1} in ({2}) )", PROJECT_MONITOR.TABLE_NAME, column, string.Join(",", _mparams));
+                for (int i = 0; i < _mids.Length; i++)
+                    pl2.Add(new ParamData("mid" + i, DbType.String, _mids[i]));
             }
             BaseList toData = bll.Select(pl2, typeof(PROJECT_MONITOR));
             foreach (PROJECT_MONITOR toRow in toData)
@@ -1520,7 +1545,8 @@ namespace PDXmodelBase.HuData
                 }
                 BaseList newData = new BaseList();
                 ParamCollection newpl = new ParamCollection();
-                newpl.Clause = PROJECT_MONITOR_STUDY_DESIGN.PROJECT_MONITOR_ID_FIELD + "='" + Monitor_id + "'";
+                newpl.Clause = PROJECT_MONITOR_STUDY_DESIGN.PROJECT_MONITOR_ID_FIELD + " = @sdMonId";
+                newpl.Add(new ParamData("sdMonId", DbType.String, Monitor_id));
                 BaseList studyData = bll.Select(newpl, typeof(PROJECT_MONITOR_STUDY_DESIGN));
                 if (studyData.Count > 0)
                 {
@@ -1720,7 +1746,8 @@ namespace PDXmodelBase.HuData
 
 
             ParamCollection query = new ParamCollection();
-            query.Clause = REQUEST.REQUEST_ID_FIELD + "='" + rid + "'";
+            query.Clause = REQUEST.REQUEST_ID_FIELD + " = @bookRid";
+            query.Add(new ParamData("bookRid", DbType.String, rid));
             BaseList requestData = bll.Select(query, typeof(REQUEST));
             REQUEST request = (REQUEST)requestData[0];
             string msg = "";
@@ -1731,13 +1758,15 @@ namespace PDXmodelBase.HuData
             ParamCollection paraList3 = new ParamCollection();
             if (hfNoliveAnimal == "No live animals")//安排复苏
             {
-                paraList3.Clause = PROJECT_REVIVE.MODEL_ID_FIELD + "='" + book_MODEL_ID + "'";
-                paraList3.Clause += " AND " + PROJECT_REVIVE.REQUEST_ID_FIELD + "='" + request.REQUEST_ID.ToString() + "' ";
+                paraList3.Clause = PROJECT_REVIVE.MODEL_ID_FIELD + " = @rv3ModelId AND " + PROJECT_REVIVE.REQUEST_ID_FIELD + " = @rv3ReqId";
+                paraList3.Add(new ParamData("rv3ModelId", DbType.String, book_MODEL_ID));
+                paraList3.Add(new ParamData("rv3ReqId", DbType.String, request.REQUEST_ID.ToString()));
             }
             else
             {
-                paraList3.Clause = PROJECT_REVIVE.ANIMAL_NUMBER_FIELD + "='" + hfAnimal_Number + "'";
-                paraList3.Clause += " AND " + PROJECT_REVIVE.REQUEST_ID_FIELD + "='" + request.REQUEST_ID.ToString() + "' ";
+                paraList3.Clause = PROJECT_REVIVE.ANIMAL_NUMBER_FIELD + " = @rv3AnimalNum AND " + PROJECT_REVIVE.REQUEST_ID_FIELD + " = @rv3ReqId2";
+                paraList3.Add(new ParamData("rv3AnimalNum", DbType.String, hfAnimal_Number));
+                paraList3.Add(new ParamData("rv3ReqId2", DbType.String, request.REQUEST_ID.ToString()));
             }
             BaseList data3 = bll.Select(paraList3, typeof(PROJECT_REVIVE));
             if (txtRevive != "")
@@ -1801,7 +1830,8 @@ namespace PDXmodelBase.HuData
             #region save booking
             string _del_project = "";
             ParamCollection paraList1 = new ParamCollection();
-            paraList1.Clause = ANIMAL_INFO.ANIMAL_NUMBER_FIELD + "='" + hfAnimal_Number + "'";
+            paraList1.Clause = ANIMAL_INFO.ANIMAL_NUMBER_FIELD + " = @animalNum1";
+            paraList1.Add(new ParamData("animalNum1", DbType.String, hfAnimal_Number));
             BaseList animal = bll.Select(paraList1, typeof(ANIMAL_INFO));
             string doi = "";
             if (animal.Count > 0)
@@ -1809,8 +1839,9 @@ namespace PDXmodelBase.HuData
                 doi = ((ANIMAL_INFO)animal[0]).DOI_F;
             }
             ParamCollection paraList = new ParamCollection();
-            paraList.Clause = PROJECT_BOOKING.ANIMAL_NUMBER_FIELD + "='" + hfAnimal_Number + "'";
-            paraList.Clause += " and " + PROJECT_BOOKING.DOI_FIELD + "='" + doi + "'";
+            paraList.Clause = PROJECT_BOOKING.ANIMAL_NUMBER_FIELD + " = @animalNum2 and " + PROJECT_BOOKING.DOI_FIELD + " = @bookDoi";
+            paraList.Add(new ParamData("animalNum2", DbType.String, hfAnimal_Number));
+            paraList.Add(new ParamData("bookDoi", DbType.String, doi));
             BaseList data = bll.Select(paraList, typeof(PROJECT_BOOKING));
             if (txtAnimal_Booking != "")
             {
@@ -1833,8 +1864,10 @@ namespace PDXmodelBase.HuData
                 else
                 {
                     ParamCollection q1 = new ParamCollection();
-                    q1.Clause = PROJECT_BOOKING.MODEL_ID_FIELD + "='" + book_MODEL_ID + "'";
-                    q1.Clause += " And " + PROJECT_BOOKING.ANIMAL_NUMBER_FIELD + " in (select Animal_Number from ANIMAL_INFO where MODEL_ID = '" + book_MODEL_ID + "' and DOI = '" + doi + "')";
+                    q1.Clause = PROJECT_BOOKING.MODEL_ID_FIELD + " = @q1ModelId And " + PROJECT_BOOKING.ANIMAL_NUMBER_FIELD + " in (select Animal_Number from ANIMAL_INFO where MODEL_ID = @q1ModelId2 and DOI = @q1Doi)";
+                    q1.Add(new ParamData("q1ModelId", DbType.String, book_MODEL_ID));
+                    q1.Add(new ParamData("q1ModelId2", DbType.String, book_MODEL_ID));
+                    q1.Add(new ParamData("q1Doi", DbType.String, doi));
                     BaseList maxdata = bll.Select(q1, typeof(PROJECT_BOOKING));
 
 
@@ -1911,13 +1944,17 @@ namespace PDXmodelBase.HuData
 
             #region save pro-monitor(booking)
             ParamCollection pls = new ParamCollection();
-            pls.Clause += " MODEL_ID='" + book_MODEL_ID + "' and Booking = '" + _del_project + "'";
+            pls.Clause = "MODEL_ID = @plsModelId and Booking = @plsBooking";
+            pls.Add(new ParamData("plsModelId", DbType.String, book_MODEL_ID));
+            pls.Add(new ParamData("plsBooking", DbType.String, _del_project));
             BaseList bookeddata = bll.Select(pls,typeof(PROJECT_BOOKING));
 
             if (bookeddata.Count == 1)
             {
                 ParamCollection pl1 = new ParamCollection();
-                pl1.Clause += " BOOKING_ANIMALS = '' and Model_ID = '" + book_MODEL_ID + "' and Project_Number='" + _del_project + "'";
+                pl1.Clause = "BOOKING_ANIMALS = '' and Model_ID = @pl1ModelId and Project_Number = @pl1ProjNum";
+                pl1.Add(new ParamData("pl1ModelId", DbType.String, book_MODEL_ID));
+                pl1.Add(new ParamData("pl1ProjNum", DbType.String, _del_project));
                 BaseList monitor = bll.Select(pl1, typeof(PROJECT_MONITOR));
                 foreach (PROJECT_MONITOR dr in monitor)
                 {
@@ -1927,13 +1964,17 @@ namespace PDXmodelBase.HuData
                 }
                 //子项目依附主项目
                 ParamCollection pl = new ParamCollection();
-                pl.Clause += " REQUEST_ID in (select [REQUEST_ID] from [PIGGYBACKED] where Model_ID = '" + book_MODEL_ID + "' and PIGGYBACKED_BY ='" + _del_project + "')";
+                pl.Clause = "REQUEST_ID in (select [REQUEST_ID] from [PIGGYBACKED] where Model_ID = @plModelId and PIGGYBACKED_BY = @plPiggyBy)";
+                pl.Add(new ParamData("plModelId", DbType.String, book_MODEL_ID));
+                pl.Add(new ParamData("plPiggyBy", DbType.String, _del_project));
                 BaseList childrenData = bll.Select(pl, typeof(REQUEST));
                 if (childrenData.Count > 0)
                 {
                     REQUEST childrow = (REQUEST)childrenData[0];
                     ParamCollection pl2 = new ParamCollection();
-                    pl2.Clause += " BOOKING_ANIMALS = '' and Model_ID = '" + childrow.MODEL_ID + "' and Project_Number='" + childrow.PROJECT_NUMBER + "'";
+                    pl2.Clause = "BOOKING_ANIMALS = '' and Model_ID = @pl2ModelId and Project_Number = @pl2ProjNum";
+                    pl2.Add(new ParamData("pl2ModelId", DbType.String, childrow.MODEL_ID));
+                    pl2.Add(new ParamData("pl2ProjNum", DbType.String, childrow.PROJECT_NUMBER));
                     BaseList monitor2 = bll.Select(pl2, typeof(PROJECT_MONITOR));
                     foreach (PROJECT_MONITOR dr in monitor2)
                     {
@@ -1947,7 +1988,9 @@ namespace PDXmodelBase.HuData
             else if (bookeddata.Count == 0)
             {
                 ParamCollection pl1 = new ParamCollection();
-                pl1.Clause += " BOOKING_ANIMALS <> '' and Model_ID = '" + book_MODEL_ID + "' and Project_Number='" + _del_project + "'";
+                pl1.Clause = "BOOKING_ANIMALS <> '' and Model_ID = @pl1bModelId and Project_Number = @pl1bProjNum";
+                pl1.Add(new ParamData("pl1bModelId", DbType.String, book_MODEL_ID));
+                pl1.Add(new ParamData("pl1bProjNum", DbType.String, _del_project));
                 BaseList monitor = bll.Select(pl1, typeof(PROJECT_MONITOR));
                 foreach (PROJECT_MONITOR dr in monitor)
                 {
@@ -1957,13 +2000,17 @@ namespace PDXmodelBase.HuData
                 }
                 //子项目依附主项目
                 ParamCollection pl = new ParamCollection();
-                pl.Clause += " REQUEST_ID in (select [REQUEST_ID] from [PIGGYBACKED] where Model_ID = '" + book_MODEL_ID + "' and PIGGYBACKED_BY ='" + _del_project + "')";
+                pl.Clause = "REQUEST_ID in (select [REQUEST_ID] from [PIGGYBACKED] where Model_ID = @plbModelId and PIGGYBACKED_BY = @plbPiggyBy)";
+                pl.Add(new ParamData("plbModelId", DbType.String, book_MODEL_ID));
+                pl.Add(new ParamData("plbPiggyBy", DbType.String, _del_project));
                 BaseList childrenData = bll.Select(pl, typeof(REQUEST));
                 if (childrenData.Count > 0)
                 {
                     REQUEST childrow = (REQUEST)childrenData[0];
                     ParamCollection pl2 = new ParamCollection();
-                    pl2.Clause += " BOOKING_ANIMALS <> '' and Model_ID = '" + childrow.MODEL_ID + "' and Project_Number='" + childrow.PROJECT_NUMBER + "'";
+                    pl2.Clause = "BOOKING_ANIMALS <> '' and Model_ID = @pl2bModelId and Project_Number = @pl2bProjNum";
+                    pl2.Add(new ParamData("pl2bModelId", DbType.String, childrow.MODEL_ID));
+                    pl2.Add(new ParamData("pl2bProjNum", DbType.String, childrow.PROJECT_NUMBER));
                     BaseList monitor2 = bll.Select(pl2, typeof(PROJECT_MONITOR));
                     foreach (PROJECT_MONITOR dr in monitor2)
                     {
@@ -1977,7 +2024,8 @@ namespace PDXmodelBase.HuData
 
             #region save Further_expanding
             ParamCollection paraList2 = new ParamCollection();
-            paraList2.Clause = PROJECT_FURTHER_EXPANDING.ANIMAL_NUMBER_FIELD + "='" + hfAnimal_Number + "'";
+            paraList2.Clause = PROJECT_FURTHER_EXPANDING.ANIMAL_NUMBER_FIELD + " = @feAnimalNum";
+            paraList2.Add(new ParamData("feAnimalNum", DbType.String, hfAnimal_Number));
             // paraList2.Clause += PROJECT_FURTHER_EXPANDING.PROJECT_NUMBER_FIELD + "='" + request.PROJECT_NUMBER + "' ";
             BaseList data2 = bll.Select(paraList2, typeof(PROJECT_FURTHER_EXPANDING));
             PROJECT_FURTHER_EXPANDING row2 = null;
@@ -2001,8 +2049,9 @@ namespace PDXmodelBase.HuData
                 else
                 {
                     ParamCollection q2 = new ParamCollection();
-                    q2.Clause = PROJECT_FURTHER_EXPANDING.MODEL_ID_FIELD + "='" + book_MODEL_ID + "'";
-                    q2.Clause += " And " + PROJECT_FURTHER_EXPANDING.ANIMAL_NUMBER_FIELD + " in (select Animal_Number from ANIMAL_INFO where MODEL_ID = '" + book_MODEL_ID + "' )";
+                    q2.Clause = PROJECT_FURTHER_EXPANDING.MODEL_ID_FIELD + " = @q2ModelId And " + PROJECT_FURTHER_EXPANDING.ANIMAL_NUMBER_FIELD + " in (select Animal_Number from ANIMAL_INFO where MODEL_ID = @q2ModelId2)";
+                    q2.Add(new ParamData("q2ModelId", DbType.String, book_MODEL_ID));
+                    q2.Add(new ParamData("q2ModelId2", DbType.String, book_MODEL_ID));
                     BaseList maxdata2 = bll.Select(q2, typeof(PROJECT_FURTHER_EXPANDING));
                     int total2 = context.Request["total"] == "" ? 0 : int.Parse(context.Request["total"]);
                     if (total2 - maxdata2.Count > 1)
@@ -2065,7 +2114,9 @@ namespace PDXmodelBase.HuData
                 if (txtProjectNumber != "")
                 {
                     ParamCollection query1 = new ParamCollection();
-                    query1.Clause = REQUEST.PROJECT_NUMBER_FIELD + "='" + txtProjectNumber + "' and " + REQUEST.REQUEST_ID_FIELD + " <> '" + hfRequest_id + "' and " + REQUEST.ISDELETE_FIELD + " <> 'Y'";
+                    query1.Clause = REQUEST.PROJECT_NUMBER_FIELD + " = @srProjNum and " + REQUEST.REQUEST_ID_FIELD + " <> @srReqId and " + REQUEST.ISDELETE_FIELD + " <> 'Y'";
+                    query1.Add(new ParamData("srProjNum", DbType.String, txtProjectNumber));
+                    query1.Add(new ParamData("srReqId", DbType.String, hfRequest_id));
                     exist = bll.Select(query1, typeof(REQUEST));
                 }
                 if (exist.Count == 0)
@@ -2073,7 +2124,8 @@ namespace PDXmodelBase.HuData
                     REQUEST row = null;
 
                     ParamCollection paraList = new ParamCollection();
-                    paraList.Clause = REQUEST.REQUEST_ID_FIELD + "='" + hfRequest_id + "'";
+                    paraList.Clause = REQUEST.REQUEST_ID_FIELD + " = @srReqId2";
+                    paraList.Add(new ParamData("srReqId2", DbType.String, hfRequest_id));
                     BaseList data = bll.Select(paraList, typeof(REQUEST));
                     if (data.Count > 0)
                     {
@@ -2120,19 +2172,15 @@ namespace PDXmodelBase.HuData
                         }
 
                         ParamCollection delQuery = new ParamCollection();
-                        delQuery.Clause = PROJECT_BOOKING.PROJECT_NUMBER_FIELD + "='" + row.PROJECT_NUMBER + "'";
+                        delQuery.Clause = PROJECT_BOOKING.PROJECT_NUMBER_FIELD + " = @dqProjNum";
+                        delQuery.Add(new ParamData("dqProjNum", DbType.String, row.PROJECT_NUMBER));
                         if (editModel_ID != "")
                         {
-                            string ids = "";
-                            foreach (string a in editModel_ID.Split(','))
-                            {
-                                if (a != "")
-                                {
-                                    ids += "'" + a + "',";
-                                }
-                            }
-
-                            delQuery.Clause += string.Format("AND ({0}.{1} not in ({2}) )", PROJECT_BOOKING.TABLE_NAME, PROJECT_BOOKING.MODEL_ID_FIELD, ids.TrimEnd(','));
+                            var _dqMids = editModel_ID.Split(',').Where(a => !string.IsNullOrEmpty(a)).ToArray();
+                            var _dqParams = _dqMids.Select((_, i) => "@dqMid" + i).ToArray();
+                            delQuery.Clause += string.Format(" AND ({0}.{1} not in ({2}) )", PROJECT_BOOKING.TABLE_NAME, PROJECT_BOOKING.MODEL_ID_FIELD, string.Join(",", _dqParams));
+                            for (int i = 0; i < _dqMids.Length; i++)
+                                delQuery.Add(new ParamData("dqMid" + i, DbType.String, _dqMids[i]));
                         }
                         BaseList deletes = bll.Select(delQuery, typeof(PROJECT_BOOKING));
                         foreach (PROJECT_BOOKING del in deletes)
@@ -2144,19 +2192,15 @@ namespace PDXmodelBase.HuData
 
 
                         ParamCollection delQuery2 = new ParamCollection();
-                        delQuery2.Clause = PROJECT_FURTHER_EXPANDING.PROJECT_NUMBER_FIELD + "='" + row.PROJECT_NUMBER + "'";
+                        delQuery2.Clause = PROJECT_FURTHER_EXPANDING.PROJECT_NUMBER_FIELD + " = @dq2ProjNum";
+                        delQuery2.Add(new ParamData("dq2ProjNum", DbType.String, row.PROJECT_NUMBER));
                         if (editModel_ID != "")
                         {
-                            string ids = "";
-                            foreach (string a in editModel_ID.Split(','))
-                            {
-                                if (a != "")
-                                {
-                                    ids += "'" + a + "',";
-                                }
-                            }
-
-                            delQuery2.Clause += string.Format("AND ({0}.{1} not in ({2}) )", PROJECT_FURTHER_EXPANDING.TABLE_NAME, PROJECT_FURTHER_EXPANDING.MODEL_ID_FIELD, ids.TrimEnd(','));
+                            var _dq2Mids = editModel_ID.Split(',').Where(a => !string.IsNullOrEmpty(a)).ToArray();
+                            var _dq2Params = _dq2Mids.Select((_, i) => "@dq2Mid" + i).ToArray();
+                            delQuery2.Clause += string.Format(" AND ({0}.{1} not in ({2}) )", PROJECT_FURTHER_EXPANDING.TABLE_NAME, PROJECT_FURTHER_EXPANDING.MODEL_ID_FIELD, string.Join(",", _dq2Params));
+                            for (int i = 0; i < _dq2Mids.Length; i++)
+                                delQuery2.Add(new ParamData("dq2Mid" + i, DbType.String, _dq2Mids[i]));
                         }
                         BaseList deletes2 = bll.Select(delQuery2, typeof(PROJECT_FURTHER_EXPANDING));
                         foreach (PROJECT_FURTHER_EXPANDING del2 in deletes2)
@@ -2167,19 +2211,15 @@ namespace PDXmodelBase.HuData
 
 
                         ParamCollection delQuery3 = new ParamCollection();
-                        delQuery3.Clause = PROJECT_REVIVE.PROJECT_NUMBER_FIELD + "='" + row.PROJECT_NUMBER + "'";
+                        delQuery3.Clause = PROJECT_REVIVE.PROJECT_NUMBER_FIELD + " = @dq3ProjNum";
+                        delQuery3.Add(new ParamData("dq3ProjNum", DbType.String, row.PROJECT_NUMBER));
                         if (editModel_ID != "")
                         {
-                            string ids = "";
-                            foreach (string a in editModel_ID.Split(','))
-                            {
-                                if (a != "")
-                                {
-                                    ids += "'" + a + "',";
-                                }
-                            }
-
-                            delQuery3.Clause += string.Format("AND ({0}.{1} not in ({2}) )", PROJECT_REVIVE.TABLE_NAME, PROJECT_REVIVE.MODEL_ID_FIELD, ids.TrimEnd(','));
+                            var _dq3Mids = editModel_ID.Split(',').Where(a => !string.IsNullOrEmpty(a)).ToArray();
+                            var _dq3Params = _dq3Mids.Select((_, i) => "@dq3Mid" + i).ToArray();
+                            delQuery3.Clause += string.Format(" AND ({0}.{1} not in ({2}) )", PROJECT_REVIVE.TABLE_NAME, PROJECT_REVIVE.MODEL_ID_FIELD, string.Join(",", _dq3Params));
+                            for (int i = 0; i < _dq3Mids.Length; i++)
+                                delQuery3.Add(new ParamData("dq3Mid" + i, DbType.String, _dq3Mids[i]));
                         }
                         BaseList deletes3 = bll.Select(delQuery3, typeof(PROJECT_REVIVE));
                         foreach (PROJECT_REVIVE del3 in deletes3)
@@ -2412,14 +2452,12 @@ namespace PDXmodelBase.HuData
         {
             string msg = "";
             string hfStudy_id = context.Request["hfStudy_id"] ?? "";
-            string ids = "";
-            string[] hfStudy_ids = hfStudy_id.Split(',');
-            foreach (string id in hfStudy_ids)
-            {
-                ids += "'" + id + "',";
-            }
+            var _studyIds = hfStudy_id.Split(',').Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            var _studyParams = _studyIds.Select((_, i) => "@dsId" + i).ToArray();
             ParamCollection paraList = new ParamCollection();
-            paraList.Clause += string.Format(" ({0}.{1} in ({2}) )", PROJECT_MONITOR_STUDY_DESIGN.TABLE_NAME, PROJECT_MONITOR_STUDY_DESIGN.PROJECT_MONITOR_STUDY_DESIGN_ID_FIELD, ids.TrimEnd(','));
+            paraList.Clause = string.Format("({0}.{1} in ({2}) )", PROJECT_MONITOR_STUDY_DESIGN.TABLE_NAME, PROJECT_MONITOR_STUDY_DESIGN.PROJECT_MONITOR_STUDY_DESIGN_ID_FIELD, string.Join(",", _studyParams));
+            for (int i = 0; i < _studyIds.Length; i++)
+                paraList.Add(new ParamData("dsId" + i, DbType.String, _studyIds[i]));
             BaseList data = bll.Select(paraList, typeof(PROJECT_MONITOR_STUDY_DESIGN));
             foreach (PROJECT_MONITOR_STUDY_DESIGN row in data)
             {
@@ -2519,7 +2557,8 @@ namespace PDXmodelBase.HuData
             {
                 string hfMonitor_id = context.Request["hfMonitor_id"] ?? "";
                 ParamCollection paraList = new ParamCollection();
-                paraList.Clause = PROJECT_MONITOR.PROJECT_MONITOR_ID_FIELD + "='" + hfMonitor_id + "'";
+                paraList.Clause = PROJECT_MONITOR.PROJECT_MONITOR_ID_FIELD + " = @monitorId";
+                paraList.Add(new ParamData("monitorId", DbType.String, hfMonitor_id));
                 BaseList data = bll.Select(paraList, typeof(PROJECT_MONITOR));
                 PROJECT_MONITOR row = (PROJECT_MONITOR)data[0];
 
@@ -2659,7 +2698,8 @@ namespace PDXmodelBase.HuData
             //Groupｎ的给药工作量=mice #/group*（2.08+1.07+根据各组Dosing route选择的单位时间，从2.02-2.07任选）* Dosing schedule*Dosing period*7
             double groupN = 0;
             ParamCollection paraList = new ParamCollection();
-            paraList.Clause = PROJECT_MONITOR_STUDY_DESIGN.PROJECT_MONITOR_ID_FIELD + "='" + mid + "'";
+            paraList.Clause = PROJECT_MONITOR_STUDY_DESIGN.PROJECT_MONITOR_ID_FIELD + " = @calcMid";
+            paraList.Add(new ParamData("calcMid", DbType.String, mid));
             BaseList dataGroup = bll.Select(paraList,typeof(PROJECT_MONITOR_STUDY_DESIGN));
             if (dataGroup.Count > 0)
             {
@@ -2749,14 +2789,12 @@ namespace PDXmodelBase.HuData
         {
             string msg = "";
             string hfMonitor_id = context.Request["MonitorID"] ?? "";
-            string ids = "";
-            string[] hfMonitor_ids = hfMonitor_id.Split(',');
-            foreach (string id in hfMonitor_ids)
-            {
-                ids += "'" + id + "',";
-            }
+            var _monIds = hfMonitor_id.Split(',').Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            var _monParams = _monIds.Select((_, i) => "@monId" + i).ToArray();
             ParamCollection paraList = new ParamCollection();
-            paraList.Clause += string.Format(" ({0}.{1} in ({2}) )", PROJECT_MONITOR.TABLE_NAME, PROJECT_MONITOR.PROJECT_MONITOR_ID_FIELD, ids.TrimEnd(','));
+            paraList.Clause = string.Format("({0}.{1} in ({2}) )", PROJECT_MONITOR.TABLE_NAME, PROJECT_MONITOR.PROJECT_MONITOR_ID_FIELD, string.Join(",", _monParams));
+            for (int i = 0; i < _monIds.Length; i++)
+                paraList.Add(new ParamData("monId" + i, DbType.String, _monIds[i]));
 
             BaseList data = bll.Select(paraList, typeof(PROJECT_MONITOR));
             foreach (PROJECT_MONITOR row in data)
@@ -2775,7 +2813,8 @@ namespace PDXmodelBase.HuData
             string delNewModel_ID = context.Request["delNewModel_ID"] ?? "";
 
             ParamCollection paraList = new ParamCollection();
-            paraList.Clause += string.Format(" (NEWMODEL_ID = '{0}' )", delNewModel_ID);
+            paraList.Clause = "NEWMODEL_ID = @delNewModelId";
+            paraList.Add(new ParamData("delNewModelId", DbType.String, delNewModel_ID));
 
             BaseList data = bll.Select(paraList, typeof(NEWMODEL));
             if (data.Count > 0)
@@ -2849,14 +2888,12 @@ namespace PDXmodelBase.HuData
         {
             string msg = "";
             string delSpecimen_Stock_ID = context.Request["delSpecimen_Stock_ID"] ?? "";
-            string ids = "";
-            string[] hfid = delSpecimen_Stock_ID.Split(',');
-            foreach (string id in hfid)
-            {
-                ids += "'" + id + "',";
-            }
+            var _sstkIds = delSpecimen_Stock_ID.Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            var _sstkParams = _sstkIds.Select((_, i) => "@sstkId" + i).ToArray();
             ParamCollection paraList = new ParamCollection();
-            paraList.Clause += string.Format(" ({0}.{1} in ({2}) )", SPECIMEN_STOCK.TABLE_NAME, SPECIMEN_STOCK.SPECIMEN_STOCK_ID_FIELD, ids.TrimEnd(','));
+            paraList.Clause = string.Format("({0}.{1} in ({2}) )", SPECIMEN_STOCK.TABLE_NAME, SPECIMEN_STOCK.SPECIMEN_STOCK_ID_FIELD, string.Join(",", _sstkParams));
+            for (int i = 0; i < _sstkIds.Length; i++)
+                paraList.Add(new ParamData("sstkId" + i, DbType.String, _sstkIds[i]));
 
             BaseList data = bll.Select(paraList, typeof(SPECIMEN_STOCK));
             foreach (SPECIMEN_STOCK row in data)
@@ -2914,7 +2951,8 @@ namespace PDXmodelBase.HuData
             string delValidation_ID = context.Request["delValidation_ID"] ?? "";
 
             ParamCollection paraList = new ParamCollection();
-            paraList.Clause += string.Format(" (Validation_ID = '{0}' )", delValidation_ID);
+            paraList.Clause = "Validation_ID = @delValidationId";
+            paraList.Add(new ParamData("delValidationId", DbType.String, delValidation_ID));
 
             BaseList data = bll.Select(paraList, typeof(VALIDATION));
             if (data.Count > 0)
@@ -2939,7 +2977,8 @@ namespace PDXmodelBase.HuData
             string delEndModels_ID = context.Request["delEndModels_ID"] ?? "";
 
             ParamCollection paraList = new ParamCollection();
-            paraList.Clause += string.Format(" (EndModels_ID = '{0}' )", delEndModels_ID);
+            paraList.Clause = "EndModels_ID = @delEndModelsId";
+            paraList.Add(new ParamData("delEndModelsId", DbType.String, delEndModels_ID));
 
             BaseList data = bll.Select(paraList, typeof(ENDMODELS));
             if (data.Count > 0)
@@ -2959,7 +2998,8 @@ namespace PDXmodelBase.HuData
             string delValidationStatus_Huprime_ID = context.Request["delValidationStatus_Huprime_ID"] ?? "";
 
             ParamCollection paraList = new ParamCollection();
-            paraList.Clause += string.Format(" (ValidationStatus_Huprime_ID = '{0}' )", delValidationStatus_Huprime_ID);
+            paraList.Clause = "ValidationStatus_Huprime_ID = @delVsHuprimeId";
+            paraList.Add(new ParamData("delVsHuprimeId", DbType.String, delValidationStatus_Huprime_ID));
 
             BaseList data = bll.Select(paraList, typeof(VALIDATIONSTATUS_HUPRIME));
             if (data.Count > 0)
@@ -2980,7 +3020,8 @@ namespace PDXmodelBase.HuData
             string delRevival_ID = context.Request["delRevival_ID"] ?? "";
 
             ParamCollection paraList = new ParamCollection();
-            paraList.Clause += string.Format(" (Revival_ID = '{0}' )", delRevival_ID);
+            paraList.Clause = "Revival_ID = @delRevivalId";
+            paraList.Add(new ParamData("delRevivalId", DbType.String, delRevival_ID));
 
             BaseList data = bll.Select(paraList, typeof(REVIVAL));
             if (data.Count > 0)
@@ -3000,7 +3041,8 @@ namespace PDXmodelBase.HuData
             string delGeneticTest_ID = context.Request["delGeneticTest_ID"] ?? "";
 
             ParamCollection paraList = new ParamCollection();
-            paraList.Clause += string.Format(" (GeneticTest_ID = '{0}' )", delGeneticTest_ID);
+            paraList.Clause = "GeneticTest_ID = @delGeneticTestId";
+            paraList.Add(new ParamData("delGeneticTestId", DbType.String, delGeneticTest_ID));
 
             BaseList data = bll.Select(paraList, typeof(GENETICTEST));
             if (data.Count > 0)
@@ -3020,7 +3062,8 @@ namespace PDXmodelBase.HuData
             string delValidationStatus_Hukime_ID = context.Request["delValidationStatus_Hukime_ID"] ?? "";
 
             ParamCollection paraList = new ParamCollection();
-            paraList.Clause += string.Format(" (ValidationStatus_Hukime_ID = '{0}' )", delValidationStatus_Hukime_ID);
+            paraList.Clause = "ValidationStatus_Hukime_ID = @delVsHukimeId";
+            paraList.Add(new ParamData("delVsHukimeId", DbType.String, delValidationStatus_Hukime_ID));
 
             BaseList data = bll.Select(paraList, typeof(VALIDATIONSTATUS_HUKIME));
             if (data.Count > 0)
@@ -3040,7 +3083,8 @@ namespace PDXmodelBase.HuData
             string delRoutineMaintain_ID = context.Request["delRoutineMaintain_ID"] ?? "";
 
             ParamCollection paraList = new ParamCollection();
-            paraList.Clause += string.Format(" (RoutineMaintain_ID = '{0}' )", delRoutineMaintain_ID);
+            paraList.Clause = "RoutineMaintain_ID = @delRoutineMaintainId";
+            paraList.Add(new ParamData("delRoutineMaintainId", DbType.String, delRoutineMaintain_ID));
 
             BaseList data = bll.Select(paraList, typeof(ROUTINEMAINTAIN));
             if (data.Count > 0)
@@ -3060,7 +3104,8 @@ namespace PDXmodelBase.HuData
             string delRequest_id = context.Request["delRequest_id"] ?? "";
 
             ParamCollection paraList = new ParamCollection();
-            paraList.Clause += string.Format(" (REQUEST_ID = '{0}' )", delRequest_id);
+            paraList.Clause = "REQUEST_ID = @delRequestId";
+            paraList.Add(new ParamData("delRequestId", DbType.String, delRequest_id));
 
             BaseList data = bll.Select(paraList, typeof(REQUEST));
             if (data.Count > 0)
@@ -3122,7 +3167,9 @@ namespace PDXmodelBase.HuData
             BaseList exist = new BaseList();
 
             ParamCollection query1 = new ParamCollection();
-            query1.Clause = ANIMAL_HANDOVER.MODEL_ID_FIELD + "='" + hfMid + "' and " + ANIMAL_HANDOVER.REQUEST_ID_FIELD + " = '" + hfRid + "'";
+            query1.Clause = ANIMAL_HANDOVER.MODEL_ID_FIELD + " = @ahMid and " + ANIMAL_HANDOVER.REQUEST_ID_FIELD + " = @ahRid";
+            query1.Add(new ParamData("ahMid", DbType.String, hfMid));
+            query1.Add(new ParamData("ahRid", DbType.String, hfRid));
             exist = bll.Select(query1, typeof(ANIMAL_HANDOVER));
 
             if (exist.Count == 0)
@@ -3154,8 +3201,9 @@ namespace PDXmodelBase.HuData
             DataTable dt = ojbReportRule.GetGrid("GetAnimalStatus", para);
             #region booking 在自己项目和piggybacked by 项目的都算
             ParamCollection pl = new ParamCollection();
-            pl.Clause += " Project_Number in (select [PIGGYBACKED_BY] from [PIGGYBACKED] where REQUEST_ID = '" + hfRid + "'";
-            pl.Clause += " and Model_ID = '" + hfMid + "')";
+            pl.Clause = "Project_Number in (select [PIGGYBACKED_BY] from [PIGGYBACKED] where REQUEST_ID = @plRid and Model_ID = @plMid)";
+            pl.Add(new ParamData("plRid", DbType.String, hfRid));
+            pl.Add(new ParamData("plMid", DbType.String, hfMid));
             BaseList newRid = bll.Select(pl, typeof(REQUEST));
             string id = hfRid;
             if (newRid.Count > 0)
@@ -3253,7 +3301,9 @@ namespace PDXmodelBase.HuData
           
             #region PROJECT_MONITOR
             ParamCollection pl4 = new ParamCollection();
-            pl4.Clause = PROJECT_MONITOR.MODEL_ID_FIELD + "='" + hfMid + "' and " + PROJECT_MONITOR.REQUEST_ID_FIELD + "='" + hfRid + "'";
+            pl4.Clause = PROJECT_MONITOR.MODEL_ID_FIELD + " = @pl4Mid and " + PROJECT_MONITOR.REQUEST_ID_FIELD + " = @pl4Rid";
+            pl4.Add(new ParamData("pl4Mid", DbType.String, hfMid));
+            pl4.Add(new ParamData("pl4Rid", DbType.String, hfRid));
             BaseList MData = bll.Select(pl4, typeof(PROJECT_MONITOR));
             if (MData.Count > 0)
             {
@@ -3315,7 +3365,9 @@ namespace PDXmodelBase.HuData
             BaseList exist = new BaseList();
 
             ParamCollection query1 = new ParamCollection();
-            query1.Clause = PIGGYBACKED.MODEL_ID_FIELD + "='" + hfMid + "' and " + PIGGYBACKED.REQUEST_ID_FIELD + " = '" + hfRid + "'";
+            query1.Clause = PIGGYBACKED.MODEL_ID_FIELD + " = @pbMid and " + PIGGYBACKED.REQUEST_ID_FIELD + " = @pbRid";
+            query1.Add(new ParamData("pbMid", DbType.String, hfMid));
+            query1.Add(new ParamData("pbRid", DbType.String, hfRid));
             exist = bll.Select(query1, typeof(PIGGYBACKED));
             if (txtPiggybacked != "")
             {
@@ -3353,7 +3405,8 @@ namespace PDXmodelBase.HuData
             string signed = context.Request["SIGNED"] ?? "";
 
             ParamCollection query1 = new ParamCollection();
-            query1.Clause = REQUEST.REQUEST_ID_FIELD + " = '" + hfRequest_id + "'";
+            query1.Clause = REQUEST.REQUEST_ID_FIELD + " = @pmEditReqId";
+            query1.Add(new ParamData("pmEditReqId", DbType.String, hfRequest_id));
 
             BaseList data = bll.Select(query1, typeof(REQUEST));
             if (data.Count > 0)
@@ -3609,7 +3662,8 @@ namespace PDXmodelBase.HuData
                     }
 
                     ParamCollection paraList1 = new ParamCollection();
-                    paraList1.Clause = PROJECT_MONITOR.REQUEST_ID_FIELD + "='" + hfRequest_id + "'";
+                    paraList1.Clause = PROJECT_MONITOR.REQUEST_ID_FIELD + " = @pl1ReqId";
+                    paraList1.Add(new ParamData("pl1ReqId", DbType.String, hfRequest_id));
                     BaseList oldData = bll.Select(paraList1, typeof(PROJECT_MONITOR));
                     if (oldData.Count > 0)
                     {
@@ -3656,7 +3710,8 @@ namespace PDXmodelBase.HuData
             string msg = "";
             string hfMonitor_id = context.Request["hfMonitor_id"] ?? "";
             ParamCollection query1 = new ParamCollection();
-            query1.Clause = PROJECT_MONITOR.PROJECT_MONITOR_ID_FIELD + " = '" + hfMonitor_id + "'";
+            query1.Clause = PROJECT_MONITOR.PROJECT_MONITOR_ID_FIELD + " = @csMonId";
+            query1.Add(new ParamData("csMonId", DbType.String, hfMonitor_id));
 
             BaseList data = bll.Select(query1, typeof(PROJECT_MONITOR));
             if (data.Count > 0)
@@ -3698,7 +3753,8 @@ namespace PDXmodelBase.HuData
             string msg = "";
             string hfMonitor_id = context.Request["hfMonitor_id"] ?? "";
             ParamCollection query1 = new ParamCollection();
-            query1.Clause = PROJECT_MONITOR.PROJECT_MONITOR_ID_FIELD + " = '" + hfMonitor_id + "'";
+            query1.Clause = PROJECT_MONITOR.PROJECT_MONITOR_ID_FIELD + " = @pmEditMonId";
+            query1.Add(new ParamData("pmEditMonId", DbType.String, hfMonitor_id));
 
             BaseList data = bll.Select(query1, typeof(PROJECT_MONITOR));
             if (data.Count > 0)
@@ -3824,7 +3880,8 @@ namespace PDXmodelBase.HuData
 
 
             ParamCollection query1 = new ParamCollection();
-            query1.Clause = PROJECT_MONITOR.PROJECT_MONITOR_ID_FIELD + " = '" + hfMonitor_id + "'";
+            query1.Clause = PROJECT_MONITOR.PROJECT_MONITOR_ID_FIELD + " = @jsdEditMonId";
+            query1.Add(new ParamData("jsdEditMonId", DbType.String, hfMonitor_id));
 
             BaseList data = bll.Select(query1, typeof(PROJECT_MONITOR));
             if (data.Count > 0)
@@ -4729,7 +4786,8 @@ namespace PDXmodelBase.HuData
             if (!bll.Find(pid, codes, typeof(ROUTINEMAINTAIN)))
             {
                 ParamCollection paralist = new ParamCollection();
-                paralist.Clause = ROUTINEMAINTAIN.ROUTINEMAINTAIN_ID_FIELD + "= '" + pid + "'";
+                paralist.Clause = ROUTINEMAINTAIN.ROUTINEMAINTAIN_ID_FIELD + " = @rmPid";
+                paralist.Add(new ParamData("rmPid", DbType.Decimal, pid));
                 BaseList dataPDX = bll.Select(paralist, typeof(ROUTINEMAINTAIN));
                 try
                 {
@@ -4883,7 +4941,8 @@ namespace PDXmodelBase.HuData
             if (!bll.Find(pid, codes, typeof(VALIDATION)))
             {
                 ParamCollection paralist = new ParamCollection();
-                paralist.Clause = VALIDATION.VALIDATION_ID_FIELD + "= '" + pid + "'";
+                paralist.Clause = VALIDATION.VALIDATION_ID_FIELD + " = @valPid";
+                paralist.Add(new ParamData("valPid", DbType.Decimal, pid));
                 BaseList dataPDX = bll.Select(paralist, typeof(VALIDATION));
                 try
                 {
@@ -5042,7 +5101,8 @@ namespace PDXmodelBase.HuData
             if (!bll.Find(pid, codes, typeof(NEWMODEL)))
             {
                 ParamCollection paralist = new ParamCollection();
-                paralist.Clause = NEWMODEL.NEWMODEL_ID_FIELD + "= '" + pid + "'";
+                paralist.Clause = NEWMODEL.NEWMODEL_ID_FIELD + " = @nmPid";
+                paralist.Add(new ParamData("nmPid", DbType.Decimal, pid));
                 BaseList dataPDX = bll.Select(paralist, typeof(NEWMODEL));
                 try
                 {
@@ -5198,7 +5258,8 @@ namespace PDXmodelBase.HuData
             decimal pid = decimal.Parse(context.Request["hfEndModels_ID"]);
 
             ParamCollection paralist = new ParamCollection();
-            paralist.Clause = ENDMODELS.ENDMODELS_ID_FIELD + "= '" + pid + "'";
+            paralist.Clause = ENDMODELS.ENDMODELS_ID_FIELD + " = @emPid";
+            paralist.Add(new ParamData("emPid", DbType.Decimal, pid));
             BaseList dataPDX = bll.Select(paralist, typeof(ENDMODELS));
             try
             {
@@ -5246,7 +5307,8 @@ namespace PDXmodelBase.HuData
             decimal pid = decimal.Parse(context.Request["hfRevival_ID"]);
 
             ParamCollection paralist = new ParamCollection();
-            paralist.Clause = REVIVAL.REVIVAL_ID_FIELD + "= '" + pid + "'";
+            paralist.Clause = REVIVAL.REVIVAL_ID_FIELD + " = @rvPid";
+            paralist.Add(new ParamData("rvPid", DbType.Decimal, pid));
             BaseList dataPDX = bll.Select(paralist, typeof(REVIVAL));
             try
             {
@@ -5349,7 +5411,8 @@ namespace PDXmodelBase.HuData
             decimal pid = decimal.Parse(context.Request["hfGeneticTest_ID"]);
 
             ParamCollection paralist = new ParamCollection();
-            paralist.Clause = GENETICTEST.GENETICTEST_ID_FIELD + "= '" + pid + "'";
+            paralist.Clause = GENETICTEST.GENETICTEST_ID_FIELD + " = @gtPid";
+            paralist.Add(new ParamData("gtPid", DbType.Decimal, pid));
             BaseList dataPDX = bll.Select(paralist, typeof(GENETICTEST));
             try
             {
@@ -5401,7 +5464,8 @@ namespace PDXmodelBase.HuData
             decimal pid = decimal.Parse(context.Request["hfValidationStatus_Huprime_ID"]);
 
             ParamCollection paralist = new ParamCollection();
-            paralist.Clause = VALIDATIONSTATUS_HUPRIME.VALIDATIONSTATUS_HUPRIME_ID_FIELD + "= '" + pid + "'";
+            paralist.Clause = VALIDATIONSTATUS_HUPRIME.VALIDATIONSTATUS_HUPRIME_ID_FIELD + " = @vshpPid";
+            paralist.Add(new ParamData("vshpPid", DbType.Decimal, pid));
             BaseList dataPDX = bll.Select(paralist, typeof(VALIDATIONSTATUS_HUPRIME));
             try
             {
@@ -5460,7 +5524,8 @@ namespace PDXmodelBase.HuData
             decimal pid = decimal.Parse(context.Request["hfValidationStatus_Hukime_ID"]);
 
             ParamCollection paralist = new ParamCollection();
-            paralist.Clause = VALIDATIONSTATUS_HUKIME.VALIDATIONSTATUS_HUKIME_ID_FIELD + "= '" + pid + "'";
+            paralist.Clause = VALIDATIONSTATUS_HUKIME.VALIDATIONSTATUS_HUKIME_ID_FIELD + " = @vshkPid";
+            paralist.Add(new ParamData("vshkPid", DbType.Decimal, pid));
             BaseList dataPDX = bll.Select(paralist, typeof(VALIDATIONSTATUS_HUKIME));
             try
             {
@@ -5626,7 +5691,8 @@ namespace PDXmodelBase.HuData
                     if (!tempMID.Contains(lists[0].ToString()))
                     {
                         ParamCollection paralist = new ParamCollection();
-                        paralist.Clause += ANIMAL_TREE.MODEL_ID_FIELD + "='" + lists[0].ToString() + "'";
+                        paralist.Clause = ANIMAL_TREE.MODEL_ID_FIELD + " = @atMid1";
+                        paralist.Add(new ParamData("atMid1", DbType.String, lists[0].ToString()));
                         alltree = bll.Select(paralist, typeof(ANIMAL_TREE));
                         tempMID.Add(lists[0].ToString());
                         alltreeData = alltree.ConvertAll<ANIMAL_TREE>(ANIMAL_TREE.Convert);
@@ -5634,7 +5700,8 @@ namespace PDXmodelBase.HuData
                     else
                     {
                         ParamCollection paralist = new ParamCollection();
-                        paralist.Clause += ANIMAL_TREE.MODEL_ID_FIELD + "='" + lists[0].ToString() + "'";
+                        paralist.Clause = ANIMAL_TREE.MODEL_ID_FIELD + " = @atMid2";
+                        paralist.Add(new ParamData("atMid2", DbType.String, lists[0].ToString()));
                         alltree = bll.Select(paralist, typeof(ANIMAL_TREE));
 
                         List<ANIMAL_TREE> addData = importData2.ConvertAll<ANIMAL_TREE>(ANIMAL_TREE.Convert).FindAll(delegate(ANIMAL_TREE perm) { return perm.MODEL_ID == lists[0].ToString(); });
@@ -5895,7 +5962,8 @@ namespace PDXmodelBase.HuData
             //if (!bll.Find(pid, context.Request["txtSerial"], typeof(NEWMODEL)))
             //{
                 ParamCollection paralist = new ParamCollection();
-                paralist.Clause = SPECIMEN_STOCK.SPECIMEN_STOCK_ID_FIELD + "= '" + pid + "'";
+                paralist.Clause = SPECIMEN_STOCK.SPECIMEN_STOCK_ID_FIELD + " = @ssPid";
+                paralist.Add(new ParamData("ssPid", DbType.Decimal, pid));
                 BaseList dataPDX = bll.Select(paralist, typeof(SPECIMEN_STOCK));
                 try
                 {
@@ -5922,7 +5990,8 @@ namespace PDXmodelBase.HuData
                    string aa = context.Request["animal_id"] ?? "";
 
                    ParamCollection paralist2 = new ParamCollection();
-                   paralist2.Clause = ANIMAL_INFO.ANIMAL_INFO_ID_FIELD + "= '" + aa + "'";
+                   paralist2.Clause = ANIMAL_INFO.ANIMAL_INFO_ID_FIELD + " = @aaAnimalId";
+                   paralist2.Add(new ParamData("aaAnimalId", DbType.String, aa));
                    BaseList animals = bll.Select(paralist2, typeof(ANIMAL_INFO));
                    if (animals.Count > 0)
                    {
@@ -5981,7 +6050,8 @@ namespace PDXmodelBase.HuData
                         if (lists[5] != "")
                         {
                             ParamCollection query1 = new ParamCollection();
-                            query1.Clause = REQUEST.PROJECT_NUMBER_FIELD + "='" + lists[5] + "'";
+                            query1.Clause = REQUEST.PROJECT_NUMBER_FIELD + " = @importProjNum";
+                            query1.Add(new ParamData("importProjNum", DbType.String, lists[5]));
                             exist = bll.Select(query1, typeof(REQUEST));
                         }
                         if (exist.Count == 0)
@@ -6508,7 +6578,8 @@ namespace PDXmodelBase.HuData
             resultStr += "[";
             string ddlname = context.Request["ddlname"] ?? "";
             ParamCollection paralist = new ParamCollection();
-            paralist.Clause = DROPDOWNLIST.DROPDOWNLIST_NAME_FIELD + " = '" + ddlname + "'";
+            paralist.Clause = DROPDOWNLIST.DROPDOWNLIST_NAME_FIELD + " = @ddlName";
+            paralist.Add(new ParamData("ddlName", DbType.String, ddlname));
             BaseList data = bll.Select(paralist, typeof(DROPDOWNLIST));
             if (data.Count > 0)
             {
