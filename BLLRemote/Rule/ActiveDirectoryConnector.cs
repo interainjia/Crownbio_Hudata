@@ -10,6 +10,14 @@ using System.DirectoryServices.Protocols;
 
 namespace Crownbio.BLL.Rule
 {
+    // 专门表示"该域里确实找不到这个账号"，与密码错误/账号锁定等其他失败原因区分开，
+    // 便于 IsUserLoggedIn 在多域尝试时挑选更有信息量的错误对外抛出。
+    public class ActiveDirectoryUserNotFoundException : Exception
+    {
+        public ActiveDirectoryUserNotFoundException(string message) : base(message) { }
+        public ActiveDirectoryUserNotFoundException(string message, Exception innerException) : base(message, innerException) { }
+    }
+
     public static class ActiveDirectoryConnector
     {
         #region Member Variables
@@ -39,70 +47,160 @@ namespace Crownbio.BLL.Rule
             }
         }
 
+        // 新域（crownbio.cn），在 web.config 中通过独立的 "ldapConfigurationCn" 节点配置。
+        // 在配置补充之前，GetSection 会返回 null，IsUserLoggedIn 会自动忽略该域，行为与改造前一致。
+        private static ActiveDirectoryConfiguration activeDirectorySettingsCn = null;
+        public static ActiveDirectoryConfiguration ActiveDirectorySettingsCn
+        {
+            get
+            {
+                try
+                {
+                    if (activeDirectorySettingsCn == null)
+                    {
+                        activeDirectorySettingsCn = (ActiveDirectoryConfiguration)ConfigurationManager.GetSection("ldapConfigurationCn");
+                    }
+                }
+                catch (Exception ex)
+                {
+                }
+                return activeDirectorySettingsCn;
+            }
+        }
+
         #endregion
 
         #region Methods
 
         public static bool IsUserLoggedIn(string userName, string password)
         {
+            // 新域优先尝试，旧域兜底；未配置 ldapConfigurationCn 时该域会被自动跳过。
+            List<ActiveDirectoryConfiguration> domainConfigs = new List<ActiveDirectoryConfiguration>();
+            if (ActiveDirectorySettingsCn != null)
+            {
+                domainConfigs.Add(ActiveDirectorySettingsCn);
+            }
+            if (ActiveDirectorySettings != null)
+            {
+                domainConfigs.Add(ActiveDirectorySettings);
+            }
+
+            bool anyEnabled = false;
+            foreach (ActiveDirectoryConfiguration cfg in domainConfigs)
+            {
+                if (cfg.Enabled)
+                {
+                    anyEnabled = true;
+                    break;
+                }
+            }
+            if (!anyEnabled)
+            {
+                return true;
+            }
+
+            int startIndex = userName.IndexOf("@");
+            if (startIndex >= 0)
+            {
+                userName = userName.Substring(0, startIndex);
+            }
+
+            bool lastResult = false;
+            Exception lastException = null;
+
+            foreach (ActiveDirectoryConfiguration settings in domainConfigs)
+            {
+                if (!settings.Enabled)
+                {
+                    continue;
+                }
+                try
+                {
+                    bool success = AuthenticateAgainstDomain(settings, userName, password);
+                    if (success)
+                    {
+                        return true;
+                    }
+                    lastResult = false;
+                }
+                catch (ActiveDirectoryUserNotFoundException ex)
+                {
+                    // "账号不存在"信息量最低，只有在还没有更具体的错误时才记录，
+                    // 避免后面某个域返回"密码错误"之类的具体原因被它覆盖掉。
+                    if (lastException == null)
+                    {
+                        lastException = ex;
+                    }
+                    lastResult = false;
+                }
+                catch (Exception ex)
+                {
+                    // 密码错误、账号锁定/过期等具体原因，优先级高于"账号不存在"，始终覆盖。
+                    lastException = ex;
+                    lastResult = false;
+                }
+            }
+
+            if (lastException != null)
+            {
+                throw lastException;
+            }
+            return lastResult;
+        }
+
+        private static bool AuthenticateAgainstDomain(ActiveDirectoryConfiguration settings, string userName, string password)
+        {
             try
             {
-                if (ActiveDirectorySettings.Enabled)
-                {
-                    int startIndex = userName.IndexOf("@");
-                    if (startIndex >= 0)
-                    {
-                        userName = userName.Substring(0, startIndex);
-                    }
-                    DirectoryEntry ldapConnection = new DirectoryEntry("LDAP://" + ActiveDirectorySettings.Server + "/" + ActiveDirectorySettings.DirectoryPath, userName, password);
-                    DirectorySearcher searcher = new DirectorySearcher(ldapConnection);
-                    searcher.Filter = ActiveDirectorySettings.Filter.Replace("and", "&");
-                    searcher.Filter = searcher.Filter.Replace(ActiveDirectorySettings.FilterReplace, userName);
-                    searcher.PropertiesToLoad.Add("memberOf");
-                    searcher.PropertiesToLoad.Add("userAccountControl");
+                DirectoryEntry ldapConnection = new DirectoryEntry("LDAP://" + settings.Server + "/" + settings.DirectoryPath, userName, password);
+                DirectorySearcher searcher = new DirectorySearcher(ldapConnection);
+                searcher.Filter = settings.Filter.Replace("and", "&");
+                searcher.Filter = searcher.Filter.Replace(settings.FilterReplace, userName);
+                searcher.PropertiesToLoad.Add("memberOf");
+                searcher.PropertiesToLoad.Add("userAccountControl");
 
-                    SearchResult directoryUser = searcher.FindOne();
-                    if (directoryUser != null)
+                SearchResult directoryUser = searcher.FindOne();
+                if (directoryUser != null)
+                {
+                    int flags = Convert.ToInt32(directoryUser.Properties["userAccountControl"][0].ToString());
+                    if (!Convert.ToBoolean(flags & 0x0002))
                     {
-                        int flags = Convert.ToInt32(directoryUser.Properties["userAccountControl"][0].ToString());
-                        if (!Convert.ToBoolean(flags & 0x0002))
+                        string desiredGroupName = settings.GroupName.ToLower();
+                        if (desiredGroupName != string.Empty)
                         {
-                            string desiredGroupName = ActiveDirectorySettings.GroupName.ToLower();
-                            if (desiredGroupName != string.Empty)
+                            desiredGroupName = "cn=" + desiredGroupName + ",";
+                            int numberOfGroups = directoryUser.Properties["memberOf"].Count;
+                            bool isWithinGroup = false;
+                            for (int i = 0; i < numberOfGroups; i++)
                             {
-                                desiredGroupName = "cn=" + desiredGroupName + ",";
-                                int numberOfGroups = directoryUser.Properties["memberOf"].Count;
-                                bool isWithinGroup = false;
-                                for (int i = 0; i < numberOfGroups; i++)
+                                string groupName = directoryUser.Properties["memberOf"][i].ToString().ToLower();
+                                if (groupName.Contains(desiredGroupName))
                                 {
-                                    string groupName = directoryUser.Properties["memberOf"][i].ToString().ToLower();
-                                    if (groupName.Contains(desiredGroupName))
-                                    {
-                                        isWithinGroup = true;
-                                        break;
-                                    }
-                                }
-                                if (!isWithinGroup)
-                                {
-                                    throw new Exception("User [" + userName + "] is not a member of the desired group.");
+                                    isWithinGroup = true;
+                                    break;
                                 }
                             }
-                            return true;
+                            if (!isWithinGroup)
+                            {
+                                throw new Exception("User [" + userName + "] is not a member of the desired group.");
+                            }
                         }
-                        else
-                        {
-                            throw new Exception("User [" + userName + "] is inactive.");
-                        }
+                        return true;
                     }
                     else
                     {
-                        throw new Exception("User [" + userName + "] not found in the specified active directory path.");
+                        throw new Exception("User [" + userName + "] is inactive.");
                     }
                 }
                 else
                 {
-                    return true;
+                    throw new ActiveDirectoryUserNotFoundException("User [" + userName + "] not found in the specified active directory path.");
                 }
+            }
+            catch (ActiveDirectoryUserNotFoundException)
+            {
+                // 由 try 块内主动抛出，原样往外传，不要被下面的通用 catch 包装掉类型。
+                throw;
             }
             catch (LdapException ex)
             {
@@ -121,15 +219,38 @@ namespace Crownbio.BLL.Rule
             }
             catch (DirectoryServicesCOMException ex)
             {
-                //if (ex.ExtendedError == 8333)
-                //{
-                //    throw new Exception("Invalid active directory path.", ex);
-                //}
-                //else
-                //{
-                //    throw new Exception("Invalid user authentication. Please input a valid user name & pasword and try again.", ex);
-                //}
-                return false;
+                // AD 绑定失败时用扩展错误码区分具体原因（"data 52e"=密码错误、"data 525"=账号不存在等），
+                // 而不是像之前那样统一 return false，导致上层把"密码错误"也误判成"用户不存在"。
+                string extendedMessage = ex.ExtendedErrorMessage ?? string.Empty;
+                if (ContainsAdErrorCode(extendedMessage, "525"))
+                {
+                    throw new ActiveDirectoryUserNotFoundException("User [" + userName + "] not found in the specified active directory path.", ex);
+                }
+                else if (ContainsAdErrorCode(extendedMessage, "52e"))
+                {
+                    throw new Exception("Invalid user authentication. Please input a valid user name & pasword and try again.", ex);
+                }
+                else if (ContainsAdErrorCode(extendedMessage, "532"))
+                {
+                    throw new Exception("User [" + userName + "]'s password has expired.", ex);
+                }
+                else if (ContainsAdErrorCode(extendedMessage, "533"))
+                {
+                    throw new Exception("User [" + userName + "] is inactive.", ex);
+                }
+                else if (ContainsAdErrorCode(extendedMessage, "701"))
+                {
+                    throw new Exception("User [" + userName + "]'s account has expired.", ex);
+                }
+                else if (ContainsAdErrorCode(extendedMessage, "775"))
+                {
+                    throw new Exception("User [" + userName + "]'s account is locked out.", ex);
+                }
+                else
+                {
+                    // 无法归类的绑定错误，维持改造前的保守行为：安静返回 false，不做具体归因。
+                    return false;
+                }
             }
             catch (System.Runtime.InteropServices.COMException ex)
             {
@@ -150,6 +271,11 @@ namespace Crownbio.BLL.Rule
             {
                 throw new Exception("Unhandeled exception occured while authenticating user using active directory.", ex);
             }
+        }
+
+        private static bool ContainsAdErrorCode(string extendedErrorMessage, string dataCode)
+        {
+            return extendedErrorMessage.IndexOf("data " + dataCode, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         //public static void UserAuthenticationCheck()

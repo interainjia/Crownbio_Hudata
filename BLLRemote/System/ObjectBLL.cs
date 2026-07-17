@@ -1089,7 +1089,27 @@ namespace Crownbio.BLL
 
             if (userList.Count == 0)
             {
-                if (ActiveDirectoryConnector.IsUserLoggedIn(userName, DEncryptHelper.Decrypt(password)))
+                bool isAdAuthenticated = false;
+                try
+                {
+                    isAdAuthenticated = ActiveDirectoryConnector.IsUserLoggedIn(userName, DEncryptHelper.Decrypt(password));
+                }
+                catch (ActiveDirectoryUserNotFoundException)
+                {
+                    // 新旧两个域都确实没有这个账号，维持原有行为：走到下面统一提示"用户不存在"。
+                    isAdAuthenticated = false;
+                }
+                catch (Exception)
+                {
+                    // 密码错误、账号锁定/过期等域里能确认账号存在的具体原因，
+                    // 直接提示密码不正确，不要被误判成"用户不存在"。
+                    SYS_USER adPasswordErrorResult = new SYS_USER();
+                    adPasswordErrorResult.ErrMsg = LanguageHelper.GetResourceText("USER_PWD") + LanguageHelper.GetResourceText("Incorrect");
+                    adPasswordErrorResult.IS_Login = false;
+                    return adPasswordErrorResult;
+                }
+
+                if (isAdAuthenticated)
                 {
                     #region in AD
                     if (userName.IndexOf("crownbio", StringComparison.CurrentCultureIgnoreCase) < 0)

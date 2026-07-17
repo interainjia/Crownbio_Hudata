@@ -1,3 +1,17 @@
+# 2026.07.17
+
+## AD 登录支持新旧双域验证，修复"密码错误"被误判为"用户不存在"
+
+- `BLLRemote/Rule/ActiveDirectoryConnector.cs`
+  - 新增 `ActiveDirectorySettingsCn` 读取独立的 `ldapConfigurationCn` 配置节（对应新域 `crownbio.cn`），与原 `ActiveDirectorySettings`（`ldapConfiguration`，旧域 `crownbio.com`）并存
+  - `IsUserLoggedIn` 抽出私有方法 `AuthenticateAgainstDomain`，改为依次尝试新域→旧域，任一域验证通过即返回 `true`；未配置 `ldapConfigurationCn` 时该域自动跳过，单域行为与改造前一致
+  - 新增 `ActiveDirectoryUserNotFoundException`，用于区分"账号在该域里确实不存在"与"密码错误/账号锁定/账号过期"等其他失败原因；`DirectoryServicesCOMException` 分支改为解析 AD 扩展错误码（`data 52e`=密码错误、`data 525`=账号不存在、`data 532/533/701/775`=密码过期/禁用/过期/锁定），不再统一 `return false`
+  - 多域尝试时优先保留信息量更高的失败原因（如密码错误），"账号不存在"优先级最低，避免被更具体的错误覆盖
+- `BLLRemote/System/ObjectBLL.cs`：`Login()` 捕获 `IsUserLoggedIn` 抛出的异常，`ActiveDirectoryUserNotFoundException` 维持原有"用户不存在"提示，其余异常（密码错误等）直接提示密码不正确，不再误报"用户不存在"
+- `CrownbioHubase/Web.config`（未纳入版本控制，需手动同步到部署环境）：`configSections` 新增 `ldapConfigurationCn` 节声明，并新增对应的 `<ldapConfigurationCn .../>` 节点（`server=172.30.0.1`，`domain=crownbio.cn`，`directoryPath=DC=crownbio,DC=cn`）
+
+---
+
 # 2026.06.23 (4)
 
 ## 修复 Person.ashx.cs SQL 注入（C1 第三批）
