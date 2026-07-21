@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.DirectoryServices.AccountManagement;
 using Crownbio.BLL.Rule;
+using System.Web;
 using System.Web.Hosting;
 using System.DirectoryServices;
 using System.Configuration;
@@ -72,7 +76,89 @@ namespace Crownbio.BLL.Rule
 
         #region Methods
 
+        // UC 用户中心接口不可用（网络异常/超时/响应格式异常等）时用来触发回退到本地 LDAP 校验，
+        // 与 UC 明确返回"账号密码不对"这类判定结果区分开，避免把网络问题误判成校验失败。
+        private class UcUnavailableException : Exception
+        {
+            public UcUnavailableException(string message, Exception innerException) : base(message, innerException) { }
+        }
+
         public static bool IsUserLoggedIn(string userName, string password)
+        {
+            try
+            {
+                return AuthenticateAgainstUc(userName, password);
+            }
+            catch (ActiveDirectoryUserNotFoundException) { throw; }
+            catch (UcUnavailableException)
+            {
+                // UC 接口打不通时回退到本地 LDAP 校验兜底，其余情况（UC 明确返回密码错误等）直接向上抛出。
+                return IsUserLoggedInViaLdap(userName, password);
+            }
+        }
+
+        // 调用用户中心(UC)登录接口验证账号密码；UC 已知会用 po 参数对域账号做 AD 绑定校验，
+        // 因此这里不再需要区分域账号/本地账号，统一交给 UC 处理。
+        private static bool AuthenticateAgainstUc(string userName, string password)
+        {
+            string apiUrl = ConfigurationManager.AppSettings["UcApiUrl"];
+            if (string.IsNullOrEmpty(apiUrl))
+            {
+                throw new UcUnavailableException("UcApiUrl is not configured.", null);
+            }
+            string apiKey = ConfigurationManager.AppSettings["UcApiKey"];
+
+            int at = userName.IndexOf("@");
+            string account = at >= 0 ? userName.Substring(0, at) : userName;
+
+            string pwd = Crownbio.Utility.SecureHelper.GetSHA1(password).ToLower();
+            string po = string.IsNullOrEmpty(apiKey) ? string.Empty : Crownbio.Utility.SecureHelper.EncPwd(password, apiKey);
+            string sid = HttpContext.Current != null && HttpContext.Current.Session != null
+                ? HttpContext.Current.Session.SessionID
+                : Guid.NewGuid().ToString();
+
+            string url = string.Format("{0}/syswebapi/sysuserapi/login?u={1}&p={2}&po={3}&sid={4}&lang=en",
+                apiUrl.TrimEnd('/'), Uri.EscapeDataString(account), Uri.EscapeDataString(pwd), Uri.EscapeDataString(po), Uri.EscapeDataString(sid));
+
+            string responseText;
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                request.Method = "GET";
+                request.Timeout = 5000;
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                {
+                    responseText = reader.ReadToEnd();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new UcUnavailableException("Failed to call UC login api.", ex);
+            }
+
+            if (string.IsNullOrEmpty(responseText))
+            {
+                throw new UcUnavailableException("UC login api returned an empty response.", null);
+            }
+
+            Match messageMatch = Regex.Match(responseText, "\"message\"\\s*:\\s*\"([^\"]*)\"");
+            if (!messageMatch.Success)
+            {
+                // 没有 message 字段，说明返回的是合法 token，账号密码校验通过。
+                return true;
+            }
+
+            string message = messageMatch.Groups[1].Value;
+            if (message.IndexOf("not exist", StringComparison.OrdinalIgnoreCase) >= 0
+                || message.IndexOf("not found", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                throw new ActiveDirectoryUserNotFoundException("User [" + userName + "] not found via UC login api: " + message);
+            }
+            throw new Exception(message);
+        }
+
+        private static bool IsUserLoggedInViaLdap(string userName, string password)
         {
             // 新域优先尝试，旧域兜底；未配置 ldapConfigurationCn 时该域会被自动跳过。
             List<ActiveDirectoryConfiguration> domainConfigs = new List<ActiveDirectoryConfiguration>();

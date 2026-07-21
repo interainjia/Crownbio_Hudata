@@ -1,3 +1,17 @@
+# 2026.07.22
+
+## 登录验证方式由本地 LDAP 改为调用用户中心(UC) API，LDAP 降级为兜底
+
+- `Utility/SecureHelper.cs`（新增）：`GetSHA1`/`GetMD5` 不可逆哈希；`EncPwd` 生成传给 UC 接口的 `po` 参数（一次性随机 DES key 加密明文密码 + 用共享密钥计算的校验片段，供 UC 后端解密还原明文密码去做 AD 绑定）。同步在 `Utility/Utility.csproj` 里加 `Compile Include`
+- `BLLRemote/Rule/ActiveDirectoryConnector.cs`
+  - `IsUserLoggedIn` 改为先调用 `AuthenticateAgainstUc`（GET `{UcApiUrl}/syswebapi/sysuserapi/login?u=..&p=SHA1(明文密码)小写&po=..&sid=..&lang=en`），响应不含 `"message":` 字段视为通过（忽略返回的 token，登录态仍走本地 Session 机制，未做改动）；命中 `not exist`/`not found` 关键字判定为 `ActiveDirectoryUserNotFoundException`（账号不存在），其余 message 判定为密码错误等直接抛 `Exception`——这两种情形与调用方 `ObjectBLL.Login()` 原有的异常语义保持一致，`ObjectBLL.cs` 未做任何改动
+  - 新增 `UcUnavailableException`（私有），仅在 UC 接口打不通（`UcApiUrl` 未配置、网络异常、超时、空响应）时触发，捕获后自动回退到原 `AuthenticateAgainstDomain` 多域校验逻辑（原 `IsUserLoggedIn` 方法体原样保留，改名为私有 `IsUserLoggedInViaLdap`）
+  - 原有的 `GetDepartmentByUser`/`GetEmailByUser`/`GetGroupByUser` 等辅助方法未改动，仍走本地 LDAP，不受此次改造影响
+- `CrownbioHubase/Web.config`（未纳入版本控制，需手动同步到部署环境）：`appSettings` 新增 `UcApiUrl`（`http://uc.crownbio.com`）与 `UcApiKey`（UC 提供的接入共享密钥）
+- 待确认项：UC 接口对"账号不存在"类失败具体返回的 `message` 文案目前是按 `not exist`/`not found` 关键字猜测判断的，建议上线前用一个真实不存在的账号测试一次，确认落入的是"用户不存在"分支而不是被误判成"密码错误"
+
+---
+
 # 2026.07.17
 
 ## AD 登录支持新旧双域验证，修复"密码错误"被误判为"用户不存在"

@@ -111,6 +111,7 @@
     <Compile Include="MessageHelper.cs" />
     <Compile Include="FileHelper.cs" />
     <Compile Include="_3DEncryptHelper.cs" />
+    <Compile Include="SecureHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">
