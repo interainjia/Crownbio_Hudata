@@ -3150,6 +3150,7 @@ namespace PDXmodelBase.HuData
         }
         public void UpdateAnimalInfo(HttpContext context)
         {
+            context.Server.ScriptTimeout = 1800; // 大批量维持数据导入逐行访问数据库耗时较长，默认110秒超时不够，延长至30分钟
             try
             {
                 string filePath = updateInfo(context);

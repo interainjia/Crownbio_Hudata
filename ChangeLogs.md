@@ -1,3 +1,13 @@
+# 2026.07.22 (2)
+
+## 修复 DataImport 页面导入 AnimalInfo(update) 大文件时报 "Request timed out"
+
+- `CrownbioHubase/HuData/importDB.ashx.cs`：`UpdateAnimalInfo` 方法开头新增 `context.Server.ScriptTimeout = 1800`（30分钟）
+- 原因：该方法对 Excel 每一行动物记录都要逐行查库/更新（`ANIMAL_INFO`/`ANIMAL_INFO_LOGS`/`DROPDOWNLIST`/`PROJECT_BOOKING`/`SYS_USER` 等，无批量查询），维持数据文件行数达 9000+ 时累计耗时超过 ASP.NET 默认 110 秒请求超时，导致 `HttpException: Request timed out`；本次仅延长超时时间兜底，未改动导入逐行处理逻辑，大文件导入仍会耗时数分钟
+- 待优化项：如后续文件量继续增长导致导入耗时过长，需考虑将逐行多次查询改为批量查询后内存匹配、批量提交更新，以从根本上提速
+
+---
+
 # 2026.07.22
 
 ## 登录验证方式由本地 LDAP 改为调用用户中心(UC) API，LDAP 降级为兜底
