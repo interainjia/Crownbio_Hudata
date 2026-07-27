@@ -155,6 +155,15 @@ namespace Crownbio.BLL.Rule
             {
                 throw new ActiveDirectoryUserNotFoundException("User [" + userName + "] not found via UC login api: " + message);
             }
+            // UC 对"密码已过期"的具体文案未确认，先按常见的中英文关键字猜测判断；
+            // 命中后统一抛出与本地 LDAP（data 532）一致的 "password has expired" 文案，
+            // 方便上层 ObjectBLL.Login 用同一个关键字匹配，给出更精确的提示而不是笼统的"密码不正确"。
+            if ((message.IndexOf("password", StringComparison.OrdinalIgnoreCase) >= 0
+                    && message.IndexOf("expired", StringComparison.OrdinalIgnoreCase) >= 0)
+                || (message.IndexOf("密码", StringComparison.Ordinal) >= 0 && message.IndexOf("过期", StringComparison.Ordinal) >= 0))
+            {
+                throw new Exception("User [" + userName + "]'s password has expired via UC login api: " + message);
+            }
             throw new Exception(message);
         }
 

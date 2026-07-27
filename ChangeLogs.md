@@ -1,3 +1,14 @@
+# 2026.07.27
+
+## 登录密码过期时给出精确提示，不再被误判成"密码不正确"
+
+- `BLLRemote/System/ObjectBLL.cs`：`Login` 方法里 AD 校验失败的 `catch (Exception)` 分支，原先统一返回"密码不正确"，现改为先判断 `ex.Message` 是否包含 `password has expired`，命中则返回新增的 `USER_PWD_EXPIRED` 提示，其余情况维持原有"密码不正确"文案
+- `BLLRemote/Rule/ActiveDirectoryConnector.cs`：`AuthenticateAgainstUc` 新增对 UC 返回 `message` 的"密码过期"关键字判断（英文 `password`+`expired`、中文"密码"+"过期"），命中后统一抛出与本地 LDAP（AD 扩展错误码 `532`）一致措辞的 `"...'s password has expired..."` 异常，使 UC 与 LDAP 两条校验路径都能被 `ObjectBLL.Login` 的同一个关键字判断覆盖
+- `Language/Resource_en-US.resx` / `Language/Resource_zh-CN.resx`：新增资源项 `USER_PWD_EXPIRED`
+- 待确认项：UC 接口对"密码已过期"具体返回的 `message` 文案同样是按关键字猜测判断的（做法与本文件 2026.07.22 记录的"账号不存在"判断一致），建议上线前用一个真实密码已过期的账号测试一次，确认落入的是新的密码过期分支而不是被误判成"密码不正确"
+
+---
+
 # 2026.07.22 (2)
 
 ## 修复 DataImport 页面导入 AnimalInfo(update) 大文件时报 "Request timed out"

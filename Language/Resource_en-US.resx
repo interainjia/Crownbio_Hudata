@@ -144,6 +144,9 @@
   <data name="USER_PWD" xml:space="preserve">
     <value>Invalid</value>
   </data>
+  <data name="USER_PWD_EXPIRED" xml:space="preserve">
+    <value>Your password has expired. Please contact IT to reset it.</value>
+  </data>
   <data name="USER_NOT_AVAILABLE" xml:space="preserve">
     <value>User Unavailable</value>
   </data>

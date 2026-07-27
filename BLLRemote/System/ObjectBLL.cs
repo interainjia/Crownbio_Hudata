@@ -1099,12 +1099,20 @@ namespace Crownbio.BLL
                     // 新旧两个域都确实没有这个账号，维持原有行为：走到下面统一提示"用户不存在"。
                     isAdAuthenticated = false;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     // 密码错误、账号锁定/过期等域里能确认账号存在的具体原因，
-                    // 直接提示密码不正确，不要被误判成"用户不存在"。
+                    // 不要被误判成"用户不存在"；其中密码过期单独给出更精确的提示，
+                    // 其余情况维持原有的"密码不正确"提示。
                     SYS_USER adPasswordErrorResult = new SYS_USER();
-                    adPasswordErrorResult.ErrMsg = LanguageHelper.GetResourceText("USER_PWD") + LanguageHelper.GetResourceText("Incorrect");
+                    if (ex.Message.IndexOf("password has expired", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        adPasswordErrorResult.ErrMsg = LanguageHelper.GetResourceText("USER_PWD_EXPIRED");
+                    }
+                    else
+                    {
+                        adPasswordErrorResult.ErrMsg = LanguageHelper.GetResourceText("USER_PWD") + LanguageHelper.GetResourceText("Incorrect");
+                    }
                     adPasswordErrorResult.IS_Login = false;
                     return adPasswordErrorResult;
                 }

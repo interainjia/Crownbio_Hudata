@@ -195,6 +195,9 @@
   <data name="USER_PWD" xml:space="preserve">
     <value>密码</value>
   </data>
+  <data name="USER_PWD_EXPIRED" xml:space="preserve">
+    <value>密码已过期，请联系IT重置密码。</value>
+  </data>
   <data name="LANG" xml:space="preserve">
     <value>语言</value>
   </data>
