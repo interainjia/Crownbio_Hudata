@@ -1,3 +1,16 @@
+# 2026.09.01 (2)
+
+## Login.aspx 突出显示 "Sign In With Azure"，提示内部员工优先使用
+
+- `CrownbioHubase/HuData/Login.aspx`：原来的 "Sign In With Azure" 只是账号密码区域下方表格里一个不起眼的普通文字链接，现改为：
+  - 移到用户名/密码输入框上方，改造成整行深色按钮 `#azure-signin`（含纯 CSS 绘制的四色 Microsoft 图标），并在按钮上方新增浅蓝底提示框 `#azure-callout`："CrownBio employees, please use **Sign In With Azure** to log in."
+  - 按钮与账号密码表单之间新增 "OR" 分隔线 `#divider`
+  - 跳转链接（`https://uc.crownbio.com/sysuser/loginazure?...`）本身未改动
+  - `#login` 容器 `height` 由固定 `300px` 改为 `auto`，以适应新增内容撑高
+- `wwwroot/HuData/Login.aspx` 是发布产物（`.gitignore` 中 `/wwwroot/` 未纳入版本控制），未手动同步，下次发布/生成时会自动更新
+
+---
+
 # 2026.09.01
 
 ## 登录验证暂时回退为纯本地 LDAP，UC API 校验逻辑整体注释保留

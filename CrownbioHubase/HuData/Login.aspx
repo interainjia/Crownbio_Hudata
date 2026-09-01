@@ -70,7 +70,7 @@
             background-image: -ms-linear-gradient(top, #fff, #eee);
             background-image: -o-linear-gradient(top, #fff, #eee);
             background-image: linear-gradient(top, #fff, #eee);
-            height: 300px;
+            height: auto;
             width: 400px;
             margin: -150px 0 0 -230px;
             padding: 30px;
@@ -316,6 +316,79 @@
             top: 60px;
             color: #999;
         }
+
+        /*--------------------*/
+
+        #azure-callout {
+            background-color: #eef6fb;
+            border: 1px solid #cfe4f0;
+            border-radius: 5px;
+            padding: 8px 10px;
+            margin: 0 0 10px 0;
+            text-align: center;
+            font-size: 12px;
+            color: #1b3a4b;
+        }
+
+        #azure-signin {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 38px;
+            box-sizing: border-box;
+            background-color: #2f2f2f;
+            border: 1px solid #2f2f2f;
+            border-radius: 3px;
+            color: #fff;
+            font: 14px Arial, Helvetica, sans-serif;
+            text-decoration: none;
+            margin: 0 0 15px 0;
+            cursor: pointer;
+        }
+
+            #azure-signin:hover {
+                background-color: #4b4b4b;
+                border-color: #4b4b4b;
+            }
+
+            #azure-signin .ms-logo {
+                display: inline-block;
+                width: 18px;
+                height: 18px;
+                margin-right: 10px;
+                background-image:
+                    linear-gradient(to bottom right, #f25022 49%, transparent 50%),
+                    linear-gradient(to bottom left, #7fba00 49%, transparent 50%),
+                    linear-gradient(to top right, #00a4ef 49%, transparent 50%),
+                    linear-gradient(to top left, #ffb900 49%, transparent 50%);
+                background-position: top left, top right, bottom left, bottom right;
+                background-size: 49% 49%;
+                background-repeat: no-repeat;
+            }
+
+        #divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: #999;
+            font-size: 11px;
+            margin: 5px 0 12px 0;
+        }
+
+            #divider:before, #divider:after {
+                content: "";
+                flex: 1;
+                border-bottom: 1px solid #ccc;
+            }
+
+            #divider:not(:empty):before {
+                margin-right: .5em;
+            }
+
+            #divider:not(:empty):after {
+                margin-left: .5em;
+            }
     </style>
 
     <script type="text/javascript">
@@ -439,6 +512,13 @@
             <a style="font-size: 20px;">Access CrownBio </a><a style="font-size: 20px; font-weight: 600;"><span style="color: #056A7B">Hu</span><span style="color: #056A7B">Data</span>
             </a>
         </div>
+        <div id="azure-callout">
+            CrownBio employees, please use <strong>Sign In With Azure</strong> to log in.
+        </div>
+        <a id="azure-signin" href="https://uc.crownbio.com/sysuser/loginazure?r=hudata.crownbio.com/HuData/Login.aspx&amp;s=1&amp;l=en-US">
+            <span class="ms-logo"></span>Sign In With Azure
+        </a>
+        <div id="divider">OR</div>
         <fieldset id="inputs">
 
             <input id="username" type="text" placeholder="Username" autofocus required />
@@ -457,17 +537,6 @@
                             for="id_remember" title="If checked you will stay logged in for 1 week">
                             Remember Me</label></td>
 
-                </tr>
-                <tr>
-                    <td style="width: 280px;">
-                        <a href="https://uc.crownbio.com/sysuser/loginazure?r=hudata.crownbio.com/HuData/Login.aspx&amp;s=1&amp;l=en-US" 
-                           style="float: left;margin:5px">
-                           Sign In With Azure
-                        </a>
-                    </td>
-                    <td style="width: 200px">
-                        &nbsp;
-                    </td>
                 </tr>
             </table>
             <table>
