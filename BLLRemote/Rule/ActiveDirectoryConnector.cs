@@ -85,6 +85,7 @@ namespace Crownbio.BLL.Rule
 
         public static bool IsUserLoggedIn(string userName, string password)
         {
+            /*
             try
             {
                 return AuthenticateAgainstUc(userName, password);
@@ -95,6 +96,8 @@ namespace Crownbio.BLL.Rule
                 // UC 接口打不通时回退到本地 LDAP 校验兜底，其余情况（UC 明确返回密码错误等）直接向上抛出。
                 return IsUserLoggedInViaLdap(userName, password);
             }
+            */
+            return IsUserLoggedInViaLdap(userName, password);
         }
 
         // 调用用户中心(UC)登录接口验证账号密码；UC 已知会用 po 参数对域账号做 AD 绑定校验，

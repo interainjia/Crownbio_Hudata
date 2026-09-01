@@ -1,3 +1,13 @@
+# 2026.09.01
+
+## 登录验证暂时回退为纯本地 LDAP，UC API 校验逻辑整体注释保留
+
+- `BLLRemote/Rule/ActiveDirectoryConnector.cs`：`IsUserLoggedIn` 方法体中调用 `AuthenticateAgainstUc` 并回退 `IsUserLoggedInViaLdap` 的 try/catch 逻辑（2026.07.22 引入）整体注释掉，方法直接调用 `IsUserLoggedInViaLdap`，登录验证暂不再调用 UC 接口
+- `AuthenticateAgainstUc`/`UcUnavailableException`/`IsUserLoggedInViaLdap` 等相关方法未删除，仅 `IsUserLoggedIn` 里的调用点被注释，便于后续恢复
+- 待确认项：本次未说明回退原因，如需恢复 UC 校验，取消注释并删除下方的 `IsUserLoggedInViaLdap` 直接调用即可
+
+---
+
 # 2026.07.27
 
 ## 登录密码过期时给出精确提示，不再被误判成"密码不正确"
