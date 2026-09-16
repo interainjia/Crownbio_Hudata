@@ -18,7 +18,7 @@
     <script type="text/javascript" src="../Common/css/persontree.js"></script>
     <link rel="stylesheet" type="text/css" href="../Common/easyui-1.3.2/themes/bootstrap/easyui.css" />
     <link rel="stylesheet" type="text/css" href="../Common/easyui-1.3.2/themes/icon.css" />
-    <script type="text/javascript" src="/site_media/HuData/ValidationStatus_Huprime.js?V=3.1.2"></script>
+    <script type="text/javascript" src="/site_media/HuData/ValidationStatus_Huprime.js?V=3.1.3"></script>
     <script type="text/javascript" src="/site_media/HuData/export.js"></script>
     <script type="text/javascript" src="../Common/fancyBox/source/jquery.fancybox.js?v=2.1.4"></script>
     <link rel="stylesheet" type="text/css" href="../Common/fancyBox/source/jquery.fancybox.css?v=2.1.4"
@@ -234,7 +234,8 @@
                     Sq#:
                 <input id="S_Sq" name="S_Sq" type="text" />
                     Model ID:<input id="S_ModelID" name="S_ModelID" type="text" />
-                    <a href="javascript:void();" class="easyui-linkbutton" iconcls="icon-search" onclick="getdgValidationStatus_Huprime();">Search</a> 
+                    Established_Location:<input id="S_Established_Location" name="S_Established_Location" type="text" />
+                    <a href="javascript:void();" class="easyui-linkbutton" iconcls="icon-search" onclick="getdgValidationStatus_Huprime();">Search</a>
                     <a id="aExport3" class="easyui-linkbutton" href="javascript:void();" iconcls="icon-save" onclick="htmlExport_old3();">Export</a>
                     <asp:Button ID="btnExport3" runat="server" OnClick="btnExport3_Click" Style="display: none"
                         Text="全部导出" />

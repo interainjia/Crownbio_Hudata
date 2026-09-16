@@ -1,3 +1,14 @@
+# 2026.09.16 (2)
+
+## ValidationStatus_Huprime.aspx 查询条件新增 Established_Location
+
+- `CrownbioHubase/HuData/ValidationStatus_Huprime.aspx`：查询工具栏 `Sq#` / `Model ID` 后新增 `Established_Location:` 输入框（`#S_Established_Location`），`ValidationStatus_Huprime.js` 版本号 `3.1.2` → `3.1.3`
+- `CrownbioHubase/site_media/HuData/ValidationStatus_Huprime.js`：`getdgValidationStatus_Huprime()` 提交参数新增 `S_Established_Location`
+- `CrownbioHubase/HuData/Getdatagrid.ashx.cs`：`query_dgValidationStatus_Huprime` 新增对 `S_Established_Location` 的 `like` 条件拼接，写法与已有的 `S_Sq`/`S_ModelID` 一致
+- 未改动数据库存储过程 `GetdgValidationStatus_Huprime`：该 SP 本来就已 `SELECT [Established_Location]` 并把动态 `WHERE` 子句拼在查询末尾，新条件可直接生效
+
+---
+
 # 2026.09.16
 
 ## PDX Model Info 页面新增 Available_Site 列（In_Huba 之后）

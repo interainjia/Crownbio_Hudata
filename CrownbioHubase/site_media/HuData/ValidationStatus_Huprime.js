@@ -123,6 +123,7 @@ function getdgValidationStatus_Huprime() {
     var params = {
         S_Sq: $('#S_Sq').val()
         , S_ModelID: $('#S_ModelID').val()
+        , S_Established_Location: $('#S_Established_Location').val()
     };
     $("#dgValidationStatus_Huprime").datagrid('load', params);
 

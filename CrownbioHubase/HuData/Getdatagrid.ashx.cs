@@ -3840,6 +3840,14 @@ namespace PDXmodelBase.HuData
                     Clause += string.Format("AND ({0}.{1} like '{2}')", VALIDATIONSTATUS_HUPRIME.TABLE_NAME, column, "%" + context.Request["S_Sq"].ToString() + "%");
                 }
             }
+            if (context.Request["S_Established_Location"] != null)
+            {
+                if (context.Request["S_Established_Location"].ToString() != "")
+                {
+                    column = VALIDATIONSTATUS_HUPRIME.ESTABLISHED_LOCATION_FIELD;
+                    Clause += string.Format("AND ({0}.{1} like '{2}')", VALIDATIONSTATUS_HUPRIME.TABLE_NAME, column, "%" + context.Request["S_Established_Location"].ToString() + "%");
+                }
+            }
 
             paraList.Clause = Clause;
             return paraList;
