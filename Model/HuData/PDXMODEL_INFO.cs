@@ -505,6 +505,33 @@ namespace Crownbio.Model
             get { return _in_huba; }
         }
         /// <summary>
+        /// The AVAILABLE_SITE Field of PDXMODEL_INFO Table
+        /// </summary>
+        private string _available_site;
+        [DataField("AVAILABLE_SITE"
+            , AliasName = "AVAILABLE_SITE"
+            , DataType = DbType.String
+            , IsNullable = true
+            , Size = 100
+            , Width = 100
+            , DisplayInCondition = true
+            , DisplayInMaintain = true
+            , DisplayInDialog = false
+            , ResourceKey = "AVAILABLE_SITE"
+            , GroupFun = "MAX"
+            , AllowEdit = false
+            , Frozen = false
+            , SelectSequence = 42
+            , DialogSequence = -1
+            , IsInsertField = true
+            , IsUpdateField = true
+             )]
+        public string AVAILABLE_SITE
+        {
+            set { _available_site = value; }
+            get { return _available_site; }
+        }
+        /// <summary>
         /// The TOTAL_REVIVAL_SUCCESS_RATE Field of PDXMODEL_INFO Table
         /// </summary>
         private string _total_revival_success_rate;
@@ -521,7 +548,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 42
+            , SelectSequence = 43
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -548,7 +575,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 43
+            , SelectSequence = 44
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -575,7 +602,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 45
+            , SelectSequence = 46
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -602,7 +629,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 46
+            , SelectSequence = 47
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -629,7 +656,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 51
+            , SelectSequence = 52
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -657,7 +684,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 52
+            , SelectSequence = 53
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -684,7 +711,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 63
+            , SelectSequence = 64
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -711,7 +738,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 66
+            , SelectSequence = 67
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -738,7 +765,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 69
+            , SelectSequence = 70
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -765,7 +792,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 72
+            , SelectSequence = 73
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -792,7 +819,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 75
+            , SelectSequence = 76
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -819,7 +846,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 78
+            , SelectSequence = 79
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -846,7 +873,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 81
+            , SelectSequence = 82
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -873,7 +900,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 84
+            , SelectSequence = 85
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -900,7 +927,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 87
+            , SelectSequence = 88
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -925,7 +952,7 @@ namespace Crownbio.Model
             , ResourceKey = "UPDATE_TIME"
             , GroupFun = "MAX"
             , AllowEdit = false
-            , SelectSequence = 104
+            , SelectSequence = 105
             , DialogSequence = -1
             , Frozen = false
             , IsInsertField = true
@@ -954,7 +981,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 93
+            , SelectSequence = 94
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -981,7 +1008,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 96
+            , SelectSequence = 97
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -1008,7 +1035,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 99
+            , SelectSequence = 100
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -1035,7 +1062,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 102
+            , SelectSequence = 103
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -1062,7 +1089,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 105
+            , SelectSequence = 106
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -1089,7 +1116,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 108
+            , SelectSequence = 109
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -1116,7 +1143,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 111
+            , SelectSequence = 112
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -1144,7 +1171,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 112
+            , SelectSequence = 113
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -1172,7 +1199,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 114
+            , SelectSequence = 115
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -1199,7 +1226,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 117
+            , SelectSequence = 118
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -1226,7 +1253,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 120
+            , SelectSequence = 121
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -1253,7 +1280,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 123
+            , SelectSequence = 124
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -1280,7 +1307,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 126
+            , SelectSequence = 127
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -1307,7 +1334,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 129
+            , SelectSequence = 130
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -1335,7 +1362,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 135
+            , SelectSequence = 136
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -1362,7 +1389,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 138
+            , SelectSequence = 139
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -1391,7 +1418,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 143
+            , SelectSequence = 144
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -1419,7 +1446,7 @@ namespace Crownbio.Model
             , GroupFun = "MAX"
             , AllowEdit = false
             , Frozen = false
-            , SelectSequence = 147
+            , SelectSequence = 148
             , DialogSequence = -1
             , IsInsertField = true
             , IsUpdateField = true
@@ -1455,6 +1482,7 @@ namespace Crownbio.Model
         public const String MAINTAIN_RECOMMENDED_STRAIN_FIELD = "MAINTAIN_RECOMMENDED_STRAIN";
         public const String STR_CONSISTENCE_FIELD = "STR_CONSISTENCE";
         public const String IN_HUBA_FIELD = "IN_HUBA";
+        public const String AVAILABLE_SITE_FIELD = "AVAILABLE_SITE";
         public const String TIME_OF_MODEL_FOR_TRANSPLANT_FIELD = "TIME_OF_MODEL_FOR_TRANSPLANT";
         public const String CV40_TAKE_RATE_FIELD = "CV40_TAKE_RATE";
         public const String CV30_TAKE_RATE_FIELD = "CV30_TAKE_RATE";

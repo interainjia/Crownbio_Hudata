@@ -436,6 +436,10 @@ namespace PDXmodelBase.HuData
                 {
                     dc.ColumnName = "In_Huba";
                 }
+                else if (dc.ColumnName == "AVAILABLE_SITE")
+                {
+                    dc.ColumnName = "Available_Site";
+                }
                 else if (dc.ColumnName == "TIME_OF_MODEL_FOR_TRANSPLANT")
                 {
                     dc.ColumnName = "Time_of_Model_for_Transplant";

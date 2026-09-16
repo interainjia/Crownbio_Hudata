@@ -18,7 +18,7 @@
     <script type="text/javascript" src="../Common/css/persontree.js"></script>
     <link rel="stylesheet" type="text/css" href="../Common/easyui-1.3.2/themes/bootstrap/easyui.css" />
     <link rel="stylesheet" type="text/css" href="../Common/easyui-1.3.2/themes/icon.css" />
-    <script type="text/javascript" src="/site_media/HuData/modelinfo.js?v=8.6"></script>
+    <script type="text/javascript" src="/site_media/HuData/modelinfo.js?v=8.7"></script>
     <script type="text/javascript" src="/site_media/HuData/export.js"></script>
     <script type="text/javascript" src="../Common/fancyBox/source/jquery.fancybox.js?v=2.1.4"></script>
     <link rel="stylesheet" type="text/css" href="../Common/fancyBox/source/jquery.fancybox.css?v=2.1.4"
@@ -195,6 +195,18 @@
                                     <td class="td_right">
                                         <input id="txtIN_HUBA"></input>
                                     </td>
+                                </tr>
+                                <!-- New Row 5b: Available_Site (1 item + 2 empty slots) -->
+                                <tr>
+                                    <td class="td_left">Available Site:
+                                    </td>
+                                    <td class="td_right">
+                                        <input id="txtAvailable_Site"></input>
+                                    </td>
+                                    <td class="td_left"></td>
+                                    <td class="td_right"></td>
+                                    <td class="td_left"></td>
+                                    <td class="td_right"></td>
                                 </tr>
                                 <!-- Row 6: Total Revival Success Rate, Time of Revival, Revival Recommended Strain (3 items) -->
                                 <tr>

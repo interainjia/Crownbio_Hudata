@@ -1387,6 +1387,7 @@ namespace PDXmodelBase.HuData
                     row.PDX_QC = context.Request["txtPDX_QC"] ?? "";
                     row.STR_CONSISTENCE = context.Request["txtSTR_Consistence"]?? "";
                     row.IN_HUBA = context.Request["txtIN_HUBA"] ?? "";
+                    row.AVAILABLE_SITE = context.Request["txtAvailable_Site"] ?? "";
                     row.EXOMESEQ = context.Request["txtExomeseq"] ?? "";
 
                     row.TOTAL_REVIVAL_SUCCESS_RATE = context.Request["txtTotal_Revival_Success_Rate"] ?? "";

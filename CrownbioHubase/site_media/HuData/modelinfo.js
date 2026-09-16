@@ -489,6 +489,7 @@ var save = function () {
             + "&txtPDX_QC=" + $('#txtPDX_QC').val()
             + "&txtSTR_Consistence=" + $('#txtSTR_Consistence').combobox('getValue')
             + "&txtIN_HUBA=" + $("#txtIN_HUBA").val()
+            + "&txtAvailable_Site=" + $("#txtAvailable_Site").val()
             + "&txtExomeseq=" + $("#txtExomeseq").val()
             + "&txtTotal_Revival_Success_Rate=" + $("#txtTotal_Revival_Success_Rate").val()
             + "&txtTime_of_Revival=" + $("#txtTime_of_Revival").val()
@@ -593,6 +594,7 @@ function EditPDXmodel(row) {
     $('#txtPDX_QC').val(row.PDX_QC);
     $('#txtSTR_Consistence').combobox('setValue', row.STR_Consistence)
     $('#txtIN_HUBA').val(row.In_Huba);
+    $('#txtAvailable_Site').val(row.Available_Site);
     $('#txtExomeseq').val(row.Exomeseq);
     
     $('#txtTotal_Revival_Success_Rate').val(row.Total_Revival_Success_Rate);

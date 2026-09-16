@@ -1,3 +1,22 @@
+# 2026.09.16
+
+## PDX Model Info 页面新增 Available_Site 列（In_Huba 之后）
+
+- `Model/HuData/PDXMODEL_INFO.cs`：新增 `AVAILABLE_SITE` 属性（紧跟 `IN_HUBA` 之后），`SelectSequence` 定为 42，其后所有字段的 `SelectSequence` 顺延 +1 以腾位置；新增 `AVAILABLE_SITE_FIELD` 常量
+- `CrownbioHubase/HuData/PDXmodelInfo.aspx`：Add/Edit 表单在 In_Huba 后新增一行 `Available_Site` 输入框（`#txtAvailable_Site`）
+- `CrownbioHubase/HuData/PDXmodelInfo.aspx.cs`、`CrownbioHubase/HuData/Getdatagrid.ashx.cs`：补充列名 `AVAILABLE_SITE` → `Available_Site` 的展示名转换（与 `IN_HUBA` → `In_Huba` 同款逻辑）
+- `CrownbioHubase/HuData/Person.ashx.cs`：`SavePDXmodel` 保存时读取 `txtAvailable_Site` 并写入 `row.AVAILABLE_SITE`
+- `CrownbioHubase/site_media/HuData/modelinfo.js`：提交参数拼接、编辑回填各补一行；`PDXmodelInfo.aspx` 引用版本号 `8.6` → `8.7`
+- 范围仅限 PDX Model Info 页面本身，未涉及复用同一张表的 MuPrime/CDXModel 页面，也未改动 Excel 批量导入（`importDB.ashx.cs` 按硬编码列位置索引读取，改动会打乱现有导入模板，超出本次需求）
+- 数据库（`172.31.80.253` / `hudata`，未纳入版本控制，以下改动已直接在库上执行）：
+  - `PDXMODEL_INFO` 表新增 `Available_Site varchar(100) NULL` 列
+  - `HUBASE_FUNCTION` 新增一条 `(Function_Name='PDXModelInfo-show', Operate='Available_Site')` 记录（控制 Grid 列显示权限），并按 `In_Huba` 现有的角色授权原样复制：在 `SYS_PERM` 里为同样拥有 `In_Huba` 显示权限的 10 个角色（R00001/R00003/R00004/R00006/R00009/R00005/R00067/R00061/R00082/R00086）批量补加了对应权限
+  - 曾经误尝试通过 `SYS_User_Function`（按用户授权）复制权限，验证后发现该表与本页面实际读取的权限（登录时由 `SYS_USER_ROLE` + `SYS_PERM` 构建的 `PermCollection`）无关，已删除相关的无效数据，只保留 `SYS_PERM` 里的角色授权
+  - 曾额外注册过 `(Function_Name='PDXModelInfo-save', Operate='Available_Site')` 用于比照 `In_Huba` 的编辑权限项，但由于 `Available_Site` 的字段 id 大小写与 Operate 完全一致（不像 `In_Huba`/`txtIN_HUBA` 因大小写不一致而使隐藏脚本失效），导致该记录一旦无人被授权就会把输入框 `display:none` 隐藏掉；已确认后直接删除该记录，未做角色授权替代
+- 待确认项：`PDXModelInfo-save` 这套按 `HUBASE_FUNCTION` 逐字段控制可编辑性的机制，在库里现存的全部 48 个字段均无任何角色/用户被授权（`SYS_PERM`/`SYS_User_Function` 两边都是 0），说明该机制本身处于事实性失效/未启用状态，仅因多数字段 id 大小写和 Operate 值不一致才"侥幸"未被隐藏；如后续要真正启用逐字段编辑权限管控，需要先补齐 `SYS_PERM` 授权再统一核对每个字段 id 与 Operate 大小写是否匹配
+
+---
+
 # 2026.09.01 (2)
 
 ## Login.aspx 突出显示 "Sign In With Azure"，提示内部员工优先使用
