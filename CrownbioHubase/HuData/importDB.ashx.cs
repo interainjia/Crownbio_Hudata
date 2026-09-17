@@ -2770,6 +2770,7 @@ namespace PDXmodelBase.HuData
                 importData.Columns.Add("Maintain_Recommended_Strain");
                 importData.Columns.Add("STR_Consistence");
                 importData.Columns.Add("In_Huba");
+                importData.Columns.Add("Available_Site");
                 importData.Columns.Add("Time_of_Model_for_Transplant");
                 importData.Columns.Add("CV40_Take_rate");
                 importData.Columns.Add("CV30_Take_rate");
@@ -2849,13 +2850,13 @@ namespace PDXmodelBase.HuData
                                     newRow[21] = csv[21];
                                     newRow[22] = csv[22];
                                     newRow[23] = csv[23];
-                                    newRow[24] = RegHelper.IsNumber0(csv[24].ToString()) == true ? int.Parse(csv[24].ToString()) : 0;
+                                    newRow[24] = csv[24];
                                     newRow[25] = RegHelper.IsNumber0(csv[25].ToString()) == true ? int.Parse(csv[25].ToString()) : 0;
                                     newRow[26] = RegHelper.IsNumber0(csv[26].ToString()) == true ? int.Parse(csv[26].ToString()) : 0;
-                                    newRow[27] = csv[27];
+                                    newRow[27] = RegHelper.IsNumber0(csv[27].ToString()) == true ? int.Parse(csv[27].ToString()) : 0;
                                     newRow[28] = csv[28];
-                                    newRow[29] = csv[29] == "" ? DateTime.Now : DateTime.Parse(csv[29]);
-                                    newRow[30] = csv[30];
+                                    newRow[29] = csv[29];
+                                    newRow[30] = csv[30] == "" ? DateTime.Now : DateTime.Parse(csv[30]);
                                     newRow[31] = csv[31];
                                     newRow[32] = csv[32];
                                     newRow[33] = csv[33];
@@ -2874,19 +2875,20 @@ namespace PDXmodelBase.HuData
                                     newRow[46] = csv[46];
                                     newRow[47] = csv[47];
                                     newRow[48] = csv[48];
+                                    newRow[49] = csv[49];
                                     // add by Jack, 202512.10
-                                    // MODIFIED BLOCK FOR CSV[49] CHECK:
-                                    // CsvReader uses a zero-based index. 
-                                    // Index 49 is the 50th column.
-                                    if (csv.FieldCount > 49)
+                                    // MODIFIED BLOCK FOR CSV[50] CHECK:
+                                    // CsvReader uses a zero-based index.
+                                    // Index 50 is the 51st column.
+                                    if (csv.FieldCount > 50)
                                     {
                                         // add by Jack, 202512.10
-                                        newRow[49] = csv[49];
+                                        newRow[50] = csv[50];
                                     }
                                     else
                                     {
-                                        // Set to string.Empty if column 49 (50th column) does not exist
-                                        newRow[49] = string.Empty;
+                                        // Set to string.Empty if column 50 (51st column) does not exist
+                                        newRow[50] = string.Empty;
                                     }
                                     importData.Rows.Add(newRow);
                                 }
@@ -3018,68 +3020,70 @@ namespace PDXmodelBase.HuData
                                 if (cells[i, 18].StringValue.Trim() != "")
                                     row.IN_HUBA = cells[i, 18].StringValue;
                                 if (cells[i, 19].StringValue.Trim() != "")
-                                    row.TIME_OF_MODEL_FOR_TRANSPLANT = cells[i, 19].StringValue;
+                                    row.AVAILABLE_SITE = cells[i, 19].StringValue;
                                 if (cells[i, 20].StringValue.Trim() != "")
-                                    row.CV40_TAKE_RATE = cells[i, 20].StringValue;
+                                    row.TIME_OF_MODEL_FOR_TRANSPLANT = cells[i, 20].StringValue;
                                 if (cells[i, 21].StringValue.Trim() != "")
-                                    row.CV30_TAKE_RATE = cells[i, 21].StringValue;
+                                    row.CV40_TAKE_RATE = cells[i, 21].StringValue;
                                 if (cells[i, 22].StringValue.Trim() != "")
-                                    row.OPTIMAL_OVERAGE = cells[i, 22].StringValue;
+                                    row.CV30_TAKE_RATE = cells[i, 22].StringValue;
                                 if (cells[i, 23].StringValue.Trim() != "")
-                                    row.DOSING_WINDOW = cells[i, 23].StringValue;
+                                    row.OPTIMAL_OVERAGE = cells[i, 23].StringValue;
                                 if (cells[i, 24].StringValue.Trim() != "")
-                                    row.CRYO_P = RegHelper.IsNumber0(cells[i,24].StringValue.ToString()) == true ? int.Parse(cells[i, 24].StringValue.ToString()) : 0;
+                                    row.DOSING_WINDOW = cells[i, 24].StringValue;
                                 if (cells[i, 25].StringValue.Trim() != "")
-                                    row.SNAP_FROZEN = RegHelper.IsNumber0(cells[i, 25].StringValue.ToString()) == true ? int.Parse(cells[i, 25].StringValue.ToString()) : 0;
+                                    row.CRYO_P = RegHelper.IsNumber0(cells[i,25].StringValue.ToString()) == true ? int.Parse(cells[i, 25].StringValue.ToString()) : 0;
                                 if (cells[i, 26].StringValue.Trim() != "")
-                                    row.FFPE = RegHelper.IsNumber0(cells[i, 26].StringValue.ToString()) == true ? int.Parse(cells[i, 26].StringValue.ToString()) : 0;
+                                    row.SNAP_FROZEN = RegHelper.IsNumber0(cells[i, 26].StringValue.ToString()) == true ? int.Parse(cells[i, 26].StringValue.ToString()) : 0;
                                 if (cells[i, 27].StringValue.Trim() != "")
-                                    row.HP2 = cells[i, 27].StringValue;
+                                    row.FFPE = RegHelper.IsNumber0(cells[i, 27].StringValue.ToString()) == true ? int.Parse(cells[i, 27].StringValue.ToString()) : 0;
                                 if (cells[i, 28].StringValue.Trim() != "")
-                                    row.TIMES_USED_IN_STUDY = cells[i, 28].StringValue;
+                                    row.HP2 = cells[i, 28].StringValue;
                                 if (cells[i, 29].StringValue.Trim() != "")
-                                    row.UPDATE_TIME = cells[i, 29].StringValue == "" ? DateTime.Now : DateTime.Parse(cells[i, 29].StringValue);
+                                    row.TIMES_USED_IN_STUDY = cells[i, 29].StringValue;
                                 if (cells[i, 30].StringValue.Trim() != "")
-                                    row.CACHEXIA_LABEL = cells[i, 30].StringValue;
+                                    row.UPDATE_TIME = cells[i, 30].StringValue == "" ? DateTime.Now : DateTime.Parse(cells[i, 30].StringValue);
                                 if (cells[i, 31].StringValue.Trim() != "")
-                                    row.CACHEXIA = cells[i, 31].StringValue;
+                                    row.CACHEXIA_LABEL = cells[i, 31].StringValue;
                                 if (cells[i, 32].StringValue.Trim() != "")
-                                    row.SLIGHT_BW_LOSS = cells[i, 32].StringValue;
+                                    row.CACHEXIA = cells[i, 32].StringValue;
                                 if (cells[i, 33].StringValue.Trim() != "")
-                                    row.NORMAL = cells[i, 33].StringValue;
+                                    row.SLIGHT_BW_LOSS = cells[i, 33].StringValue;
                                 if (cells[i, 34].StringValue.Trim() != "")
-                                    row.ULCERATION_LABEL = cells[i, 34].StringValue;
+                                    row.NORMAL = cells[i, 34].StringValue;
                                 if (cells[i, 35].StringValue.Trim() != "")
-                                    row.SURVIVAL_CURVE = cells[i, 35].StringValue;
+                                    row.ULCERATION_LABEL = cells[i, 35].StringValue;
                                 if (cells[i, 36].StringValue.Trim() != "")
-                                    row.SOC = cells[i, 36].StringValue;
+                                    row.SURVIVAL_CURVE = cells[i, 36].StringValue;
                                 if (cells[i, 37].StringValue.Trim() != "")
-                                    row.DATA_TYPE = cells[i, 37].StringValue;
+                                    row.SOC = cells[i, 37].StringValue;
                                 if (cells[i, 38].StringValue.Trim() != "")
-                                    row.COMMENTS = cells[i, 38].StringValue;
+                                    row.DATA_TYPE = cells[i, 38].StringValue;
                                 if (cells[i, 39].StringValue.Trim() != "")
-                                    row.LOCATION = cells[i, 39].StringValue;
+                                    row.COMMENTS = cells[i, 39].StringValue;
                                 if (cells[i, 40].StringValue.Trim() != "")
-                                    row.TOTAL_REVIVAL_SUCCESS_RATE_CBNC = cells[i, 40].StringValue;
+                                    row.LOCATION = cells[i, 40].StringValue;
                                 if (cells[i, 41].StringValue.Trim() != "")
-                                    row.TIME_OF_REVIVAL_CBNC = cells[i, 41].StringValue;
+                                    row.TOTAL_REVIVAL_SUCCESS_RATE_CBNC = cells[i, 41].StringValue;
                                 if (cells[i, 42].StringValue.Trim() != "")
-                                    row.REVIVAL_RECOMMENDED_STRAIN_CBNC = cells[i, 42].StringValue;
+                                    row.TIME_OF_REVIVAL_CBNC = cells[i, 42].StringValue;
                                 if (cells[i, 43].StringValue.Trim() != "")
-                                    row.EXOMESEQ = cells[i, 43].StringValue;
+                                    row.REVIVAL_RECOMMENDED_STRAIN_CBNC = cells[i, 43].StringValue;
                                 if (cells[i, 44].StringValue.Trim() != "")
-                                    row.TREATMENT_HISTORY_1 = cells[i, 44].StringValue;
+                                    row.EXOMESEQ = cells[i, 44].StringValue;
                                 if (cells[i, 45].StringValue.Trim() != "")
-                                    row.TREATMENT_HISTORY_2 = cells[i, 45].StringValue;
+                                    row.TREATMENT_HISTORY_1 = cells[i, 45].StringValue;
                                 if (cells[i, 46].StringValue.Trim() != "")
-                                    row.SOURCE = cells[i, 46].StringValue;
+                                    row.TREATMENT_HISTORY_2 = cells[i, 46].StringValue;
                                 if (cells[i, 47].StringValue.Trim() != "")
-                                    row.IMPLANTATION_METHOD = cells[i, 47].StringValue;
+                                    row.SOURCE = cells[i, 47].StringValue;
                                 if (cells[i, 48].StringValue.Trim() != "")
-                                    row.DEATHRATE = cells[i, 48].StringValue;
-                                // add by Jack, 202512.10
+                                    row.IMPLANTATION_METHOD = cells[i, 48].StringValue;
                                 if (cells[i, 49].StringValue.Trim() != "")
-                                    row.PATIENT_ID = cells[i, 49].StringValue;
+                                    row.DEATHRATE = cells[i, 49].StringValue;
+                                // add by Jack, 202512.10
+                                if (cells[i, 50].StringValue.Trim() != "")
+                                    row.PATIENT_ID = cells[i, 50].StringValue;
                                 bll.Update(row);
                             }                                 
                         }                                     

@@ -1,3 +1,17 @@
+# 2026.09.17
+
+## DataImport.aspx 批量导入 PDXModelInfo 新增支持 Available_Site 列
+
+- `CrownbioHubase/HuData/importDB.ashx.cs`：
+  - `AddPDXmodelInfo`（"PDXModelInfo(.csv)" 选项对应的方法，`LumenWorks.CsvReader` 按位置解析 CSV 后 `SqlBulkCopy` 写入 `PDXMODEL_INFO`）：`importData.Columns.Add("In_Huba")` 后插入 `Available_Site`，其后 `Time_of_Model_for_Transplant`…`Patient_ID` 对应的 `newRow[N] = csv[N]` 整体顺延 +1（原 idx19-49 → 20-50），数字/日期解析（`Cryo_P`/`Snap_Frozen`/`FFPE`/`Update_Time`）及末尾 `Patient_ID` 的 `csv.FieldCount > 49` 兼容判断同步调整为 `> 50`
+  - `Update_PDXModelInfo_update`（"PDXModelInfo_update(.xlsx)" 选项对应的方法，Aspose.Cells 按位置解析 xlsx 后逐字段 `bll.Update` 更新已有记录）：`row.IN_HUBA = cells[i, 18]...` 后插入 `row.AVAILABLE_SITE = cells[i, 19]...`，其后同样整体顺延 +1，与 `AddPDXmodelInfo` 保持列位置一致
+  - `Update_PDXModelInfo_subtype`（"PDXModelInfo_subtype(.xlsx)"）未改动：只用到 idx 0/2/11/12/17，与 `In_Huba`/`Available_Site` 无关
+- 影响：以后通过这两个入口批量导入/更新 PDX Model Info 时，`In_Huba` 列之后必须紧跟一列 `Available_Site`，否则后续列会读串位
+- 未改动仓库里的历史样例文件 `CrownbioHubase/importTable/PDXmodelInfo_new20220714.csv`：该文件本身已过期（只有48列，缺 `DeathRate`/`Patient_ID`，列名沿用旧版 `Spare_for_CV40` 等），代码里无任何引用，不作为同步基准
+- 待确认项：部署目录 `wwwroot/template/` 下如果有业务同事在用的 Excel/CSV 模板文件（该目录不在 git 版本控制范围内），需要有服务器访问权限的人手工同步加上 `Available_Site` 列，否则会造成模板与代码列位置不一致
+
+---
+
 # 2026.09.16 (2)
 
 ## ValidationStatus_Huprime.aspx 查询条件新增 Established_Location
