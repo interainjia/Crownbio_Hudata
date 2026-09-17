@@ -1,3 +1,13 @@
+# 2026.09.17 (2)
+
+## importTable 目录同步更新 PDXModelInfo 导入模板
+
+- 删除已过期的历史样例文件 `CrownbioHubase/importTable/PDXmodelInfo_new20220714.csv`（只有48列，缺 `DeathRate`/`Patient_ID`，列名沿用旧版 `Spare_for_CV40` 等，代码无引用）
+- 新增 `CrownbioHubase/importTable/PDXmodelInfo_new template Available_Site_20260916.xlsx`，作为包含 `Available_Site` 列（紧跟 `In_Huba` 之后）的最新导入模板
+- 对应上一条记录里 `AddPDXmodelInfo`/`Update_PDXModelInfo_update` 的列位置改动
+
+---
+
 # 2026.09.17
 
 ## DataImport.aspx 批量导入 PDXModelInfo 新增支持 Available_Site 列
