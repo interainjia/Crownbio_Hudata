@@ -327,6 +327,14 @@ namespace PDXmodelBase.HuData
                 remember = context.Request["remember"].ToString();
             }
 
+            // SSO 登录必须携带签名有效的 identity_token，登录账号以 Token 中的邮箱为准，忽略前端传入的 name
+            if (!SsoTokenValidator.TryValidateRequest(context.Request, out string ssoEmail, out string ssoError))
+            {
+                context.Response.Write(ssoError);
+                return;
+            }
+            name = ssoEmail;
+
             SYS_USER loginUser = bll.LoginSSO(context, name, DEncryptHelper.Encrypt(pwd));
             if (!loginUser.IS_Login)
             {

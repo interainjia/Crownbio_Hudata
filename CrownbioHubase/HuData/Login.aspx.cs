@@ -158,55 +158,37 @@ namespace PDXmodelBase.HuData
         */
 
         // ==============================================
-        // 核心方法：手动解析 JWT Payload (最终生产版)
+        // 核心方法：校验 identity_token 签名后提取用户信息 (最终生产版)
         // ==============================================
         private void ParseAzureAdUserInfo()
         {
-            try
+            // 签名 / 过期时间等校验失败则不自动登录（userLogin.ashx 服务端也会再次校验）
+            if (!SsoTokenValidator.TryValidateRequest(Request, out string email, out string error))
             {
-                string rawCookieValue = Request.Cookies["identity_token"]?.Value;
-                if (string.IsNullOrEmpty(rawCookieValue)) return;
-
-                string idToken = HttpUtility.UrlDecode(rawCookieValue);
-                string jwtToken = idToken.Trim('"', ' ', '\t', '\r', '\n');
-                string[] parts = jwtToken.Split('.');
-                if (parts.Length < 2) return;
-
-                string payloadBase64 = parts[1].Replace('-', '+').Replace('_', '/');
-                switch (payloadBase64.Length % 4)
+                if (Request.Cookies[SsoTokenValidator.CookieName] != null)
                 {
-                    case 2: payloadBase64 += "=="; break;
-                    case 3: payloadBase64 += "="; break;
+                    // 失败原因输出到浏览器控制台，便于排查（不含签名等敏感信息）
+                    MessageHelper.ResponseClientScript(this,
+                        $"console.warn('Azure AD 登录失败：{HttpUtility.JavaScriptStringEncode(error)}');");
                 }
+                return;
+            }
 
-                byte[] payloadBytes = Convert.FromBase64String(payloadBase64);
-                string jsonPayload = System.Text.Encoding.UTF8.GetString(payloadBytes);
+            azureAdEmail = email;
+            azureAdUserName = azureAdEmail;
 
-                // 提取精准的字段名
-                azureAdUserName = ExtractJsonStringValue(jsonPayload, "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name");
-                azureAdEmail = ExtractJsonStringValue(jsonPayload, "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress");
-                azureAdUserId = ExtractJsonStringValue(jsonPayload, "/userid");
+            // ==============================================
+            // 关键：拿到账号后，自动触发前端登录
+            // ==============================================
+            username = azureAdUserName;
+            string jsUsername = HttpUtility.JavaScriptStringEncode(username);
 
-                // 兜底：如果没拿到 name，或者你想统一用 runjun.jia 格式作为登录名
-                //if (string.IsNullOrEmpty(azureAdUserName) && !string.IsNullOrEmpty(azureAdEmail))
-                //{
-                //    azureAdUserName = azureAdEmail.Split('@')[0]; // 把 runjun.jia@crownbio.com 截取为 runjun.jia
-                //}
-                azureAdUserName = azureAdEmail;
-
-                // ==============================================
-                // 关键：拿到账号后，自动触发前端登录
-                // ==============================================
-                if (!string.IsNullOrEmpty(azureAdUserName))
-                {
-                    username = azureAdUserName;
-
-                    // 必须包裹在 $(function(){}) 中，确保页面元素加载完毕后再执行
-                    string autoLoginScript = $@"
+            // 必须包裹在 $(function(){}) 中，确保页面元素加载完毕后再执行
+            string autoLoginScript = $@"
                 $(function() {{
-                    $('#username').val('{username}');
+                    $('#username').val('{jsUsername}');
                     $('#password').val('');
-                    
+
                     // 延迟 200 毫秒执行，给浏览器一点时间渲染输入框的值
                     setTimeout(function() {{
                         if (typeof userLogin_auto === 'function') {{
@@ -215,33 +197,7 @@ namespace PDXmodelBase.HuData
                     }}, 200);
                 }});
             ";
-                    MessageHelper.ResponseClientScript(this, autoLoginScript);
-                }
-            }
-            catch (Exception ex)
-            {
-                // 生产环境静默处理或记录到系统日志
-                System.Diagnostics.Debug.WriteLine("Azure AD 解析失败: " + ex.Message);
-            }
-        }
-
-        private string ExtractJsonStringValue(string json, string key)
-        {
-            try
-            {
-                string searchKey = "\"" + key + "\":";
-                int startIndex = json.IndexOf(searchKey, StringComparison.OrdinalIgnoreCase);
-                if (startIndex == -1) return "";
-
-                startIndex += searchKey.Length;
-                int quoteStart = json.IndexOf("\"", startIndex);
-                if (quoteStart == -1) return "";
-                int quoteEnd = json.IndexOf("\"", quoteStart + 1);
-                if (quoteEnd == -1) return "";
-
-                return json.Substring(quoteStart + 1, quoteEnd - quoteStart - 1);
-            }
-            catch { return ""; }
+            MessageHelper.ResponseClientScript(this, autoLoginScript);
         }
     }
 }

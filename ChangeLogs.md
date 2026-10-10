@@ -1,3 +1,20 @@
+﻿# 2026.10.10
+
+## Sign In With Azure 增加 SSO identity_token（JWT）签名校验
+
+- 修复前的问题：
+  - `Login.aspx.cs` 只对 `identity_token` Cookie 的 Payload 做 Base64 解码取邮箱，不校验签名/过期时间，伪造 Token 即可触发自动登录
+  - `userLogin.ashx?M=userLoginAuto` 服务端完全不校验 Token，直接用前端传入的 `name` 调用 `LoginSSO`（对 @crownbio.com 账号不校验密码），任何人 POST 一个员工邮箱即可以该身份登录
+- 新增 `CrownbioHubase/HuData/SsoTokenValidator.cs`：用 `System.IdentityModel.Tokens.Jwt` 校验签名（只接受配置的算法，拒绝 `alg=none`/算法混淆）、过期时间、Issuer、Audience，校验通过后返回 Token 中的 `emailaddress` claim；支持 HS256（SecurityKey 作为 HMAC 密钥）和 RS256（SecurityKey 作为 X.509 SPKI RSA 公钥）；校验失败时把原因和 Token 未经校验的 alg/iss/aud/exp 等字段（不含签名）写入 log4net 日志，便于排查与 UC 配置不一致的问题；兼容 Cookie 值带 `Bearer ` 之类前缀
+- `CrownbioHubase/HuData/userLogin.ashx.cs`：`ReturnLoginAuto` 必须携带校验通过的 `identity_token`，登录账号以 Token 中的邮箱为准，忽略前端传入的 `name`
+- `CrownbioHubase/HuData/Login.aspx.cs`：`ParseAzureAdUserInfo` 改为先校验 Token 再触发自动登录，失败原因输出到浏览器控制台；写入页面脚本的用户名改用 `HttpUtility.JavaScriptStringEncode` 转义，修复 XSS 风险；删除不再使用的 `ExtractJsonStringValue`
+- `CrownbioHubase/PDXmodelBase.csproj`：加入 `SsoTokenValidator.cs`
+- 部署注意（`Web.config` 被 `.gitignore` 的 `*.config` 排除，不在版本控制中，需在服务器上手工维护）：
+  - `appSettings` 需新增以下配置（参数由 uc.crownbio.com 提供，SecurityKey 为 HMAC 共享密钥，勿外泄）：`SsoJwtSecurityKey`、`SsoJwtAlgorithm`（HS256）、`SsoJwtIssuer`（issuer）、`SsoJwtAudience`（Audience）、`SsoJwtValidateLifetime`（true）、`SsoJwtClockSkewSeconds`（300）；Issuer/Audience 为空则不校验
+  - 服务器 `bin` 目录需带上 JWT 库的全部依赖 DLL（`Microsoft.Bcl.TimeProvider`、`Microsoft.Bcl.AsyncInterfaces`、`Microsoft.IdentityModel.*`、`System.IdentityModel.Tokens.Jwt`、`System.Text.Json`、`System.Memory` 等），首次部署时缺 `Microsoft.Bcl.TimeProvider.dll` 导致 Azure 登录失败，建议整体发布 `bin` 目录
+
+---
+
 # 2026.09.17 (2)
 
 ## importTable 目录同步更新 PDXModelInfo 导入模板
