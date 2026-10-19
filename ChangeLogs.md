@@ -1,4 +1,18 @@
-﻿# 2026.10.10
+﻿# 2026.10.19
+
+## ChangeUsers.aspx 打开报错 CryptographicException: Bad Data 修复，页面脚本输出值 JS 转义
+
+- 修复前的问题：
+  - AD 域账号登录时（`BLLRemote/System/ObjectBLL.cs` 中 `isInAD` 分支）不校验库里的 `SYS_USER.USER_PWD`，该字段可能为空或不是有效 DES 密文；`ChangeUsers.aspx.cs` 的 `Page_Load` 直接 `DEncryptHelper.Decrypt(userLogin.USER_PWD)` 预填密码框，解密失败抛出 `CryptographicException: Bad Data`，页面无法打开
+  - `Page_Load` 把 First/Last name、Position、Department、Institution、Street Address、City、Country、Phone、Fax、密码直接字符串拼接进页面脚本，值中含 `'`、`\`、换行会导致脚本报错，含 `</script>` 等内容存在 XSS 风险
+- `CrownbioHubase/HuData/ChangeUsers.aspx.cs`：
+  - `USER_PWD` 只解密一次，为空或解密失败（`CryptographicException`/`FormatException`）时不预填密码，页面正常打开；密码框为必填，用户输入新密码保存后即按正常方式加密写库
+  - 所有写入脚本的值改用 `HttpUtility.JavaScriptStringEncode` 转义（null 输出为空字符串）
+- 遗留问题（未改动）：页面仍会把解密后的明文密码输出到页面脚本中；密码使用硬编码密钥的可逆 DES 加密而非哈希存储
+
+---
+
+# 2026.10.10
 
 ## Sign In With Azure 增加 SSO identity_token（JWT）签名校验
 
