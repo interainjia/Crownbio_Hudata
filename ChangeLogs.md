@@ -1,4 +1,34 @@
-﻿# 2026.10.19
+﻿# 2026.11.11
+
+## DataImport.aspx "PDXModelInfo(.csv)" 新增导入、"PDXModelInfo_update(.xlsx)" 更新导入均改为按列表头匹配，前三列严格校验
+
+- 需求来源：Shen Jie（PDX model info upload and update），模板沿用 `PDXmodelInfo_new template 20260916.xlsx` 的列表头
+- 修改前的问题：
+  - 按固定列位置读取（第 4 列必须是 Model_From……），文件必须包含全部 51 列且顺序不能变
+  - 只按 Sq# 找记录，Cancer_Type_Abbr/Model_ID 非空时会被文件里的值**覆盖**，填错 Sq# 会改错模型
+  - Sq# 在系统中不存在时静默跳过；逐行写库，中途出错时前面的行已写入；Cryo_P/Snap_Frozen/FFPE 非数字时静默存成 0
+- `CrownbioHubase/HuData/importDB.ashx.cs` 重写 `Update_PDXModelInfo_update`：
+  - 前三列固定为 `Sq#`、`Cancer_Type_Abbr`、`Model_ID`，必填；按 Sq# 找到记录后，Cancer_Type_Abbr、Model_ID 必须与系统完全一致（去首尾空格、区分大小写），只用于校验，不再更新
+  - 第四列起按列表头名称匹配字段（不区分大小写），列顺序不限，可只包含部分列；表头不在模板内、重复、或表头为空但该列有数据都报错
+  - 单元格为空不修改该字段（与原逻辑一致）
+  - Cryo_P/Snap_Frozen/FFPE 必须是非负整数，Time_of_Update 必须是有效日期，否则报错
+  - Sq# 在系统中不存在、在文件中重复、在系统中匹配到多条记录都报错
+  - 先校验整个文件，有任何错误则一条都不写入，并列出错误位置（如 `Cell C5 (Model_ID): 'X' does not match the system value 'Y' for Sq# 5474.`，最多列 50 条）；全部通过后才逐条更新，成功时提示更新条数
+  - 项目中 `TransactionScope` 均已注释停用，写库阶段未加事务；数据库层出错时提示失败的 Sq# 和此前已更新的条数
+- `CrownbioHubase/HuData/importDB.ashx.cs` 重写 `AddPDXmodelInfo`（"PDXModelInfo(.csv)"，批量新增）：
+  - 修改前的问题：按固定列位置读取，缺列/错位时数据写进错误字段；不检查重复，重复导入会产生重复记录；Cryo_P 等非数字静默存 0；`ojbReportRule.InsertBigSql` 吞掉写库异常，**写库失败也提示 "Import successfully!"**
+  - 前三列固定为 `Sq#`、`Cancer_Type_Abbr`、`Model_ID`，必填；Sq#、Model_ID（不区分大小写）在系统中不能已存在、在文件中不能重复
+  - 第四列起按列表头名称匹配，规则与 update 导入相同；未包含的列和空单元格沿用原默认值（文本为空字符串，Cryo_P/Snap_Frozen/FFPE 为 0，Time_of_Update 为当前时间）；不校验 Model_ID 与 Cancer_Type_Abbr + Sq# 的组合关系
+  - Cryo_P/Snap_Frozen/FFPE 非负整数、Time_of_Update 日期格式错误时报错；CSV 格式错误（引号不匹配、某行列数不足等）提示行号
+  - 先校验整个文件，有任何错误则不写入并列出错误位置；全部通过后 SqlBulkCopy 一次写入，成功时提示新增条数，失败时如实提示失败原因
+  - 不再使用 CsvReader 的表头模式读取（表头重复或有多个空表头时 CsvReader 自身会抛出笼统异常），第一行作为表头自行校验
+- `BLLRemote/Rule/ojbReportRule.cs` 新增 `InsertBigSqlOrThrow`：与 `InsertBigSql` 相同但写库失败时抛出异常；`InsertBigSql` 本身及其余 25 处调用未改动（同样存在失败仍提示成功的问题）
+- `Update_PDXModelInfo_update` 与 `AddPDXmodelInfo` 共用一份字段定义 `GetPDXInfoFields()`（模板表头 → `PDXMODEL_INFO` 列名/类型/实体属性）
+- 未改动："PDXModelInfo_subtype(.xlsx)" 导入选项
+
+---
+
+# 2026.10.19
 
 ## ChangeUsers.aspx 打开报错 CryptographicException: Bad Data 修复，页面脚本输出值 JS 转义
 

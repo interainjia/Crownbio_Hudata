@@ -2731,185 +2731,215 @@ namespace PDXmodelBase.HuData
         }
 
 
+        /// <summary>
+        /// "PDXModelInfo(.csv)" 导入：批量新增 PDXMODEL_INFO 记录
+        /// - 前三列固定为 Sq# / Cancer_Type_Abbr / Model_ID，必填；Sq#、Model_ID 在系统中不能已存在，在文件中不能重复
+        /// - 第四列起按列表头名称匹配字段，列位置不限，可只包含部分列；未包含的列/空单元格按原逻辑写默认值
+        ///   （文本为空字符串，Cryo_P/Snap_Frozen/FFPE 为 0，Time_of_Update 为当前时间）
+        /// - 先校验整个文件，有任何错误都不写入，并提示具体错误位置；SqlBulkCopy 一次提交，写库失败如实提示
+        /// </summary>
         public void AddPDXmodelInfo(HttpContext context)
         {
             try
             {
-                //if (context.Request["delete"] == "true")
-                //{
-                //    BaseList data = bll.Select(typeof(PDXMODEL_INFO));
-                //    if (data.Count > 0)
-                //    {
-                //        foreach (PDXMODEL_INFO del in data)
-                //        {
-                //            del.CurModel = DealModel.Delete;
-                //        }
-                //        bll.UpdateAllByParams(data);
-                //    }
-                //}
-
-
-                DataTable importData = new DataTable();
-                  
-                importData.Columns.Add("Sq_Number");
-                importData.Columns.Add("Cancer_Type_Abbr");
-                importData.Columns.Add("Model_ID");
-                importData.Columns.Add("Model_From");
-                importData.Columns.Add("Origin");
-                importData.Columns.Add("Cancer_Type");
-                importData.Columns.Add("Subtype1");
-                importData.Columns.Add("Subtype2");
-                importData.Columns.Add("Model_Category");
-                importData.Columns.Add("Model_Status");
-                importData.Columns.Add("Source_ID");
-                importData.Columns.Add("Source_Note");
-                importData.Columns.Add("PDX_QC");
-                importData.Columns.Add("Total_Revival_Success_Rate");
-                importData.Columns.Add("Revival_Recommended_Strain");
-                importData.Columns.Add("Time_of_Revival");
-                importData.Columns.Add("Maintain_Recommended_Strain");
-                importData.Columns.Add("STR_Consistence");
-                importData.Columns.Add("In_Huba");
-                importData.Columns.Add("Available_Site");
-                importData.Columns.Add("Time_of_Model_for_Transplant");
-                importData.Columns.Add("CV40_Take_rate");
-                importData.Columns.Add("CV30_Take_rate");
-                importData.Columns.Add("Optimal_Overage");
-                importData.Columns.Add("Dosing_Window");
-                importData.Columns.Add("Cryo_P", typeof(Int32));
-                importData.Columns.Add("Snap_Frozen", typeof(Int32));
-                importData.Columns.Add("FFPE", typeof(Int32));
-                importData.Columns.Add("HP2");
-                importData.Columns.Add("Times_Used_In_Study");
-                importData.Columns.Add("Update_Time", typeof(DateTime));
-                importData.Columns.Add("Cachexia_Label");
-                importData.Columns.Add("Cachexia");
-                importData.Columns.Add("Slight_BW_loss");
-                importData.Columns.Add("Normal");
-                importData.Columns.Add("Ulceration_Label");
-                importData.Columns.Add("Survival_Curve");
-                importData.Columns.Add("SOC");
-                importData.Columns.Add("data_type");
-                importData.Columns.Add("Comments");
-                importData.Columns.Add("Location");
-                importData.Columns.Add("Total_Revival_Success_Rate_CBNC");
-                importData.Columns.Add("Time_of_Revival_CBNC");
-                importData.Columns.Add("Revival_Recommended_Strain_CBNC");
-                importData.Columns.Add("Exomeseq");
-                importData.Columns.Add("Treatment_history_1");
-                importData.Columns.Add("Treatment_history_2");
-                importData.Columns.Add("Source");
-                importData.Columns.Add("Implantation_Method");
-                importData.Columns.Add("DeathRate");
-                // add by Jack, 202512.10
-                importData.Columns.Add("Patient_ID");
-                BaseList data_AnimalInfo = new BaseList();
+                List<PDXInfoField> allFields = GetPDXInfoFields();
+                Dictionary<string, PDXInfoField> fieldMap = GetPDXInfoNonKeyFieldMap();
+                List<string> errors = new List<string>();
 
                 string filePath = updateInfo(context);
-                using (CsvReader csv1 =
-                  new CsvReader(new StreamReader(filePath), true))
+                string[] headers = null;
+                List<KeyValuePair<int, string[]>> records = new List<KeyValuePair<int, string[]>>(); // <文件行号, 各列值>
+                // 不用 CsvReader 的表头模式（表头重复或多个空表头时 CsvReader 自身会抛异常），第一行作为表头自行校验
+                using (CsvReader csv = new CsvReader(new StreamReader(filePath), false))
                 {
-                    //字段数量
-                    int fieldCount = csv1.FieldCount;
-
-                    using (CsvReader csv =
-                   new CsvReader(new StreamReader(filePath), true))
+                    try
                     {
-                        //标题数组
-                        string[] headers = csv.GetFieldHeaders();
-
-                        //只进的游标读取
+                        int fieldCount = csv.FieldCount;
                         while (csv.ReadNextRecord())
                         {
-                            if (csv[0] != "Sq#")
-                            {
-                                if (csv[0] != "")
-                                {
-                                    DataRow newRow = importData.NewRow();
-                                    newRow[0] = csv[0];
-                                    newRow[1] = csv[1];
-                                    newRow[2] = csv[2];
-                                    newRow[3] = csv[3];
-                                    newRow[4] = csv[4];
-                                    newRow[5] = csv[5];
-                                    newRow[6] = csv[6];
-                                    newRow[7] = csv[7];
-                                    newRow[8] = csv[8];
-                                    newRow[9] = csv[9];
-                                    newRow[10] = csv[10];
-                                    newRow[11] = csv[11];
-                                    newRow[12] = csv[12];
-                                    newRow[13] = csv[13];
-                                    newRow[14] = csv[14];
-                                    newRow[15] = csv[15];
-                                    newRow[16] = csv[16];
-                                    newRow[17] = csv[17];
-                                    newRow[18] = csv[18];
-                                    newRow[19] = csv[19];
-                                    newRow[20] = csv[20];
-                                    newRow[21] = csv[21];
-                                    newRow[22] = csv[22];
-                                    newRow[23] = csv[23];
-                                    newRow[24] = csv[24];
-                                    newRow[25] = RegHelper.IsNumber0(csv[25].ToString()) == true ? int.Parse(csv[25].ToString()) : 0;
-                                    newRow[26] = RegHelper.IsNumber0(csv[26].ToString()) == true ? int.Parse(csv[26].ToString()) : 0;
-                                    newRow[27] = RegHelper.IsNumber0(csv[27].ToString()) == true ? int.Parse(csv[27].ToString()) : 0;
-                                    newRow[28] = csv[28];
-                                    newRow[29] = csv[29];
-                                    newRow[30] = csv[30] == "" ? DateTime.Now : DateTime.Parse(csv[30]);
-                                    newRow[31] = csv[31];
-                                    newRow[32] = csv[32];
-                                    newRow[33] = csv[33];
-                                    newRow[34] = csv[34];
-                                    newRow[35] = csv[35];
-                                    newRow[36] = csv[36];
-                                    newRow[37] = csv[37];
-                                    newRow[38] = csv[38];
-                                    newRow[39] = csv[39];
-                                    newRow[40] = csv[40];
-                                    newRow[41] = csv[41];
-                                    newRow[42] = csv[42];
-                                    newRow[43] = csv[43];
-                                    newRow[44] = csv[44];
-                                    newRow[45] = csv[45];
-                                    newRow[46] = csv[46];
-                                    newRow[47] = csv[47];
-                                    newRow[48] = csv[48];
-                                    newRow[49] = csv[49];
-                                    // add by Jack, 202512.10
-                                    // MODIFIED BLOCK FOR CSV[50] CHECK:
-                                    // CsvReader uses a zero-based index.
-                                    // Index 50 is the 51st column.
-                                    if (csv.FieldCount > 50)
-                                    {
-                                        // add by Jack, 202512.10
-                                        newRow[50] = csv[50];
-                                    }
-                                    else
-                                    {
-                                        // Set to string.Empty if column 50 (51st column) does not exist
-                                        newRow[50] = string.Empty;
-                                    }
-                                    importData.Rows.Add(newRow);
-                                }
-                            }
+                            string[] values = new string[fieldCount];
+                            csv.CopyCurrentRecordTo(values);
+                            if (headers == null)
+                                headers = values;
+                            else
+                                records.Add(new KeyValuePair<int, string[]>((int)csv.CurrentRecordIndex + 1, values));
                         }
                     }
-
+                    catch (MalformedCsvException ex)
+                    {
+                        context.Response.Write(HttpUtility.HtmlEncode(string.Format(
+                            "Import failed, no data was written. The CSV format is invalid near line {0}: {1}", ex.CurrentRecordIndex + 1, ex.Message)));
+                        return;
+                    }
                 }
+
+                if (headers == null || headers.Length == 0)
+                {
+                    context.Response.Write("The file is empty.");
+                    return;
+                }
+
+                // 1. 校验表头
+                for (int c = 0; c < 3; c++)
+                {
+                    string h = c < headers.Length ? (headers[c] ?? "").Trim() : "";
+                    if (h != allFields[c].Header)
+                        errors.Add(string.Format("Header {0}1: must be '{1}', but is '{2}'.", ColumnName(c), allFields[c].Header, h));
+                }
+
+                Dictionary<int, PDXInfoField> colFields = new Dictionary<int, PDXInfoField>();
+                Dictionary<string, int> seenHeaders = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+                for (int c = 3; c < headers.Length; c++)
+                {
+                    string h = (headers[c] ?? "").Trim();
+                    if (h == "")
+                    {
+                        // 表头为空且整列无数据则忽略（Excel 另存 csv 可能带多余的空列），有数据则报错
+                        foreach (KeyValuePair<int, string[]> rec in records)
+                        {
+                            if ((rec.Value[c] ?? "").Trim() != "")
+                            {
+                                errors.Add(string.Format("Header {0}1: header is empty but the column contains data.", ColumnName(c)));
+                                break;
+                            }
+                        }
+                        continue;
+                    }
+                    if (seenHeaders.ContainsKey(h))
+                    {
+                        errors.Add(string.Format("Header {0}1: '{1}' is duplicated (also in column {2}).", ColumnName(c), h, ColumnName(seenHeaders[h])));
+                        continue;
+                    }
+                    seenHeaders[h] = c;
+                    PDXInfoField field;
+                    if (fieldMap.TryGetValue(h, out field))
+                        colFields[c] = field;
+                    else
+                        errors.Add(string.Format("Header {0}1: '{1}' does not match any column of the PDX model info template.", ColumnName(c), h));
+                }
+
+                if (errors.Count > 0)
+                {
+                    context.Response.Write(FormatImportErrors(errors));
+                    return;
+                }
+
+                // 2. 逐行校验并生成待插入数据（此阶段不写库）
+                DataTable importData = new DataTable();
+                foreach (PDXInfoField f in allFields)
+                {
+                    if (f.Kind == PDXInfoFieldKind.Int) importData.Columns.Add(f.DbColumn, typeof(Int32));
+                    else if (f.Kind == PDXInfoFieldKind.Date) importData.Columns.Add(f.DbColumn, typeof(DateTime));
+                    else importData.Columns.Add(f.DbColumn);
+                }
+
+                BaseList data = bll.Select(typeof(PDXMODEL_INFO));
+                HashSet<string> sysSq = new HashSet<string>();
+                HashSet<string> sysModelIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                foreach (PDXMODEL_INFO p in data)
+                {
+                    sysSq.Add((p.SQ_NUMBER ?? "").Trim());
+                    sysModelIds.Add((p.MODEL_ID ?? "").Trim());
+                }
+                Dictionary<string, int> fileSq = new Dictionary<string, int>();
+                Dictionary<string, int> fileModelIds = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+                foreach (KeyValuePair<int, string[]> rec in records)
+                {
+                    int line = rec.Key;
+                    string[] values = rec.Value;
+                    bool blankRow = true;
+                    foreach (string v in values)
+                    {
+                        if ((v ?? "").Trim() != "") { blankRow = false; break; }
+                    }
+                    if (blankRow) continue;
+
+                    string sq = (values[0] ?? "").Trim();
+                    string abbr = values.Length > 1 ? (values[1] ?? "").Trim() : "";
+                    string modelId = values.Length > 2 ? (values[2] ?? "").Trim() : "";
+                    if (sq == "Sq#") continue; // 重复的表头行，沿用原逻辑跳过
+
+                    if (sq == "") errors.Add(string.Format("Cell A{0} (Sq#): required.", line));
+                    if (abbr == "") errors.Add(string.Format("Cell B{0} (Cancer_Type_Abbr): required.", line));
+                    if (modelId == "") errors.Add(string.Format("Cell C{0} (Model_ID): required.", line));
+
+                    if (sq != "")
+                    {
+                        if (sysSq.Contains(sq))
+                            errors.Add(string.Format("Cell A{0} (Sq#): '{1}' already exists in the system.", line, sq));
+                        else if (fileSq.ContainsKey(sq))
+                            errors.Add(string.Format("Cell A{0} (Sq#): '{1}' is duplicated in the file (also in line {2}).", line, sq, fileSq[sq]));
+                        else
+                            fileSq[sq] = line;
+                    }
+                    if (modelId != "")
+                    {
+                        if (sysModelIds.Contains(modelId))
+                            errors.Add(string.Format("Cell C{0} (Model_ID): '{1}' already exists in the system.", line, modelId));
+                        else if (fileModelIds.ContainsKey(modelId))
+                            errors.Add(string.Format("Cell C{0} (Model_ID): '{1}' is duplicated in the file (also in line {2}).", line, modelId, fileModelIds[modelId]));
+                        else
+                            fileModelIds[modelId] = line;
+                    }
+
+                    DataRow newRow = importData.NewRow();
+                    foreach (PDXInfoField f in allFields)
+                    {
+                        if (f.Kind == PDXInfoFieldKind.Int) newRow[f.DbColumn] = 0;
+                        else if (f.Kind == PDXInfoFieldKind.Date) newRow[f.DbColumn] = DateTime.Now;
+                        else newRow[f.DbColumn] = "";
+                    }
+                    newRow[allFields[0].DbColumn] = sq;
+                    newRow[allFields[1].DbColumn] = abbr;
+                    newRow[allFields[2].DbColumn] = modelId;
+
+                    foreach (KeyValuePair<int, PDXInfoField> kv in colFields)
+                    {
+                        string text = kv.Key < values.Length ? values[kv.Key] : "";
+                        if ((text ?? "").Trim() == "") continue; // 空值用默认值
+                        object val;
+                        string err;
+                        if (kv.Value.TryParse(null, text, out val, out err))
+                            newRow[kv.Value.DbColumn] = val;
+                        else
+                            errors.Add(string.Format("Cell {0}{1} ({2}): {3}", ColumnName(kv.Key), line, kv.Value.Header, err));
+                    }
+                    importData.Rows.Add(newRow);
+                }
+
+                if (errors.Count > 0)
+                {
+                    context.Response.Write(FormatImportErrors(errors));
+                    return;
+                }
+                if (importData.Rows.Count == 0)
+                {
+                    context.Response.Write("No data rows found in the file.");
+                    return;
+                }
+
+                // 3. 全部校验通过后一次性写库；失败时抛出异常，不再提示成功
                 ArrayList columns = new ArrayList();
                 foreach (DataColumn dc in importData.Columns)
                 {
                     columns.Add(dc.ColumnName);
                 }
-                ojbReportRule.InsertBigSql(importData, columns, "PDXMODEL_INFO");
-                context.Response.Write("Import successfully!");
+                try
+                {
+                    ojbReportRule.InsertBigSqlOrThrow(importData, columns, "PDXMODEL_INFO");
+                }
+                catch (Exception ex)
+                {
+                    context.Response.Write(HttpUtility.HtmlEncode("Import failed, no data was written. Database error: " + ex.Message));
+                    return;
+                }
+                context.Response.Write(string.Format("Import successfully! {0} record(s) added.", importData.Rows.Count));
             }
             catch (Exception ex)
             {
-                context.Response.Write(ex.Message);
+                context.Response.Write(HttpUtility.HtmlEncode(ex.Message));
             }
-
         }
 
 
@@ -2956,6 +2986,12 @@ namespace PDXmodelBase.HuData
 
         }
 
+        /// <summary>
+        /// "PDXModelInfo_update(.xlsx)" 导入：按 Sq# 更新已有 PDXMODEL_INFO 记录
+        /// - 前三列固定为 Sq# / Cancer_Type_Abbr / Model_ID，必填，且必须与系统中的记录完全一致（只用于校验，不更新）
+        /// - 第四列起按列表头名称匹配字段，列位置不限，可只包含部分列；单元格为空则不修改该字段
+        /// - 先校验整个文件，有任何错误（表头/前三列不一致/数字或日期格式错误等）都不写入，并提示具体错误位置
+        /// </summary>
         public void Update_PDXModelInfo_update(HttpContext context)
         {
             try
@@ -2964,145 +3000,339 @@ namespace PDXmodelBase.HuData
                 BaseList data = bll.Select(typeof(PDXMODEL_INFO));
                 Workbook book = new Workbook(filePath);
                 Worksheet sheet = book.Worksheets[0];
+                Cells cells = sheet.Cells;
 
                 List<PDXMODEL_INFO> lists = data.ConvertAll(PDXMODEL_INFO.Convert);
-                string _errors = "";
-                try
-                {
+                List<string> errors = new List<string>();
 
-                    Cells cells = sheet.Cells;
-                    for (int i = 0; i < cells.MaxDataRow + 1; i++)
-                    {
-                        if (cells[i, 0].StringValue.Trim() == "")
-                        {
-                            break;
-                        }
-                        else if (cells[i, 0].StringValue != "Sq#")
-                        {
-                            PDXMODEL_INFO row = lists.Find(delegate (PDXMODEL_INFO perm) { return perm.SQ_NUMBER == cells[i, 0].StringValue.Trim(); });
-                            if (row != null)
-                            {
-                                row.CurModel = DealModel.Modify;
-                                if(cells[i, 1].StringValue.Trim()!="")
-                                    row.CANCER_TYPE_ABBR = cells[i, 1].StringValue;
-                                if (cells[i, 2].StringValue.Trim() != "")
-                                    row.MODEL_ID = cells[i, 2].StringValue;
-                                if (cells[i, 3].StringValue.Trim() != "")
-                                    row.MODEL_FROM = cells[i, 3].StringValue;
-                                if (cells[i, 4].StringValue.Trim() != "")
-                                    row.ORIGIN = cells[i, 4].StringValue;
-                                if (cells[i, 5].StringValue.Trim() != "")
-                                    row.CANCER_TYPE = cells[i, 5].StringValue;
-                                if (cells[i, 6].StringValue.Trim() != "")
-                                    row.SUBTYPE1 = cells[i, 6].StringValue;
-                                if (cells[i, 7].StringValue.Trim() != "")
-                                    row.SUBTYPE2 = cells[i, 7].StringValue;
-                                if (cells[i, 8].StringValue.Trim() != "")
-                                    row.MODEL_CATEGORY = cells[i, 8].StringValue;
-                                if (cells[i, 9].StringValue.Trim() != "")
-                                    row.MODEL_STATUS = cells[i, 9].StringValue;
-                                if (cells[i, 10].StringValue.Trim() != "")
-                                    row.SOURCE_ID = cells[i, 10].StringValue;
-                                if (cells[i, 11].StringValue.Trim() != "")
-                                    row.SOURCE_NOTE = cells[i, 11].StringValue;
-                                if (cells[i, 12].StringValue.Trim() != "")
-                                    row.PDX_QC = cells[i, 12].StringValue;
-                                if (cells[i, 13].StringValue.Trim() != "")
-                                    row.TOTAL_REVIVAL_SUCCESS_RATE = cells[i, 13].StringValue;
-                                if (cells[i, 14].StringValue.Trim() != "")
-                                    row.REVIVAL_RECOMMENDED_STRAIN = cells[i, 14].StringValue;
-                                if (cells[i, 15].StringValue.Trim() != "")
-                                    row.TIME_OF_REVIVAL = cells[i, 15].StringValue;
-                                if (cells[i, 16].StringValue.Trim() != "")
-                                    row.MAINTAIN_RECOMMENDED_STRAIN = cells[i, 16].StringValue;
-                                if (cells[i, 17].StringValue.Trim() != "")
-                                    row.STR_CONSISTENCE = cells[i, 17].StringValue;
-                                if (cells[i, 18].StringValue.Trim() != "")
-                                    row.IN_HUBA = cells[i, 18].StringValue;
-                                if (cells[i, 19].StringValue.Trim() != "")
-                                    row.AVAILABLE_SITE = cells[i, 19].StringValue;
-                                if (cells[i, 20].StringValue.Trim() != "")
-                                    row.TIME_OF_MODEL_FOR_TRANSPLANT = cells[i, 20].StringValue;
-                                if (cells[i, 21].StringValue.Trim() != "")
-                                    row.CV40_TAKE_RATE = cells[i, 21].StringValue;
-                                if (cells[i, 22].StringValue.Trim() != "")
-                                    row.CV30_TAKE_RATE = cells[i, 22].StringValue;
-                                if (cells[i, 23].StringValue.Trim() != "")
-                                    row.OPTIMAL_OVERAGE = cells[i, 23].StringValue;
-                                if (cells[i, 24].StringValue.Trim() != "")
-                                    row.DOSING_WINDOW = cells[i, 24].StringValue;
-                                if (cells[i, 25].StringValue.Trim() != "")
-                                    row.CRYO_P = RegHelper.IsNumber0(cells[i,25].StringValue.ToString()) == true ? int.Parse(cells[i, 25].StringValue.ToString()) : 0;
-                                if (cells[i, 26].StringValue.Trim() != "")
-                                    row.SNAP_FROZEN = RegHelper.IsNumber0(cells[i, 26].StringValue.ToString()) == true ? int.Parse(cells[i, 26].StringValue.ToString()) : 0;
-                                if (cells[i, 27].StringValue.Trim() != "")
-                                    row.FFPE = RegHelper.IsNumber0(cells[i, 27].StringValue.ToString()) == true ? int.Parse(cells[i, 27].StringValue.ToString()) : 0;
-                                if (cells[i, 28].StringValue.Trim() != "")
-                                    row.HP2 = cells[i, 28].StringValue;
-                                if (cells[i, 29].StringValue.Trim() != "")
-                                    row.TIMES_USED_IN_STUDY = cells[i, 29].StringValue;
-                                if (cells[i, 30].StringValue.Trim() != "")
-                                    row.UPDATE_TIME = cells[i, 30].StringValue == "" ? DateTime.Now : DateTime.Parse(cells[i, 30].StringValue);
-                                if (cells[i, 31].StringValue.Trim() != "")
-                                    row.CACHEXIA_LABEL = cells[i, 31].StringValue;
-                                if (cells[i, 32].StringValue.Trim() != "")
-                                    row.CACHEXIA = cells[i, 32].StringValue;
-                                if (cells[i, 33].StringValue.Trim() != "")
-                                    row.SLIGHT_BW_LOSS = cells[i, 33].StringValue;
-                                if (cells[i, 34].StringValue.Trim() != "")
-                                    row.NORMAL = cells[i, 34].StringValue;
-                                if (cells[i, 35].StringValue.Trim() != "")
-                                    row.ULCERATION_LABEL = cells[i, 35].StringValue;
-                                if (cells[i, 36].StringValue.Trim() != "")
-                                    row.SURVIVAL_CURVE = cells[i, 36].StringValue;
-                                if (cells[i, 37].StringValue.Trim() != "")
-                                    row.SOC = cells[i, 37].StringValue;
-                                if (cells[i, 38].StringValue.Trim() != "")
-                                    row.DATA_TYPE = cells[i, 38].StringValue;
-                                if (cells[i, 39].StringValue.Trim() != "")
-                                    row.COMMENTS = cells[i, 39].StringValue;
-                                if (cells[i, 40].StringValue.Trim() != "")
-                                    row.LOCATION = cells[i, 40].StringValue;
-                                if (cells[i, 41].StringValue.Trim() != "")
-                                    row.TOTAL_REVIVAL_SUCCESS_RATE_CBNC = cells[i, 41].StringValue;
-                                if (cells[i, 42].StringValue.Trim() != "")
-                                    row.TIME_OF_REVIVAL_CBNC = cells[i, 42].StringValue;
-                                if (cells[i, 43].StringValue.Trim() != "")
-                                    row.REVIVAL_RECOMMENDED_STRAIN_CBNC = cells[i, 43].StringValue;
-                                if (cells[i, 44].StringValue.Trim() != "")
-                                    row.EXOMESEQ = cells[i, 44].StringValue;
-                                if (cells[i, 45].StringValue.Trim() != "")
-                                    row.TREATMENT_HISTORY_1 = cells[i, 45].StringValue;
-                                if (cells[i, 46].StringValue.Trim() != "")
-                                    row.TREATMENT_HISTORY_2 = cells[i, 46].StringValue;
-                                if (cells[i, 47].StringValue.Trim() != "")
-                                    row.SOURCE = cells[i, 47].StringValue;
-                                if (cells[i, 48].StringValue.Trim() != "")
-                                    row.IMPLANTATION_METHOD = cells[i, 48].StringValue;
-                                if (cells[i, 49].StringValue.Trim() != "")
-                                    row.DEATHRATE = cells[i, 49].StringValue;
-                                // add by Jack, 202512.10
-                                if (cells[i, 50].StringValue.Trim() != "")
-                                    row.PATIENT_ID = cells[i, 50].StringValue;
-                                bll.Update(row);
-                            }                                 
-                        }                                     
-                    }
-                }
-                catch (Exception ex)
+                if (cells.MaxDataRow < 0)
                 {
-                    string a = _errors + " row error：" + ex.Message.ToString();
-                    context.Response.Write(a);
+                    context.Response.Write("The file is empty.");
                     return;
                 }
 
-                context.Response.Write("Import successfully!");
+                int maxCol = cells.MaxDataColumn;
+                int maxRow = cells.MaxDataRow;
+
+                // 1. 校验表头
+                string[] keyHeaders = new string[] { "Sq#", "Cancer_Type_Abbr", "Model_ID" };
+                for (int c = 0; c < keyHeaders.Length; c++)
+                {
+                    string h = c <= maxCol ? cells[0, c].StringValue.Trim() : "";
+                    if (h != keyHeaders[c])
+                        errors.Add(string.Format("Header {0}1: must be '{1}', but is '{2}'.", ColumnName(c), keyHeaders[c], h));
+                }
+
+                Dictionary<string, PDXInfoField> fieldMap = GetPDXInfoNonKeyFieldMap();
+                Dictionary<int, PDXInfoField> colFields = new Dictionary<int, PDXInfoField>();
+                Dictionary<string, int> seenHeaders = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+                for (int c = keyHeaders.Length; c <= maxCol; c++)
+                {
+                    string h = cells[0, c].StringValue.Trim();
+                    if (h == "")
+                    {
+                        // 表头为空且整列无数据则忽略，有数据则报错
+                        for (int r = 1; r <= maxRow; r++)
+                        {
+                            if (cells[r, c].StringValue.Trim() != "")
+                            {
+                                errors.Add(string.Format("Header {0}1: header is empty but the column contains data.", ColumnName(c)));
+                                break;
+                            }
+                        }
+                        continue;
+                    }
+                    if (seenHeaders.ContainsKey(h))
+                    {
+                        errors.Add(string.Format("Header {0}1: '{1}' is duplicated (also in column {2}).", ColumnName(c), h, ColumnName(seenHeaders[h])));
+                        continue;
+                    }
+                    seenHeaders[h] = c;
+                    PDXInfoField field;
+                    if (fieldMap.TryGetValue(h, out field))
+                        colFields[c] = field;
+                    else
+                        errors.Add(string.Format("Header {0}1: '{1}' does not match any column of the PDX model info template.", ColumnName(c), h));
+                }
+
+                if (errors.Count > 0)
+                {
+                    context.Response.Write(FormatImportErrors(errors));
+                    return;
+                }
+
+                // 2. 逐行校验，收集待更新内容（此阶段不写库）
+                List<KeyValuePair<PDXMODEL_INFO, List<Action<PDXMODEL_INFO>>>> pending = new List<KeyValuePair<PDXMODEL_INFO, List<Action<PDXMODEL_INFO>>>>();
+                Dictionary<string, int> seenSq = new Dictionary<string, int>();
+                for (int r = 1; r <= maxRow; r++)
+                {
+                    int excelRow = r + 1;
+                    bool blankRow = true;
+                    for (int c = 0; c <= maxCol; c++)
+                    {
+                        if (cells[r, c].StringValue.Trim() != "") { blankRow = false; break; }
+                    }
+                    if (blankRow) continue;
+
+                    string sq = cells[r, 0].StringValue.Trim();
+                    string abbr = cells[r, 1].StringValue.Trim();
+                    string modelId = cells[r, 2].StringValue.Trim();
+                    if (sq == "") errors.Add(string.Format("Cell A{0} (Sq#): required.", excelRow));
+                    if (abbr == "") errors.Add(string.Format("Cell B{0} (Cancer_Type_Abbr): required.", excelRow));
+                    if (modelId == "") errors.Add(string.Format("Cell C{0} (Model_ID): required.", excelRow));
+                    if (sq == "") continue;
+
+                    if (seenSq.ContainsKey(sq))
+                    {
+                        errors.Add(string.Format("Cell A{0} (Sq#): '{1}' is duplicated in the file (also in row {2}).", excelRow, sq, seenSq[sq]));
+                        continue;
+                    }
+                    seenSq[sq] = excelRow;
+
+                    List<PDXMODEL_INFO> matched = lists.FindAll(delegate (PDXMODEL_INFO p) { return (p.SQ_NUMBER ?? "").Trim() == sq; });
+                    if (matched.Count == 0)
+                    {
+                        errors.Add(string.Format("Cell A{0} (Sq#): '{1}' does not exist in the system.", excelRow, sq));
+                        continue;
+                    }
+                    if (matched.Count > 1)
+                    {
+                        errors.Add(string.Format("Cell A{0} (Sq#): '{1}' matches {2} records in the system.", excelRow, sq, matched.Count));
+                        continue;
+                    }
+                    PDXMODEL_INFO row = matched[0];
+                    string sysAbbr = (row.CANCER_TYPE_ABBR ?? "").Trim();
+                    string sysModelId = (row.MODEL_ID ?? "").Trim();
+                    if (abbr != "" && abbr != sysAbbr)
+                        errors.Add(string.Format("Cell B{0} (Cancer_Type_Abbr): '{1}' does not match the system value '{2}' for Sq# {3}.", excelRow, abbr, sysAbbr, sq));
+                    if (modelId != "" && modelId != sysModelId)
+                        errors.Add(string.Format("Cell C{0} (Model_ID): '{1}' does not match the system value '{2}' for Sq# {3}.", excelRow, modelId, sysModelId, sq));
+
+                    List<Action<PDXMODEL_INFO>> setters = new List<Action<PDXMODEL_INFO>>();
+                    foreach (KeyValuePair<int, PDXInfoField> kv in colFields)
+                    {
+                        Cell cell = cells[r, kv.Key];
+                        if (cell.StringValue.Trim() == "") continue; // 空值不修改
+                        object val;
+                        string err;
+                        if (!kv.Value.TryParse(cell.Value, cell.StringValue, out val, out err))
+                        {
+                            errors.Add(string.Format("Cell {0}{1} ({2}): {3}", ColumnName(kv.Key), excelRow, kv.Value.Header, err));
+                        }
+                        else
+                        {
+                            PDXInfoField f = kv.Value;
+                            object v = val;
+                            setters.Add(p => f.Set(p, v));
+                        }
+                    }
+                    pending.Add(new KeyValuePair<PDXMODEL_INFO, List<Action<PDXMODEL_INFO>>>(row, setters));
+                }
+
+                if (errors.Count > 0)
+                {
+                    context.Response.Write(FormatImportErrors(errors));
+                    return;
+                }
+                if (pending.Count == 0)
+                {
+                    context.Response.Write("No data rows found in the file.");
+                    return;
+                }
+
+                // 3. 全部校验通过后写库
+                int updated = 0;
+                foreach (KeyValuePair<PDXMODEL_INFO, List<Action<PDXMODEL_INFO>>> item in pending)
+                {
+                    if (item.Value.Count == 0) continue;
+                    PDXMODEL_INFO row = item.Key;
+                    try
+                    {
+                        foreach (Action<PDXMODEL_INFO> set in item.Value) set(row);
+                        row.CurModel = DealModel.Modify;
+                        bll.Update(row);
+                        updated++;
+                    }
+                    catch (Exception ex)
+                    {
+                        context.Response.Write(HttpUtility.HtmlEncode(string.Format(
+                            "Update failed at Sq# {0}: {1}. {2} record(s) before it were already updated.", row.SQ_NUMBER, ex.Message, updated)));
+                        return;
+                    }
+                }
+
+                context.Response.Write(string.Format("Import successfully! {0} record(s) updated.", updated));
             }
             catch (Exception ex)
             {
-                context.Response.Write(ex.Message);
+                context.Response.Write(HttpUtility.HtmlEncode(ex.Message));
             }
+        }
 
+        private enum PDXInfoFieldKind { Str, Int, Date }
+
+        /// <summary>PDX model info 导入模板的一列：表头名（与模板一致）、PDXMODEL_INFO 表列名、类型、实体赋值</summary>
+        private class PDXInfoField
+        {
+            public string Header;
+            public string DbColumn;
+            public PDXInfoFieldKind Kind;
+            public bool IsKey;
+            public Action<PDXMODEL_INFO, object> Set;
+
+            /// <summary>
+            /// 解析非空单元格。raw 为 xlsx 单元格原始值（Cell.Value，csv 传 null），rawText 为单元格文本
+            /// Int：非负整数（Cryo_P / Snap_Frozen / FFPE）；Date：有效日期（Time_of_Update）
+            /// </summary>
+            public bool TryParse(object raw, string rawText, out object value, out string error)
+            {
+                value = null;
+                error = null;
+                string text = (rawText ?? "").Trim();
+                if (Kind == PDXInfoFieldKind.Str)
+                {
+                    value = rawText;
+                    return true;
+                }
+                if (Kind == PDXInfoFieldKind.Int)
+                {
+                    int v;
+                    if (raw is double || raw is int || raw is decimal || raw is float || raw is long)
+                    {
+                        double d = Convert.ToDouble(raw);
+                        if (d >= 0 && d == Math.Floor(d) && d <= int.MaxValue)
+                        {
+                            value = (int)d;
+                            return true;
+                        }
+                    }
+                    else if (int.TryParse(text, out v) && v >= 0)
+                    {
+                        value = v;
+                        return true;
+                    }
+                    error = string.Format("'{0}' is not a valid non-negative integer.", text);
+                    return false;
+                }
+                DateTime dt;
+                if (raw is DateTime)
+                {
+                    value = (DateTime)raw;
+                    return true;
+                }
+                if (DateTime.TryParse(text, out dt))
+                {
+                    value = dt;
+                    return true;
+                }
+                error = string.Format("'{0}' is not a valid date.", text);
+                return false;
+            }
+        }
+
+        private static PDXInfoField PdxField(string header, string dbColumn, PDXInfoFieldKind kind, Action<PDXMODEL_INFO, object> set)
+        {
+            return new PDXInfoField { Header = header, DbColumn = dbColumn, Kind = kind, Set = set };
+        }
+
+        /// <summary>
+        /// PDX model info 导入模板全部 51 列，顺序与模板一致；前三列（Sq#/Cancer_Type_Abbr/Model_ID）IsKey=true
+        /// DbColumn 与 AddPDXmodelInfo 原来写入 PDXMODEL_INFO 的列名一致
+        /// </summary>
+        private static List<PDXInfoField> GetPDXInfoFields()
+        {
+            PDXInfoFieldKind S = PDXInfoFieldKind.Str, I = PDXInfoFieldKind.Int, D = PDXInfoFieldKind.Date;
+            List<PDXInfoField> fields = new List<PDXInfoField>
+            {
+                PdxField("Sq#", "Sq_Number", S, (p, v) => p.SQ_NUMBER = (string)v),
+                PdxField("Cancer_Type_Abbr", "Cancer_Type_Abbr", S, (p, v) => p.CANCER_TYPE_ABBR = (string)v),
+                PdxField("Model_ID", "Model_ID", S, (p, v) => p.MODEL_ID = (string)v),
+                PdxField("Model_From", "Model_From", S, (p, v) => p.MODEL_FROM = (string)v),
+                PdxField("Origin", "Origin", S, (p, v) => p.ORIGIN = (string)v),
+                PdxField("Cancer_Type", "Cancer_Type", S, (p, v) => p.CANCER_TYPE = (string)v),
+                PdxField("Subtype1", "Subtype1", S, (p, v) => p.SUBTYPE1 = (string)v),
+                PdxField("Subtype2", "Subtype2", S, (p, v) => p.SUBTYPE2 = (string)v),
+                PdxField("Model_Category", "Model_Category", S, (p, v) => p.MODEL_CATEGORY = (string)v),
+                PdxField("Model_Status", "Model_Status", S, (p, v) => p.MODEL_STATUS = (string)v),
+                PdxField("Source_ID", "Source_ID", S, (p, v) => p.SOURCE_ID = (string)v),
+                PdxField("Source_Note", "Source_Note", S, (p, v) => p.SOURCE_NOTE = (string)v),
+                PdxField("PDX_QC", "PDX_QC", S, (p, v) => p.PDX_QC = (string)v),
+                PdxField("Total_Revival_Success_Rate", "Total_Revival_Success_Rate", S, (p, v) => p.TOTAL_REVIVAL_SUCCESS_RATE = (string)v),
+                PdxField("Revival_Recommended_Strain", "Revival_Recommended_Strain", S, (p, v) => p.REVIVAL_RECOMMENDED_STRAIN = (string)v),
+                PdxField("Time_of_Revival", "Time_of_Revival", S, (p, v) => p.TIME_OF_REVIVAL = (string)v),
+                PdxField("Maintain_Recommended_Strain", "Maintain_Recommended_Strain", S, (p, v) => p.MAINTAIN_RECOMMENDED_STRAIN = (string)v),
+                PdxField("STR_Consistence", "STR_Consistence", S, (p, v) => p.STR_CONSISTENCE = (string)v),
+                PdxField("In_Huba", "In_Huba", S, (p, v) => p.IN_HUBA = (string)v),
+                PdxField("Available_Site", "Available_Site", S, (p, v) => p.AVAILABLE_SITE = (string)v),
+                PdxField("Time_of_Model_for_Transplant", "Time_of_Model_for_Transplant", S, (p, v) => p.TIME_OF_MODEL_FOR_TRANSPLANT = (string)v),
+                PdxField("Spare_for_CV40", "CV40_Take_rate", S, (p, v) => p.CV40_TAKE_RATE = (string)v),
+                PdxField("Spare_for_CV30", "CV30_Take_rate", S, (p, v) => p.CV30_TAKE_RATE = (string)v),
+                PdxField("Optimal_Overage", "Optimal_Overage", S, (p, v) => p.OPTIMAL_OVERAGE = (string)v),
+                PdxField("Dosing_Window", "Dosing_Window", S, (p, v) => p.DOSING_WINDOW = (string)v),
+                PdxField("Cryo_P", "Cryo_P", I, (p, v) => p.CRYO_P = (int)v),
+                PdxField("Snap_Frozen", "Snap_Frozen", I, (p, v) => p.SNAP_FROZEN = (int)v),
+                PdxField("FFPE", "FFPE", I, (p, v) => p.FFPE = (int)v),
+                PdxField("HP2", "HP2", S, (p, v) => p.HP2 = (string)v),
+                PdxField("Times_Used_In_Study", "Times_Used_In_Study", S, (p, v) => p.TIMES_USED_IN_STUDY = (string)v),
+                PdxField("Time_of_Update", "Update_Time", D, (p, v) => p.UPDATE_TIME = (DateTime)v),
+                PdxField("Cachexia_Label", "Cachexia_Label", S, (p, v) => p.CACHEXIA_LABEL = (string)v),
+                PdxField("Cachexia", "Cachexia", S, (p, v) => p.CACHEXIA = (string)v),
+                PdxField("Slight_BW_loss", "Slight_BW_loss", S, (p, v) => p.SLIGHT_BW_LOSS = (string)v),
+                PdxField("Normal", "Normal", S, (p, v) => p.NORMAL = (string)v),
+                PdxField("Ulceration_Label", "Ulceration_Label", S, (p, v) => p.ULCERATION_LABEL = (string)v),
+                PdxField("Survival_Curve", "Survival_Curve", S, (p, v) => p.SURVIVAL_CURVE = (string)v),
+                PdxField("SOC", "SOC", S, (p, v) => p.SOC = (string)v),
+                PdxField("DATA_TYPE", "data_type", S, (p, v) => p.DATA_TYPE = (string)v),
+                PdxField("Comments", "Comments", S, (p, v) => p.COMMENTS = (string)v),
+                PdxField("Location", "Location", S, (p, v) => p.LOCATION = (string)v),
+                PdxField("Total_Revival_Success_Rate_CBNC", "Total_Revival_Success_Rate_CBNC", S, (p, v) => p.TOTAL_REVIVAL_SUCCESS_RATE_CBNC = (string)v),
+                PdxField("Time_of_Revival_CBNC", "Time_of_Revival_CBNC", S, (p, v) => p.TIME_OF_REVIVAL_CBNC = (string)v),
+                PdxField("Revival_Recommended_Strain_CBNC", "Revival_Recommended_Strain_CBNC", S, (p, v) => p.REVIVAL_RECOMMENDED_STRAIN_CBNC = (string)v),
+                PdxField("Exomeseq", "Exomeseq", S, (p, v) => p.EXOMESEQ = (string)v),
+                PdxField("Treatment_history_1", "Treatment_history_1", S, (p, v) => p.TREATMENT_HISTORY_1 = (string)v),
+                PdxField("Treatment_history_2", "Treatment_history_2", S, (p, v) => p.TREATMENT_HISTORY_2 = (string)v),
+                PdxField("Source", "Source", S, (p, v) => p.SOURCE = (string)v),
+                PdxField("Implantation_Method", "Implantation_Method", S, (p, v) => p.IMPLANTATION_METHOD = (string)v),
+                PdxField("DeathRate", "DeathRate", S, (p, v) => p.DEATHRATE = (string)v),
+                PdxField("Patient_ID", "Patient_ID", S, (p, v) => p.PATIENT_ID = (string)v),
+            };
+            for (int i = 0; i < 3; i++) fields[i].IsKey = true;
+            return fields;
+        }
+
+        /// <summary>第四列起可按表头匹配的列：表头名（不区分大小写）→ 字段</summary>
+        private static Dictionary<string, PDXInfoField> GetPDXInfoNonKeyFieldMap()
+        {
+            Dictionary<string, PDXInfoField> map = new Dictionary<string, PDXInfoField>(StringComparer.OrdinalIgnoreCase);
+            foreach (PDXInfoField f in GetPDXInfoFields())
+                if (!f.IsKey) map[f.Header] = f;
+            return map;
+        }
+        /// <summary>列号（0 起）转 Excel 列名：0→A，26→AA</summary>
+        private static string ColumnName(int index)
+        {
+            string name = "";
+            index++;
+            while (index > 0)
+            {
+                int m = (index - 1) % 26;
+                name = (char)('A' + m) + name;
+                index = (index - 1) / 26;
+            }
+            return name;
+        }
+
+        /// <summary>错误列表输出为 HTML（前端用 $.messager.alert 显示），最多列出 50 条</summary>
+        private static string FormatImportErrors(List<string> errors)
+        {
+            const int maxShown = 50;
+            StringBuilder sb = new StringBuilder();
+            sb.Append(string.Format("Import failed, no data was written. {0} error(s) found:", errors.Count));
+            for (int i = 0; i < errors.Count && i < maxShown; i++)
+                sb.Append("<br/>").Append(HttpUtility.HtmlEncode(errors[i]));
+            if (errors.Count > maxShown)
+                sb.Append("<br/>... and ").Append(errors.Count - maxShown).Append(" more.");
+            return sb.ToString();
         }
 
         public void Update_PDXModelInfo_subtype(HttpContext context)

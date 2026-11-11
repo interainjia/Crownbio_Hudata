@@ -36,6 +36,15 @@ namespace Crownbio.BLL
 
             }
         }
+
+        /// <summary>
+        /// Same as InsertBigSql, but rethrows on failure (InsertBigSql swallows the exception, so callers report success).
+        /// SqlBulkCopyData already logs the error.
+        /// </summary>
+        public static void InsertBigSqlOrThrow(DataTable table, ArrayList columns, string tablename)
+        {
+            DbHelperSQL.SqlBulkCopyData(table, columns, tablename);
+        }
       
 
         #region
