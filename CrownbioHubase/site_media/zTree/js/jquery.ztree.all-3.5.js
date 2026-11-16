@@ -1,7 +1,7 @@
 
 /*
  * JQuery zTree core v3.5.15
- * http://zTree.me/
+ *
  *
  * Copyright (c) 2010 Hunter.z
  *
@@ -1678,7 +1678,7 @@
 })(jQuery);
 /*
  * JQuery zTree excheck v3.5.15
- * http://zTree.me/
+ *
  *
  * Copyright (c) 2010 Hunter.z
  *
@@ -2304,7 +2304,7 @@
 })(jQuery);
 /*
  * JQuery zTree exedit v3.5.15
- * http://zTree.me/
+ *
  *
  * Copyright (c) 2010 Hunter.z
  *

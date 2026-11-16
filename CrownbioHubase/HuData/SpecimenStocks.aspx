@@ -23,9 +23,9 @@
     <script type="text/javascript" src="../Common/waiting/jquery.showLoading.js"></script>
     <link rel="stylesheet" href="/site_media/zTree/css/demo.css" type="text/css" />
     <link rel="stylesheet" href="/site_media/zTree/css/zTreeStyle/zTreeStyle.css" type="text/css" />
-    <script type="text/javascript" src="/site_media/zTree/js/jquery.ztree.core-3.5.js"></script>
-    <script type="text/javascript" src="/site_media/zTree/js/jquery.ztree.excheck-3.5.js"></script>
-    <script type="text/javascript" src="/site_media/zTree/js/jquery.ztree.exedit-3.5.js"></script>
+    <script type="text/javascript" src="/site_media/zTree/js/jquery.ztree.core-3.5.js?v=3.5.15.1"></script>
+    <script type="text/javascript" src="/site_media/zTree/js/jquery.ztree.excheck-3.5.js?v=3.5.15.1"></script>
+    <script type="text/javascript" src="/site_media/zTree/js/jquery.ztree.exedit-3.5.js?v=3.5.15.1"></script>
     <script type="text/javascript" src="../Common/easyui-1.3.2/jquery.easyui.min.js"></script>
     <link rel="stylesheet" type="text/css" href="../Common/easyui-1.3.2/themes/bootstrap/easyui.css" />
     <link rel="stylesheet" type="text/css" href="../Common/easyui-1.3.2/themes/icon.css" />

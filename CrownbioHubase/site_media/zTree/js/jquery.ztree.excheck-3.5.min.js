@@ -1,6 +1,6 @@
 /*
  * JQuery zTree excheck v3.5.15
- * http://zTree.me/
+ *
  *
  * Copyright (c) 2010 Hunter.z
  *
