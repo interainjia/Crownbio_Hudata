@@ -15,9 +15,9 @@ namespace Crownbio.BLL
         public static string SendMail3(string code, string Subject, string Body, string[] To, string msg)
         {
             string address = "https://outlook.office365.com/ews/exchange.asmx";
-            string resultVal = SendByExchange(code, "HuDataAdmin@crownbio.com",
-                                  "xba-12",
-                                      "HuDataAdmin@crownbio.com",
+            string resultVal = SendByExchange(code, Crownbio.BLL.Rule.SendEmail.MailUserName,
+                                  Crownbio.BLL.Rule.SendEmail.MailPassword,
+                                      Crownbio.BLL.Rule.SendEmail.MailUserName,
                                          To,
                                               "crownbio.com",
                                                   address,

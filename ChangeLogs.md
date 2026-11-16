@@ -1,4 +1,16 @@
-﻿# 2026.11.11
+﻿# 2026.11.16
+
+## HuData 系统邮箱 HuDataAdmin@crownbio.com 更换密码，账号密码改为配置在 Web.config
+
+- `BLLRemote/Rule/SendEmail.cs`：发件人、SMTP 登录账号/密码不再写死在代码中，改为读取 Web.config `appSettings` 的 `MailUserName` / `MailPassword`（`SendEmail.MailUserName` / `SendEmail.MailPassword`）
+- `BLLRemote/Rule/SendbyExchange.cs`：`SendMail3` 同样改为读取上述配置
+- `CrownbioHubase/Web.config`、`wwwroot/Web.config`（均未纳入 git）新增 `MailUserName`、`MailPassword`；密码含 `&`，在 XML 中须写成 `&amp;`
+- **部署时须在服务器 Web.config 中加入这两个配置项**，否则发送邮件失败
+- 未改动：`SendbyExchange.GetMail()` 中 lijun@crownbio.com 的账号密码仍写死在代码中
+
+---
+
+# 2026.11.11
 
 ## DataImport.aspx "PDXModelInfo(.csv)" 新增导入、"PDXModelInfo_update(.xlsx)" 更新导入均改为按列表头匹配，前三列严格校验
 
