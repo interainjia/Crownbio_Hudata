@@ -1092,7 +1092,6 @@
     <Content Include="HuData\SetUserColumns.aspx" />
     <Content Include="HuData\UserRole.aspx" />
     <Content Include="HuData\WebForm2.aspx" />
-    <Content Include="HuData\webAPItest.aspx" />
     <Content Include="HuData\WebForm3.aspx" />
     <Content Include="HuData\Workload.aspx" />
     <Content Include="HuData\Register.aspx" />
@@ -2687,13 +2686,6 @@
     </Compile>
     <Compile Include="HuData\WebForm2.aspx.designer.cs">
       <DependentUpon>WebForm2.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="HuData\webAPItest.aspx.cs">
-      <DependentUpon>webAPItest.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="HuData\webAPItest.aspx.designer.cs">
-      <DependentUpon>webAPItest.aspx</DependentUpon>
     </Compile>
     <Compile Include="HuData\WebForm3.aspx.cs">
       <DependentUpon>WebForm3.aspx</DependentUpon>

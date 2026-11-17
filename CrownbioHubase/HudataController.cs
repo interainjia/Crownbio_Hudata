@@ -53,9 +53,47 @@ namespace PDXmodelBase
         {
         }
 
+        /// <summary>
+        /// 校验请求头 X-API-Key 是否与 Web.config appSettings 中的 HudataApiKey 一致。
+        /// 未配置 HudataApiKey 时一律拒绝（fail closed）。
+        /// </summary>
+        private bool IsValidApiKey()
+        {
+            string expected = System.Configuration.ConfigurationManager.AppSettings["HudataApiKey"];
+            if (string.IsNullOrEmpty(expected))
+            {
+                return false;
+            }
+            IEnumerable<string> values;
+            if (Request == null || !Request.Headers.TryGetValues("X-API-Key", out values))
+            {
+                return false;
+            }
+            string provided = values.FirstOrDefault();
+            if (string.IsNullOrEmpty(provided))
+            {
+                return false;
+            }
+            // 定长比较，避免时序攻击
+            byte[] a = Encoding.UTF8.GetBytes(provided);
+            byte[] b = Encoding.UTF8.GetBytes(expected);
+            int diff = a.Length ^ b.Length;
+            for (int i = 0; i < a.Length && i < b.Length; i++)
+            {
+                diff |= a[i] ^ b[i];
+            }
+            return diff == 0;
+        }
+
         [HttpPost]
         public HttpResponseMessage SaveRequest([FromBody]dynamic ojb)
         {
+            if (!IsValidApiKey())
+            {
+                var unauthorized = APItoJson(new { code = "error", msg = "Unauthorized." });
+                unauthorized.StatusCode = HttpStatusCode.Unauthorized;
+                return unauthorized;
+            }
             string msg = "";
             string code = "";
             try
