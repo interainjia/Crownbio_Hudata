@@ -31,6 +31,11 @@ namespace PDXmodelBase.HuData
         public static bool TryValidateRequest(HttpRequest request, out string email, out string error)
         {
             email = "";
+            if (TryDevLogin(request, out email))
+            {
+                error = "";
+                return true;
+            }
             string rawCookieValue = request.Cookies[CookieName]?.Value;
             if (string.IsNullOrEmpty(rawCookieValue))
             {
@@ -42,6 +47,25 @@ namespace PDXmodelBase.HuData
             int spaceIndex = token.LastIndexOf(' ');
             if (spaceIndex >= 0) token = token.Substring(spaceIndex + 1);
             return TryValidate(token, out email, out error);
+        }
+
+        /// <summary>
+        /// 本地调试免登录：仅 DEBUG 编译 + 本机访问(localhost) + Web.config 配置了 DevLoginEmail 时生效，
+        /// 直接以 DevLoginEmail 作为 SSO 邮箱登录（该邮箱需在本地库 SYS_USER 中存在且已启用）。
+        /// Release 编译时此方法恒返回 false。
+        /// </summary>
+        private static bool TryDevLogin(HttpRequest request, out string email)
+        {
+            email = "";
+#if DEBUG
+            string devEmail = ConfigurationManager.AppSettings["DevLoginEmail"];
+            if (!string.IsNullOrWhiteSpace(devEmail) && request.IsLocal)
+            {
+                email = devEmail.Trim();
+                return true;
+            }
+#endif
+            return false;
         }
 
         public static bool TryValidate(string token, out string email, out string error)
