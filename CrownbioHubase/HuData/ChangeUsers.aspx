@@ -100,14 +100,13 @@ input[type=checkbox]{ width: 20px; margin: 0; display: inline-block; }
                 var Phone = $('#Phone').val();
                 var Fax = $('#Fax').val();
                 var Email = $('#Email').val();
-                var Password = $('#Password').val();
                 if (First_name != "" && Last_name != "") {
                     $.ajax({
                         type: "POST", //提交的类型
                         url: "userLogin.ashx?M=changeInfo", //提交地址
                         data: { First_name: First_name, Last_name: Last_name, Position: Position, Department: Department
                     , Institution: Institution, Street_Address: Street_Address, City: City, Country: Country
-                    , Phone: Phone, Fax: Fax, Email: Email, Password: Password
+                    , Phone: Phone, Fax: Fax, Email: Email
                         }, //参数
                         success: function (results) {
                             $.messager.alert("change", results, "info", null);
@@ -210,13 +209,14 @@ input[type=checkbox]{ width: 20px; margin: 0; display: inline-block; }
 			<td class="td_left">Last Name:<span style="color:Red">*</span>&nbsp;</td>
 			<td class="td_right"><input id="Last_name" class="easyui-validatebox"  required="true" validType="length[1,20]" /></td>
 		</tr>
+         <%-- 仅支持 Sign In With Azure，密码字段停用（不预填、不提交、服务端不修改密码） --%>
          <tr>
-			<td class="td_left">Password:<span style="color:Red">*</span>&nbsp;</td>
-			<td class="td_right"><input id="Password" class="easyui-validatebox"  required="true" validType="safepass" type="password" /></td>
+			<td class="td_left">Password:&nbsp;</td>
+			<td class="td_right"><input id="Password" type="password" disabled="disabled" placeholder="Managed by Azure" /></td>
 		</tr>
          <tr>
-			<td class="td_left">Confirm Password:<span style="color:Red">*</span>&nbsp;</td>
-			<td class="td_right"><input id="ConfirmPassword" class="easyui-validatebox"  required="true" validType="ConfirmPassword" type="password"/></td>
+			<td class="td_left">Confirm Password:&nbsp;</td>
+			<td class="td_right"><input id="ConfirmPassword" type="password" disabled="disabled" placeholder="Managed by Azure" /></td>
 		</tr>
         
         <tr>

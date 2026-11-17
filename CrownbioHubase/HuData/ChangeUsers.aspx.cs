@@ -31,25 +31,7 @@ namespace CrownbioHuData.HuData
                 script.Append("getCountry('" + HttpUtility.JavaScriptStringEncode(userLogin.COUNTRY) + "');");
                 script.Append("$('#Phone').val('" + HttpUtility.JavaScriptStringEncode(userLogin.PHONE) + "');");
                 script.Append("$('#Fax').val('" + HttpUtility.JavaScriptStringEncode(userLogin.FAX) + "');");
-                // AD 域用户登录时不校验库里的 USER_PWD，可能为空或不是有效密文，解密失败时不预填密码
-                string password = "";
-                try
-                {
-                    if (!string.IsNullOrEmpty(userLogin.USER_PWD))
-                    {
-                        password = DEncryptHelper.Decrypt(userLogin.USER_PWD);
-                    }
-                }
-                catch (System.Security.Cryptography.CryptographicException)
-                {
-                    password = "";
-                }
-                catch (FormatException)
-                {
-                    password = "";
-                }
-                script.Append("$('#Password').val('" + HttpUtility.JavaScriptStringEncode(password) + "');");
-                script.Append("$('#ConfirmPassword').val('" + HttpUtility.JavaScriptStringEncode(password) + "');");
+                // 仅支持 Sign In With Azure，密码字段已停用：不再解密、不再把密码输出到页面
                 if (userLogin.EMAIL == "trial@crownbio.com")
                 {
                     script.Append("document.getElementById(\"changeInfo\").style.display = \"none\";");

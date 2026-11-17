@@ -103,17 +103,16 @@ namespace PDXmodelBase.HuData
             }
             switch (Method)
             {
+                // 用户名/密码登录、试用账号登录、注册、找回密码均已停用，仅支持 Sign In With Azure（userLoginAuto）
                 case "trial":
-                     ReturnTrial(context);
-                    break;
                 case "userLogin":
-                    ReturnLogin(context, name, pwd);
+                case "register":
+                case "forgot":
+                    context.Response.StatusCode = 403;
+                    context.Response.Write(PasswordLoginDisabledMsg);
                     break;
                 case "userLoginAuto":
                     ReturnLoginAuto(context, name, pwd);
-                    break;
-                case "register":
-                    Returnregister(context, First_name, Last_name, Position, Department, Institution, Street_Address, City, Country, Phone, Fax, Email, Password, Interest);
                     break;
                 case "changeInfo":
                     ReturnChange(context, First_name, Last_name, Position, Department, Institution, Street_Address, City, Country, Phone, Fax, Password, Interest);
@@ -126,12 +125,10 @@ namespace PDXmodelBase.HuData
                     string idd = context.Request.Params["USER_ID"];
                     DisableUser(context, idd);
                     break;
-                case "forgot":
-                    ReturnForgot(context, Email);
-                    break;
-              
             }
         }
+
+        private const string PasswordLoginDisabledMsg = "Username/password login is disabled. Please use Sign In With Azure.";
 
        
         public string MStoJson(DataTable dt)
@@ -368,14 +365,7 @@ namespace PDXmodelBase.HuData
                 bll.Update(sl);
                 sl.CurModel = DealModel.None;
 
-
-                if (remember == "true")
-                {
-                    context.Response.Cookies["Hudatausername"].Value = name;
-                    context.Response.Cookies["Hudatapassword"].Value = pwd;
-                    context.Response.Cookies["HudatauserName"].Expires = DateTime.Now.AddDays(7);//设置过期时间
-                    context.Response.Cookies["Hudatapassword"].Expires = DateTime.Now.AddDays(7);//设置过期时间
-                }
+                // SSO 登录不再写入 Hudatausername/Hudatapassword Cookie（旧版 Remember Me 会保存明文密码）
 
                 //FormsAuthentication.SetAuthCookie(name, false);
                 //   Session["DigitData"] = new ObjectBLL().Select(typeof(BASE_DIGIT));
@@ -520,7 +510,7 @@ namespace PDXmodelBase.HuData
                 currentRow.CurModel = DealModel.Modify;
                 currentRow.USER_CODE = Email;
                 currentRow.USER_NAME = First_name + " " + Last_name;
-                currentRow.USER_PWD = DEncryptHelper.Encrypt(Password);
+                // 仅支持 Sign In With Azure，不再修改密码（USER_PWD 保持不变）
                 currentRow.CITY = City;
                 currentRow.COUNTRY = Country;
                 currentRow.DEPARTMENT = Department;
@@ -534,8 +524,20 @@ namespace PDXmodelBase.HuData
                 currentRow.STREET_ADDRESS = Street_Address;
                 bll.Update(currentRow);
                 currentRow.CurModel = DealModel.None;
-                SYS_USER loginUser = bll.Login(context, userLogin.EMAIL, DEncryptHelper.Encrypt(Password));
-                context.Session["HudataUserInfo"] = loginUser;
+                // 不再用密码重新登录（Azure 用户没有可用的本地密码，重新登录会导致会话失效），直接同步当前会话中的用户信息
+                userLogin.USER_NAME = currentRow.USER_NAME;
+                userLogin.FIRST_NAME = First_name;
+                userLogin.LAST_NAME = Last_name;
+                userLogin.POSITION = Position;
+                userLogin.DEPARTMENT = Department;
+                userLogin.INSTITUTION = Institution;
+                userLogin.STREET_ADDRESS = Street_Address;
+                userLogin.CITY = City;
+                userLogin.COUNTRY = Country;
+                userLogin.PHONE = Phone;
+                userLogin.FAX = Fax;
+                userLogin.INTEREST = Interest;
+                context.Session["HudataUserInfo"] = userLogin;
                 context.Response.Write("Save successfully.");
             }
 

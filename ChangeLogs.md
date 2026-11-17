@@ -1,4 +1,28 @@
-﻿# 2026.11.16
+﻿# 2026.11.17
+
+## 安全修复：/actionapi/Hudata/SaveRequest 增加 API Key 鉴权；删除 webAPItest.aspx 测试页面
+
+- `CrownbioHubase/HudataController.cs`：`SaveRequest` 入口校验请求头 `X-API-Key`，须与 Web.config `appSettings` 的 `HudataApiKey` 一致（定长比较），否则返回 HTTP 401 `{"code":"error","msg":"Unauthorized."}`；未配置 `HudataApiKey` 时一律拒绝
+- `CrownbioHubase/Web.config`、`wwwroot/Web.config`（均未纳入 git）新增 `HudataApiKey`
+- **部署时须在服务器 Web.config 中加入 `HudataApiKey`，并把该值提供给 SaveRequest 的调用方**，否则调用方全部 401
+- 删除 `CrownbioHubase/HuData/webAPItest.aspx`（含 .cs / .designer.cs、csproj 引用）及 `wwwroot/HuData/webAPItest.aspx`；**服务器上的 `/HuData/webAPItest.aspx` 也须手动删除**（发布不会删除已存在的文件）
+- 未改动：`SaveRequest` 内部 `.Clause` 字符串拼接仍未参数化，API Key 仅限制了调用方
+
+## 网站登录只保留 Sign In With Azure，停用并隐藏用户名/密码登录
+
+- `CrownbioHubase/HuData/Login.aspx`：移除 Username/Password 输入框、Log in 按钮、Remember Me、注册与找回密码链接及对应 JS（`userLogin_click`、`trial_click`、`URLencode` 等）；`userLogin_auto` 不再提交 name/pwd；Azure 登录失败时在页面 `#login-error` 中显示原因（原先只输出到控制台）
+- `CrownbioHubase/HuData/Login.aspx.cs`：不再从 Cookie 回填用户名/密码，并清除旧版 Remember Me 留下的 `Hudatausername` / `Hudatapassword` Cookie（其中保存的是明文密码）
+- `CrownbioHubase/HuData/userLogin.ashx.cs`：`M=userLogin`、`trial`、`register`、`forgot` 一律返回 403 `Username/password login is disabled. Please use Sign In With Azure.`；`userLoginAuto`（SSO）不再写入用户名/密码 Cookie
+- `Register.aspx`、`Forget.aspx`：访问时直接跳转回 `Login.aspx`
+- **影响**：只能通过 Azure 登录，非 Azure 账号（外部客户、`admin` 等本地账号）将无法登录网站
+- `ChangeUsers.aspx`：Password / Confirm Password 设为 disabled，去掉必填与密码规则校验，提交时不再发送 Password
+- `ChangeUsers.aspx.cs`：不再解密 `USER_PWD` 并输出到页面
+- `userLogin.ashx.cs` `ReturnChange`（`M=changeInfo`）：不再修改 `USER_PWD`；保存后不再用密码重新登录（Azure 用户会因此掉线），改为直接同步会话中的用户信息
+- 未改动：`/actionapi/Hudata/SaveRequest` 仍以 email + 密码 + X-API-Key 鉴权
+
+---
+
+# 2026.11.16
 
 ## HuData 系统邮箱 HuDataAdmin@crownbio.com 更换密码，账号密码改为配置在 Web.config
 

@@ -21,19 +21,23 @@ namespace PDXmodelBase.HuData
         string azureAdUpn = "";       // 登录账号
         protected void Page_Load(object sender, EventArgs e)
         {
-            // 1. 优先尝试 Azure AD 登录
+            // 仅支持 Sign In With Azure；用户名/密码登录已停用
             ParseAzureAdUserInfo();
 
-            // 2. 如果没有走 Azure AD（比如直接打开登录页），则走原来的本地 Cookie 逻辑
-            if (string.IsNullOrEmpty(azureAdUserName) && !IsPostBack)
+            // 清除旧版 "Remember Me" 写入的用户名/明文密码 Cookie
+            if (!IsPostBack)
             {
-                if (Request.Cookies["Hudatausername"] != null)
-                {
-                    username = Request.Cookies["Hudatausername"].Value;
-                    password = Request.Cookies["Hudatapassword"].Value;
-                    MessageHelper.ResponseClientScript(this,
-                        $"$('#username').val('{username}');$('#password').val('{password}');");
-                }
+                ExpireCookie("Hudatausername");
+                ExpireCookie("HudatauserName");
+                ExpireCookie("Hudatapassword");
+            }
+        }
+
+        private void ExpireCookie(string name)
+        {
+            if (Request.Cookies[name] != null)
+            {
+                Response.Cookies.Add(new HttpCookie(name, "") { Expires = DateTime.Now.AddDays(-1) });
             }
         }
 
@@ -181,14 +185,10 @@ namespace PDXmodelBase.HuData
             // 关键：拿到账号后，自动触发前端登录
             // ==============================================
             username = azureAdUserName;
-            string jsUsername = HttpUtility.JavaScriptStringEncode(username);
 
             // 必须包裹在 $(function(){}) 中，确保页面元素加载完毕后再执行
             string autoLoginScript = $@"
                 $(function() {{
-                    $('#username').val('{jsUsername}');
-                    $('#password').val('');
-
                     // 延迟 200 毫秒执行，给浏览器一点时间渲染输入框的值
                     setTimeout(function() {{
                         if (typeof userLogin_auto === 'function') {{
