@@ -128,6 +128,9 @@ namespace PDXmodelBase.HuData
                 case "importGeneticTest":
                     importGeneticTest(context);
                     break;
+                case "ImportProgress":
+                    ImportProgress(context);
+                    break;
                     
             }
         }
@@ -3382,16 +3385,100 @@ namespace PDXmodelBase.HuData
             }
 
         }
+        /// <summary>
+        /// AnimalInfo(update) 导入：大批量维持数据逐行访问数据库耗时较长（可达数分钟），同步执行会被网关（jump server / nginx）判定超时返回 504。
+        /// 改为后台异步执行：保存文件后立即返回 "ASYNC_JOB:任务ID"，前端轮询 M=ImportProgress 显示进度和最终结果。
+        /// </summary>
         public void UpdateAnimalInfo(HttpContext context)
         {
-            context.Server.ScriptTimeout = 1800; // 大批量维持数据导入逐行访问数据库耗时较长，默认110秒超时不够，延长至30分钟
+            StartBackgroundImport(context, "AnimalInfo(update)", UpdateAnimalInfoCore);
+        }
+
+        /// <summary>
+        /// 保存上传文件并启动后台导入，立即返回 "ASYNC_JOB:任务ID"（或无法启动的原因）。
+        /// core(filePath, job) 在后台线程执行，不能访问 HttpContext；返回最终结果信息，抛出异常视为导入失败。
+        /// </summary>
+        private void StartBackgroundImport(HttpContext context, string tablename, Func<string, ImportJob, string> core)
+        {
+            string filePath;
             try
             {
-                string filePath = updateInfo(context);
+                filePath = updateInfo(context);
+            }
+            catch (Exception ex)
+            {
+                context.Response.Write(ex.Message);
+                return;
+            }
 
+            ImportJob job = ImportJobManager.TryStart(tablename, CacheHelper.getCurrentUser(),
+                j => core(filePath, j), out string error);
+            context.Response.Write(job == null ? error : ImportJobManager.ResponsePrefix + job.Id);
+        }
+
+        /// <summary>
+        /// 批量写入新记录，失败时抛出带说明的异常（原 InsertBigSql 会吞掉异常，导致页面仍提示导入成功）
+        /// </summary>
+        private static void BulkInsertOrThrow(DataTable table, string tablename)
+        {
+            if (table.Rows.Count == 0) return;
+            ArrayList columns = new ArrayList();
+            foreach (DataColumn dc in table.Columns)
+            {
+                columns.Add(dc.ColumnName);
+            }
+            try
+            {
+                ojbReportRule.InsertBigSqlOrThrow(table, columns, tablename);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(string.Format(
+                    "Import failed while saving {0} new record(s) to {1}; rows updated before this step have already been saved. Database error: {2}",
+                    table.Rows.Count, tablename, ex.Message), ex);
+            }
+        }
+
+        /// <summary>
+        /// 查询后台导入进度（仅任务发起人可查），返回 JSON：status(running/done/failed)、stage、processed、total、message
+        /// </summary>
+        public void ImportProgress(HttpContext context)
+        {
+            context.Response.ContentType = "application/json";
+            context.Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            ImportJob job = ImportJobManager.Get(context.Request.Params["JobId"]);
+            var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+            if (job == null || job.UserId != CacheHelper.getCurrentUser().USER_ID)
+            {
+                context.Response.Write(serializer.Serialize(new { status = "notfound", message = "Import job not found (it may have expired or the server was restarted)." }));
+                return;
+            }
+            context.Response.Write(serializer.Serialize(new
+            {
+                status = job.Status,
+                stage = job.Stage,
+                processed = job.Processed,
+                total = job.Total,
+                message = job.Message,
+                elapsedSeconds = (int)((job.EndTime ?? DateTime.Now) - job.StartTime).TotalSeconds
+            }));
+        }
+
+        private string UpdateAnimalInfoCore(string filePath, ImportJob job)
+        {
+            try
+            {
+                job.Report(0, 0, "Reading file");
                 Workbook book = new Workbook(filePath);
+                int total = 0;
+                foreach (Worksheet s in book.Worksheets)
+                {
+                    total += s.Cells.MaxDataRow + 1;
+                }
+                int processed = 0;
                 foreach (Worksheet sheet in book.Worksheets)
                 {
+                    job.Report(processed, total, "Importing sheet '" + sheet.Name + "'");
                     #region set importData
                     DataTable importData = new DataTable();
                     importData.Columns.Add("MODEL_ID");
@@ -3483,6 +3570,7 @@ namespace PDXmodelBase.HuData
                         //cells.MaxDataRow + 1
                         for (int i = 0; i < cells.MaxDataRow + 1; i++)
                         {
+                            job.Report(++processed, total, null);
                             if (cells[i, 0].StringValue != "AnimalInfo")
                             {
                                 _errors = i.ToString() + ":" + cells[i, 0].StringValue;
@@ -3969,19 +4057,15 @@ namespace PDXmodelBase.HuData
                     catch (Exception ex)
                     {
                         string a = _errors + " row error：" + ex.Message.ToString();
-                        context.Response.Write(a);
-                        return;
+                        return a;
                     }
                     //bll.UpdateAllByParams(data_AnimalInfo);
 
 
-                    ArrayList columns = new ArrayList();
-                    foreach (DataColumn dc in importData.Columns)
-                    {
-                        columns.Add(dc.ColumnName);
-                    }
-                    ojbReportRule.InsertBigSql(importData, columns, "ANIMAL_INFO");
+                    job.Report(processed, total, "Saving new animals of sheet '" + sheet.Name + "'");
+                    BulkInsertOrThrow(importData, "ANIMAL_INFO");
 
+                    job.Report(processed, total, "Sending warning emails");
                     foreach (string key in email_to1.Keys)
                     {
                         DataTable data = email_to1[key];
@@ -4001,6 +4085,7 @@ namespace PDXmodelBase.HuData
                 }
                 #region no live animal
 
+                job.Report(processed, total, "Updating models with no live animals");
                 SqlParameter[] para = new SqlParameter[] { };
                 DataTable pdx_nolive = ojbReportRule.GetGrid("GetNoliveAnimal", para);
                 DataTable nolivedata = new DataTable();
@@ -4060,19 +4145,16 @@ namespace PDXmodelBase.HuData
                     nolive["Clinical_Observation"] = "";
                     nolivedata.Rows.Add(nolive);
                 }
-                ArrayList columns2 = new ArrayList();
-                foreach (DataColumn dc in nolivedata.Columns)
-                {
-                    columns2.Add(dc.ColumnName);
-                }
-                ojbReportRule.InsertBigSql(nolivedata, columns2, "ANIMAL_INFO");
+                BulkInsertOrThrow(nolivedata, "ANIMAL_INFO");
                 #endregion
 
-                context.Response.Write("Import successfully!");
+                job.Report(total, total, "Finished");
+                return "Import successfully!";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                context.Response.Write(ex.Message);
+                // 交给 ImportJobManager 记录日志并标记为 failed，前端以错误提示显示
+                throw;
             }
 
         }
@@ -4425,15 +4507,29 @@ namespace PDXmodelBase.HuData
 
         }
 
+        /// <summary>
+        /// AnimalInfo(logs) 导入：与 AnimalInfo(update) 使用同一种维持数据文件，逐只动物查询/更新 ANIMAL_INFO_LOGS，
+        /// 大文件耗时可能超过网关超时（504），改为后台异步执行，前端轮询进度。
+        /// </summary>
         public void AddAnimalInfo_Logs(HttpContext context)
         {
-            try
-            {
-                string filePath = updateInfo(context);
+            StartBackgroundImport(context, "AnimalInfo(logs)", AddAnimalInfo_LogsCore);
+        }
 
+        private string AddAnimalInfo_LogsCore(string filePath, ImportJob job)
+        {
+            {
+                job.Report(0, 0, "Reading file");
                 Workbook book = new Workbook(filePath);
+                int total = 0;
+                foreach (Worksheet s in book.Worksheets)
+                {
+                    total += s.Cells.MaxDataRow + 1;
+                }
+                int processed = 0;
                 foreach (Worksheet sheet in book.Worksheets)
                 {
+                    job.Report(processed, total, "Importing sheet '" + sheet.Name + "'");
                     DataTable importData = new DataTable();
                     importData.Columns.Add("MODEL_ID");
                     importData.Columns.Add("DOI", typeof(DateTime));
@@ -4472,6 +4568,7 @@ namespace PDXmodelBase.HuData
                         Cells cells = sheet.Cells;
                         for (int i = 0; i < cells.MaxDataRow + 1; i++)
                         {
+                            job.Report(++processed, total, null);
                             if (cells[i, 0].StringValue != "AnimalInfo" && cells[i, 0].StringValue != "Animal info")
                             {
                                 if (Ongoing_Project == "")
@@ -4656,20 +4753,13 @@ namespace PDXmodelBase.HuData
                     }
 
 
-                    ArrayList columns = new ArrayList();
-                    foreach (DataColumn dc in importData.Columns)
-                    {
-                        columns.Add(dc.ColumnName);
-                    }
-                    ojbReportRule.InsertBigSql(importData, columns, "ANIMAL_INFO_LOGS");
+                    job.Report(processed, total, "Saving new logs of sheet '" + sheet.Name + "'");
+                    BulkInsertOrThrow(importData, "ANIMAL_INFO_LOGS");
                 }
-                context.Response.Write("Import successfully!");
+                job.Report(total, total, "Finished");
+                return "Import successfully!";
             }
-            catch (Exception ex)
-            {
-                context.Response.Write(ex.Message);
-            }
-
+            // 异常由 ImportJobManager 记录日志并标记为 failed（原来同步导入时直接把 ex.Message 输出给页面）
         }
     
 

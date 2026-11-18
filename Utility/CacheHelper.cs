@@ -23,7 +23,14 @@ namespace Crownbio.Utility
         /// <returns></returns>
         public static object getCacheData(string keyName)
         {
-            HttpSessionState session = HttpContext.Current.Session;
+            HttpSessionState session = HttpContext.Current?.Session;
+            if (session == null)
+            {
+                // 后台线程（异步导入）没有 Session，使用该线程的后台缓存（如 ObjectBLLHelper 缓存的 DAL 对象）
+                object value = null;
+                _backgroundCache?.TryGetValue(keyName, out value);
+                return value;
+            }
             return session[keyName];
 
         }
@@ -46,9 +53,39 @@ namespace Crownbio.Utility
         /// <returns></returns>
         public static void setCacheData(string keyName, Object data)
         {
-            HttpSessionState session = HttpContext.Current.Session;
+            HttpSessionState session = HttpContext.Current?.Session;
+            if (session == null)
+            {
+                if (_backgroundCache != null)
+                {
+                    _backgroundCache[keyName] = data;
+                }
+                return;
+            }
             ///将一个数据装入缓存，无过期时间
             session.Add(keyName, data);
+        }
+
+        // ==============================================
+        // 后台线程（如异步导入）没有 HttpContext/Session：
+        // 任务开始时调用 BeginBackground 设置发起人和线程内缓存，代替 Session 中的当前用户（DAL 写入操作人等）
+        // 和 DAL 对象缓存（ObjectBLLHelper.getTypeDAL）；任务结束时调用 EndBackground 清除。
+        // ==============================================
+        [ThreadStatic]
+        private static SYS_USER _backgroundUser;
+        [ThreadStatic]
+        private static Dictionary<string, object> _backgroundCache;
+
+        public static void BeginBackground(SYS_USER user)
+        {
+            _backgroundUser = user;
+            _backgroundCache = new Dictionary<string, object>();
+        }
+
+        public static void EndBackground()
+        {
+            _backgroundUser = null;
+            _backgroundCache = null;
         }
 
         /// <summary>
@@ -57,7 +94,11 @@ namespace Crownbio.Utility
         /// <returns></returns>
         public static SYS_USER getCurrentUser()
         {
-            HttpSessionState session = HttpContext.Current.Session;
+            HttpSessionState session = HttpContext.Current?.Session;
+            if (session == null)
+            {
+                return _backgroundUser ?? new SYS_USER();
+            }
             if (session["HudataUserInfo"] != null)
             //if (HttpContext.Current.Cache["UserInfo"] != null)
             {

@@ -52,6 +52,64 @@ function doAction1() {
     }
     $('#uploadexcel').submit();
 }
+var ASYNC_JOB_PREFIX = "ASYNC_JOB:";
+
+// 轮询后台导入进度，显示进度条；结束后弹出结果（与原同步导入的提示一致）
+function trackImportJob(jobId) {
+    var failures = 0;
+    $.messager.progress({ title: 'Import', msg: 'Import is running in the background. You can keep this page open to see the progress.', text: '{value}%', interval: 0 });
+
+    function setProgress(job) {
+        var pct = job.total > 0 ? Math.floor(job.processed * 100 / job.total) : 0;
+        var bar = $.messager.progress('bar');
+        if (bar.length) {
+            bar.progressbar('setValue', Math.min(pct, 100));
+        }
+        var minutes = Math.floor(job.elapsedSeconds / 60), seconds = job.elapsedSeconds % 60;
+        $('body>div.messager-window').find('div.messager-p-msg').html(
+            $('<div/>').text(job.stage || '').html() + '<br/>' +
+            'Rows: ' + job.processed + ' / ' + job.total + '&nbsp;&nbsp;&nbsp;Elapsed: ' + minutes + 'm ' + seconds + 's');
+    }
+
+    function finish(message, icon) {
+        $.messager.progress('close');
+        $.messager.alert('Import', message, icon);
+    }
+
+    function poll() {
+        $.ajax({
+            url: 'importDB.ashx',
+            type: 'GET',
+            cache: false,
+            dataType: 'json',
+            data: { M: 'ImportProgress', JobId: jobId },
+            success: function (job) {
+                failures = 0;
+                if (job.status === 'running') {
+                    setProgress(job);
+                    setTimeout(poll, 2000);
+                } else if (job.status === 'done') {
+                    setProgress(job);
+                    finish(job.message, 'info');
+                } else {
+                    finish(job.message || 'Import failed.', 'error');
+                }
+            },
+            error: function () {
+                // 网络抖动/网关偶发错误时继续重试，连续失败 10 次（约 1 分钟）才放弃（后台导入不受影响）
+                failures++;
+                if (failures >= 10) {
+                    finish('Lost connection to the server while checking import progress. The import is still running in the background; please check the data later.', 'warning');
+                } else {
+                    setTimeout(poll, 5000);
+                }
+            }
+        });
+    }
+
+    poll();
+}
+
 function doAction2() {
     var form = document.getElementById("uploadexcel");
     form.action = "importDB.ashx?Tablename=PDXmodelInfo&delete=false";
@@ -112,9 +170,14 @@ function bindAction1() {
             }
         },
         success: function (data) {
-            $.messager.alert('Import', data, 'info');
             jQuery('#activity_pane').hideLoading();
-
+            // 后台异步导入：服务端返回 "ASYNC_JOB:任务ID"（iframe 提交时可能被包在 <pre> 中，先取纯文本）
+            var text = $.trim($('<div/>').html(data).text());
+            if (text.indexOf(ASYNC_JOB_PREFIX) === 0) {
+                trackImportJob(text.substring(ASYNC_JOB_PREFIX.length));
+                return;
+            }
+            $.messager.alert('Import', data, 'info');
         },
         error: function (result) { //如果没有上面的捕获出错会执行这里的回调函数
             $.messager.alert('Import', result, 'error');

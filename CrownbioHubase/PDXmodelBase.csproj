@@ -2752,6 +2752,7 @@
     <Compile Include="HuData\UserFunction.ashx.cs">
       <DependentUpon>UserFunction.ashx</DependentUpon>
     </Compile>
+    <Compile Include="HuData\ImportJobManager.cs" />
     <Compile Include="HuData\SsoTokenValidator.cs" />
     <Compile Include="HuData\userLogin.ashx.cs">
       <DependentUpon>userLogin.ashx</DependentUpon>
