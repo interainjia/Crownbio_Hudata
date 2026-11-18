@@ -205,7 +205,7 @@ namespace PDXmodelBase.HuData
                 if (dd == "An email has been sent.")
                 {
                     row.CurModel = DealModel.Modify;
-                    row.USER_PWD = DEncryptHelper.Encrypt(newpw);
+                    row.USER_PWD = PasswordHasher.Hash(newpw);
                     bll.Update(row);
                     row.CurModel = DealModel.None;
                 }
@@ -267,7 +267,7 @@ namespace PDXmodelBase.HuData
             {
                 remember = context.Request["remember"].ToString();
             }
-            SYS_USER loginUser = bll.Login(context, name, DEncryptHelper.Encrypt(pwd));
+            SYS_USER loginUser = bll.Login(context, name, pwd);
             if (!loginUser.IS_Login)
             {
                 context.Response.Write(loginUser.ErrMsg);
@@ -332,7 +332,7 @@ namespace PDXmodelBase.HuData
             }
             name = ssoEmail;
 
-            SYS_USER loginUser = bll.LoginSSO(context, name, DEncryptHelper.Encrypt(pwd));
+            SYS_USER loginUser = bll.LoginSSO(context, name, pwd);
             if (!loginUser.IS_Login)
             {
                 context.Response.Write(loginUser.ErrMsg);
@@ -376,7 +376,7 @@ namespace PDXmodelBase.HuData
 
         public void ReturnTrial(HttpContext context)
         {
-            SYS_USER loginUser = bll.Login(context, "AACR@2013.org", DEncryptHelper.Encrypt("2013aacr"));
+            SYS_USER loginUser = bll.Login(context, "AACR@2013.org", "2013aacr");
             if (!loginUser.IS_Login)
             {
                 context.Response.Write(loginUser.ErrMsg);
@@ -435,7 +435,7 @@ namespace PDXmodelBase.HuData
                 currentRow.USER_NAME = First_name + " " + Last_name;
                 if (isNew)
                 {
-                    currentRow.USER_PWD = DEncryptHelper.Encrypt(Password);
+                    currentRow.USER_PWD = PasswordHasher.Hash(Password);
                 }
 
                 currentRow.EMAIL = Email;

@@ -1067,10 +1067,11 @@ namespace Crownbio.BLL
         /// 处理用户登录
         /// </summary>
         /// <param name="userName"></param>
-        /// <param name="password"></param>
+        /// <param name="password">明文密码</param>
         /// <returns></returns>
         public SYS_USER Login(HttpContext context, string userName, string password)
         {
+            password = password ?? "";
             BaseList userList = new BaseList();
             bool isInAD = false;
             #region not in AD
@@ -1092,7 +1093,7 @@ namespace Crownbio.BLL
                 bool isAdAuthenticated = false;
                 try
                 {
-                    isAdAuthenticated = ActiveDirectoryConnector.IsUserLoggedIn(userName, DEncryptHelper.Decrypt(password));
+                    isAdAuthenticated = ActiveDirectoryConnector.IsUserLoggedIn(userName, password);
                 }
                 catch (ActiveDirectoryUserNotFoundException)
                 {
@@ -1143,7 +1144,7 @@ namespace Crownbio.BLL
                     userLogin.ErrMsg = LanguageHelper.GetResourceText("USER_NOT_AVAILABLE");
                     userLogin.IS_Login = false;
                 }
-                else if (!isInAD && DEncryptHelper.Decrypt(userLogin.USER_PWD) != DEncryptHelper.Decrypt(password))
+                else if (!isInAD && !VerifyUserPassword(userLogin, password))
                 {
                     userLogin = new SYS_USER();
                     userLogin.ErrMsg = LanguageHelper.GetResourceText("USER_PWD") + LanguageHelper.GetResourceText("Incorrect");
@@ -1207,10 +1208,11 @@ namespace Crownbio.BLL
         /// 处理用户登录
         /// </summary>
         /// <param name="userName"></param>
-        /// <param name="password"></param>
+        /// <param name="password">明文密码</param>
         /// <returns></returns>
         public SYS_USER LoginSSO(HttpContext context, string userName, string password)
         {
+            password = password ?? "";
             BaseList userList = new BaseList();
             bool isInAD = false;
             #region not in AD
@@ -1255,7 +1257,7 @@ namespace Crownbio.BLL
                     userLogin.ErrMsg = LanguageHelper.GetResourceText("USER_NOT_AVAILABLE");
                     userLogin.IS_Login = false;
                 }
-                else if (!isInAD && DEncryptHelper.Decrypt(userLogin.USER_PWD) != DEncryptHelper.Decrypt(password))
+                else if (!isInAD && !VerifyUserPassword(userLogin, password))
                 {
                     userLogin = new SYS_USER();
                     userLogin.ErrMsg = LanguageHelper.GetResourceText("USER_PWD") + LanguageHelper.GetResourceText("Incorrect");
@@ -1334,7 +1336,7 @@ namespace Crownbio.BLL
                     userLogin.ErrMsg = LanguageHelper.GetResourceText("USER_NOT_AVAILABLE");
                     userLogin.IS_Login = false;
                 }
-                else if (DEncryptHelper.Decrypt(userLogin.USR_PASSWORD) != DEncryptHelper.Decrypt(password))
+                else if (!PasswordHasher.Verify(password ?? "", userLogin.USR_PASSWORD))
                 {
                     userLogin = new APP_USR();
                     userLogin.ErrMsg = LanguageHelper.GetResourceText("USR_PASSWORD") + LanguageHelper.GetResourceText("Incorrect");
@@ -1376,9 +1378,75 @@ namespace Crownbio.BLL
 
 
         /// <summary>
+        /// 校验 SYS_USER 的密码；如果数据库里仍是旧格式（DES 密文），校验成功后顺便升级为 PBKDF2 哈希
+        /// </summary>
+        private bool VerifyUserPassword(SYS_USER user, string password)
+        {
+            if (!PasswordHasher.Verify(password, user.USER_PWD))
+            {
+                return false;
+            }
+            if (PasswordHasher.NeedsRehash(user.USER_PWD))
+            {
+                try
+                {
+                    string newHash = PasswordHasher.Hash(password);
+                    UpdateUserPasswordHash(user.USER_ID, newHash);
+                    user.USER_PWD = newHash;
+                }
+                catch (Exception ex)
+                {
+                    // 升级失败不影响本次登录，下次登录会再尝试
+                    LogHelper.FileLogger().Error("Upgrade password hash failed, USER_ID=" + user.USER_ID, ex);
+                }
+            }
+            return true;
+        }
+
+        private static int UpdateUserPasswordHash(decimal userId, string passwordHash)
+        {
+            SqlParameter[] parameters = {
+                new SqlParameter("@USER_PWD", SqlDbType.NVarChar) { Value = passwordHash },
+                new SqlParameter("@USER_ID", SqlDbType.Decimal) { Value = userId }};
+            return DbHelperSQL.ExecuteSql("update SYS_USER set USER_PWD=@USER_PWD where USER_ID=@USER_ID", parameters);
+        }
+
+        /// <summary>
+        /// 一次性把 SYS_USER 中所有旧版 DES 密文密码转换为 PBKDF2 哈希（幂等，已是新格式的行会跳过）。
+        /// 无法解密的值保持不变并记录日志。返回成功转换的行数。
+        /// </summary>
+        public static int MigrateLegacyPasswords()
+        {
+            log4net.ILog log = LogHelper.FileLogger();
+            DataSet ds = DbHelperSQL.Query("select USER_ID, USER_PWD from SYS_USER where USER_PWD is not null and USER_PWD <> '' and USER_PWD not like 'PBKDF2$%'");
+            int migrated = 0;
+            int failed = 0;
+            foreach (DataRow row in ds.Tables[0].Rows)
+            {
+                decimal userId = Convert.ToDecimal(row["USER_ID"]);
+                string stored = Convert.ToString(row["USER_PWD"]);
+                string plain = PasswordHasher.TryDecryptLegacy(stored);
+                if (plain == null)
+                {
+                    failed++;
+                    log.Warn("Password migration: cannot decrypt USER_PWD, skipped. USER_ID=" + userId);
+                    continue;
+                }
+                SqlParameter[] parameters = {
+                    new SqlParameter("@USER_PWD", SqlDbType.NVarChar) { Value = PasswordHasher.Hash(plain) },
+                    new SqlParameter("@USER_ID", SqlDbType.Decimal) { Value = userId },
+                    new SqlParameter("@OLD_PWD", SqlDbType.NVarChar) { Value = stored }};
+                // 带上旧值做条件，避免覆盖迁移期间被并发修改的密码
+                migrated += DbHelperSQL.ExecuteSql("update SYS_USER set USER_PWD=@USER_PWD where USER_ID=@USER_ID and USER_PWD=@OLD_PWD", parameters);
+            }
+            log.Info("Password migration finished: migrated=" + migrated + ", skipped=" + failed);
+            return migrated;
+        }
+
+        /// <summary>
         /// 修改当前登录用户的帐户密码
         /// </summary>
-        /// <param name="newPassword"></param>
+        /// <param name="newPassword">明文新密码，保存前做 PBKDF2 哈希</param>
         /// <returns></returns>
         public string ChangePassword(string newPassword)
         {
@@ -1390,16 +1458,7 @@ namespace Crownbio.BLL
             }
             else
             {
-                StringBuilder strSql = new StringBuilder();
-                strSql.Append("update SYS_USER set ");
-                strSql.Append("USER_PWD=@USER_PWD");
-                strSql.Append(" where USER_ID=@USER_ID");
-                SqlParameter[] parameters = {
-                    new SqlParameter("@USER_PWD", SqlDbType.NVarChar),
-                    new SqlParameter("@USER_ID", SqlDbType.Decimal)};
-                parameters[0].Value = newPassword;
-                parameters[1].Value = USER_ID;
-                if (DbHelperSQL.ExecuteSql(strSql.ToString(), parameters) > 0)
+                if (UpdateUserPasswordHash(USER_ID, PasswordHasher.Hash(newPassword ?? "")) > 0)
                 {
                     errMsg = LanguageHelper.GetResourceText("PasswordChange") + LanguageHelper.GetResourceText("Success") + "\r\n" + LanguageHelper.GetResourceText("RestartValid");
                 }

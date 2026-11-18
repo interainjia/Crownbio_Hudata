@@ -1,4 +1,21 @@
-﻿# 2026.11.17
+﻿# 2026.11.18
+
+## 安全修复：用户密码由可逆 DES 加密改为 PBKDF2 加盐哈希
+
+- 修复前的问题：`SYS_USER.USER_PWD` 用 `DEncryptHelper`（DES，密钥硬编码在源码中）可逆加密，拿到源码和数据库即可还原所有用户明文密码；且无 salt，相同密码密文相同
+- 新增 `Utility/PasswordHasher.cs`：PBKDF2-HMAC-SHA256、每个密码独立 16 字节随机 salt、100,000 次迭代，存储格式 `PBKDF2$迭代次数$salt$hash`（83 字符）；定长比较；`Verify` 兼容旧版 DES 密文
+- `BLLRemote/System/ObjectBLL.cs`：
+  - `Login` / `LoginSSO` 的 `password` 参数改为明文，密码校验改用 `PasswordHasher.Verify`；校验成功且库里仍是旧格式时自动升级为新哈希
+  - `LoginA`（APP_USR）同样改用 `PasswordHasher.Verify`
+  - `ChangePassword` 保存前做哈希（参数为明文）
+  - 新增 `MigrateLegacyPasswords()`：把 `SYS_USER` 中所有旧 DES 密文解密后重新哈希；幂等（跳过已是 `PBKDF2$` 开头的行），更新时带旧值作条件；无法解密的行保持不变并写日志
+- `CrownbioHubase/Global.asax.cs`：`Application_Start` 在后台线程执行一次 `MigrateLegacyPasswords()`，结果写入 log4net 文件日志（`Password migration finished: migrated=…, skipped=…`）
+- `CrownbioHubase/HuData/userLogin.ashx.cs`：调用 `Login`/`LoginSSO` 改为传明文；注册、找回密码（已停用）写入密码改为 `PasswordHasher.Hash`
+- `CrownbioHubase/HudataController.cs`：`SaveRequest` 的邮箱+密码校验由字符串拼接 SQL（`user_pwd = 密文`）改为参数化按邮箱查询后 `PasswordHasher.Verify`，同时修复该处 SQL 注入
+- **部署前务必备份 `SYS_USER` 表**：迁移后旧密文被覆盖、无法再解密还原明文（这正是目的），也无法回滚到旧版程序登录（旧程序不认新格式）
+- 未改动：`APP_USR.USR_PASSWORD` 未做批量迁移（无调用方）；`DEncryptHelper` 仍保留，供兼容旧数据与其它用途
+
+# 2026.11.17
 
 ## 安全修复：/actionapi/Hudata/SaveRequest 增加 API Key 鉴权；删除 webAPItest.aspx 测试页面
 

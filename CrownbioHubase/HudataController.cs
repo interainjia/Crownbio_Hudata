@@ -101,8 +101,14 @@ namespace PDXmodelBase
                 string _email = ojb.email ?? "";
                 string _pwd = ojb.password ?? "";
                 var query = new ParamCollection();
-                query.Clause += "email = '" + _email + "' and user_pwd = '" + DEncryptHelper.Encrypt(_pwd) + "'";
+                query.Clause = SYS_USER.EMAIL_FIELD + " = @apiEmail";
+                query.Add(new ParamData("apiEmail", DbType.String, _email));
                 var existUser = bll.Select(query, typeof(SYS_USER));
+                // 按邮箱查出用户后用 PBKDF2 校验密码（兼容尚未迁移的旧版 DES 密文）
+                if (existUser.Count > 0 && !PasswordHasher.Verify(_pwd, ((SYS_USER)existUser[0]).USER_PWD))
+                {
+                    existUser = new BaseList();
+                }
                 if (existUser.Count > 0)
                 {
                     string hfRequest_id = ojb.hfRequest_id ?? "";

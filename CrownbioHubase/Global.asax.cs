@@ -21,6 +21,20 @@ namespace PDXmodelBase
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
             GlobalConfiguration.Configure(WebApiConfig.Register);
+
+            // 把 SYS_USER 中旧版可逆 DES 密码一次性转换为 PBKDF2 加盐哈希（幂等，已转换的行会跳过）。
+            // 放到后台线程执行，避免 PBKDF2 计算拖慢站点启动。
+            System.Threading.Tasks.Task.Run(() =>
+            {
+                try
+                {
+                    Crownbio.BLL.ObjectBLL.MigrateLegacyPasswords();
+                }
+                catch (Exception ex)
+                {
+                    Crownbio.Utility.LogHelper.Log("Password migration failed: " + ex);
+                }
+            });
         }
 
         protected void Application_PreSendRequestHeaders(object sender, EventArgs e)
