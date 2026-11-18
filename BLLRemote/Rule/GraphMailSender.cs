@@ -15,6 +15,7 @@ namespace Crownbio.BLL.Rule
     /// 发件邮箱为共享邮箱 dbsupport@crownbio.com，应用只被授权以该邮箱发信（Exchange RBAC 限定范围）。
     /// 配置项（Web.config appSettings）：
     ///   GraphMailTenantId / GraphMailClientId / GraphMailClientSecret / GraphMailSenderAddress
+    ///   GraphMailSenderName（可选，发件人显示名，默认 "Hudata"）
     /// ClientSecret 优先读取环境变量 GRAPHMAIL_CLIENTSECRET，未设置时再读 Web.config。
     /// 直接调用 REST 接口，不依赖 Microsoft.Graph / Azure.Identity NuGet 包。
     /// </summary>
@@ -37,6 +38,18 @@ namespace Crownbio.BLL.Rule
         public static string TenantId => ConfigurationManager.AppSettings["GraphMailTenantId"];
         public static string ClientId => ConfigurationManager.AppSettings["GraphMailClientId"];
         public static string SenderAddress => ConfigurationManager.AppSettings["GraphMailSenderAddress"];
+
+        /// <summary>
+        /// 发件人显示名，可用 Web.config 的 GraphMailSenderName 覆盖，默认 "Hudata"
+        /// </summary>
+        public static string SenderName
+        {
+            get
+            {
+                string name = ConfigurationManager.AppSettings["GraphMailSenderName"];
+                return string.IsNullOrWhiteSpace(name) ? "Hudata" : name.Trim();
+            }
+        }
 
         public static string ClientSecret
         {
@@ -68,6 +81,14 @@ namespace Crownbio.BLL.Rule
             var message = new Dictionary<string, object>
             {
                 ["subject"] = subject ?? "",
+                ["from"] = new Dictionary<string, object>
+                {
+                    ["emailAddress"] = new Dictionary<string, object>
+                    {
+                        ["address"] = SenderAddress,
+                        ["name"] = SenderName
+                    }
+                },
                 ["body"] = new Dictionary<string, object>
                 {
                     ["contentType"] = isHtml ? "HTML" : "Text",
