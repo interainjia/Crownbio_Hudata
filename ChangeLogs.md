@@ -8,8 +8,8 @@
   - `Login` / `LoginSSO` 的 `password` 参数改为明文，密码校验改用 `PasswordHasher.Verify`；校验成功且库里仍是旧格式时自动升级为新哈希
   - `LoginA`（APP_USR）同样改用 `PasswordHasher.Verify`
   - `ChangePassword` 保存前做哈希（参数为明文）
-  - 新增 `MigrateLegacyPasswords()`：把 `SYS_USER` 中所有旧 DES 密文解密后重新哈希；幂等（跳过已是 `PBKDF2$` 开头的行），更新时带旧值作条件；无法解密的行保持不变并写日志
-- `CrownbioHubase/Global.asax.cs`：`Application_Start` 在后台线程执行一次 `MigrateLegacyPasswords()`，结果写入 log4net 文件日志（`Password migration finished: migrated=…, skipped=…`）
+  - 新增 `MigrateLegacyPasswords()`：把 `SYS_USER` 中所有旧 DES 密文解密后重新哈希；幂等（跳过已是 `PBKDF2$` 开头的行），更新时带旧值作条件；无法用当前 DES 密钥解密的值（本地库中为 10 个 @crownbio.com 账号，32 位/16 位十六进制，疑似早期 MD5 或其它密钥）本来就无法通过密码校验，替换为随机密码的哈希，行为不变、只统一格式，并逐条写日志
+- `CrownbioHubase/Global.asax.cs`：`Application_Start` 在后台线程执行一次 `MigrateLegacyPasswords()`，结果写入 log4net 文件日志（`Password migration finished: migrated=…, randomized=…`）
 - `CrownbioHubase/HuData/userLogin.ashx.cs`：调用 `Login`/`LoginSSO` 改为传明文；注册、找回密码（已停用）写入密码改为 `PasswordHasher.Hash`
 - `CrownbioHubase/HudataController.cs`：`SaveRequest` 的邮箱+密码校验由字符串拼接 SQL（`user_pwd = 密文`）改为参数化按邮箱查询后 `PasswordHasher.Verify`，同时修复该处 SQL 注入
 - **部署前务必备份 `SYS_USER` 表**：迁移后旧密文被覆盖、无法再解密还原明文（这正是目的），也无法回滚到旧版程序登录（旧程序不认新格式）

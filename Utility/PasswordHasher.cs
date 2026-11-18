@@ -35,6 +35,20 @@ namespace Crownbio.Utility
         }
 
         /// <summary>
+        /// 生成一个不会被告知任何人的高强度随机密码（32 字节随机数的 Base64），
+        /// 用于替换无法解密的旧值，使该账号无法用本地密码登录
+        /// </summary>
+        public static string GenerateRandomSecret()
+        {
+            byte[] bytes = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(bytes);
+            }
+            return Convert.ToBase64String(bytes);
+        }
+
+        /// <summary>
         /// 校验明文密码与数据库中保存的值是否匹配（支持新格式哈希与旧版 DES 密文）
         /// </summary>
         public static bool Verify(string password, string stored)

@@ -1413,34 +1413,42 @@ namespace Crownbio.BLL
 
         /// <summary>
         /// 一次性把 SYS_USER 中所有旧版 DES 密文密码转换为 PBKDF2 哈希（幂等，已是新格式的行会跳过）。
-        /// 无法解密的值保持不变并记录日志。返回成功转换的行数。
+        /// 无法解密的值（本来就无法通过密码校验）替换为随机密码的哈希，行为不变，只是统一格式。返回转换的行数。
         /// </summary>
         public static int MigrateLegacyPasswords()
         {
             log4net.ILog log = LogHelper.FileLogger();
             DataSet ds = DbHelperSQL.Query("select USER_ID, USER_PWD from SYS_USER where USER_PWD is not null and USER_PWD <> '' and USER_PWD not like 'PBKDF2$%'");
             int migrated = 0;
-            int failed = 0;
+            int randomized = 0;
             foreach (DataRow row in ds.Tables[0].Rows)
             {
                 decimal userId = Convert.ToDecimal(row["USER_ID"]);
                 string stored = Convert.ToString(row["USER_PWD"]);
                 string plain = PasswordHasher.TryDecryptLegacy(stored);
-                if (plain == null)
+                bool undecryptable = plain == null;
+                if (undecryptable)
                 {
-                    failed++;
-                    log.Warn("Password migration: cannot decrypt USER_PWD, skipped. USER_ID=" + userId);
-                    continue;
+                    plain = PasswordHasher.GenerateRandomSecret();
                 }
                 SqlParameter[] parameters = {
                     new SqlParameter("@USER_PWD", SqlDbType.NVarChar) { Value = PasswordHasher.Hash(plain) },
                     new SqlParameter("@USER_ID", SqlDbType.Decimal) { Value = userId },
                     new SqlParameter("@OLD_PWD", SqlDbType.NVarChar) { Value = stored }};
                 // 带上旧值做条件，避免覆盖迁移期间被并发修改的密码
-                migrated += DbHelperSQL.ExecuteSql("update SYS_USER set USER_PWD=@USER_PWD where USER_ID=@USER_ID and USER_PWD=@OLD_PWD", parameters);
+                int affected = DbHelperSQL.ExecuteSql("update SYS_USER set USER_PWD=@USER_PWD where USER_ID=@USER_ID and USER_PWD=@OLD_PWD", parameters);
+                if (undecryptable && affected > 0)
+                {
+                    randomized++;
+                    log.Warn("Password migration: USER_PWD cannot be decrypted, replaced with hash of a random secret. USER_ID=" + userId);
+                }
+                else
+                {
+                    migrated += affected;
+                }
             }
-            log.Info("Password migration finished: migrated=" + migrated + ", skipped=" + failed);
-            return migrated;
+            log.Info("Password migration finished: migrated=" + migrated + ", randomized=" + randomized);
+            return migrated + randomized;
         }
 
         /// <summary>
