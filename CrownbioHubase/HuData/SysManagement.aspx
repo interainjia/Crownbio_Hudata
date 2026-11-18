@@ -152,10 +152,6 @@ ifm.contentDocument;
                     <li><a href="javascript:void();" class="notselectTab" onclick="setStyle(this);addTab('Import Stocks','ImportStock.aspx')">
                         Import Stocks</a></li>
                 </ul>
-                 <ul>
-                    <li><a href="javascript:void();" class="notselectTab" onclick="setStyle(this);addTab('Import Stocks','ImportAnimalInfo.aspx')">
-                        Import AnimalInfo from Studylog</a></li>
-                </ul>
             </div>
         </div>
     </div>
