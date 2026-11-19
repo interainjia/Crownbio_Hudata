@@ -117,7 +117,9 @@ namespace PDXmodelBase
                     if (txtProjectNumber != "")
                     {
                         ParamCollection query1 = new ParamCollection();
-                        query1.Clause = REQUEST.PROJECT_NUMBER_FIELD + "='" + txtProjectNumber + "' and " + REQUEST.REQUEST_ID_FIELD + " <> '" + hfRequest_id + "' and " + REQUEST.ISDELETE_FIELD + " <> 'Y'";
+                        query1.Clause = REQUEST.PROJECT_NUMBER_FIELD + " = @projectNumber and " + REQUEST.REQUEST_ID_FIELD + " <> @requestId and " + REQUEST.ISDELETE_FIELD + " <> 'Y'";
+                        query1.Add(new ParamData("projectNumber", DbType.String, txtProjectNumber));
+                        query1.Add(new ParamData("requestId", DbType.String, hfRequest_id));
                         exist = bll.Select(query1, typeof(REQUEST));
                     }
                     if (exist.Count == 0)
@@ -125,7 +127,8 @@ namespace PDXmodelBase
                         REQUEST row = null;
 
                         ParamCollection paraList = new ParamCollection();
-                        paraList.Clause = REQUEST.REQUEST_ID_FIELD + "='" + hfRequest_id + "'";
+                        paraList.Clause = REQUEST.REQUEST_ID_FIELD + " = @requestId";
+                        paraList.Add(new ParamData("requestId", DbType.String, hfRequest_id));
                         BaseList data = bll.Select(paraList, typeof(REQUEST));
                         if (data.Count > 0)
                         {
@@ -170,21 +173,7 @@ namespace PDXmodelBase
                                 editModel_ID = string.Join(",", lists.ToArray());
                             }
 
-                            ParamCollection delQuery = new ParamCollection();
-                            delQuery.Clause = PROJECT_BOOKING.PROJECT_NUMBER_FIELD + "='" + row.PROJECT_NUMBER + "'";
-                            if (editModel_ID != "")
-                            {
-                                string ids = "";
-                                foreach (string a in editModel_ID.Split(','))
-                                {
-                                    if (a != "")
-                                    {
-                                        ids += "'" + a + "',";
-                                    }
-                                }
-
-                                delQuery.Clause += string.Format("AND ({0}.{1} not in ({2}) )", PROJECT_BOOKING.TABLE_NAME, PROJECT_BOOKING.MODEL_ID_FIELD, ids.TrimEnd(','));
-                            }
+                            ParamCollection delQuery = BuildProjectModelQuery(PROJECT_BOOKING.PROJECT_NUMBER_FIELD, PROJECT_BOOKING.TABLE_NAME + "." + PROJECT_BOOKING.MODEL_ID_FIELD, row.PROJECT_NUMBER, editModel_ID);
                             BaseList deletes = bll.Select(delQuery, typeof(PROJECT_BOOKING));
                             foreach (PROJECT_BOOKING del in deletes)
                             {
@@ -194,21 +183,7 @@ namespace PDXmodelBase
 
 
 
-                            ParamCollection delQuery2 = new ParamCollection();
-                            delQuery2.Clause = PROJECT_FURTHER_EXPANDING.PROJECT_NUMBER_FIELD + "='" + row.PROJECT_NUMBER + "'";
-                            if (editModel_ID != "")
-                            {
-                                string ids = "";
-                                foreach (string a in editModel_ID.Split(','))
-                                {
-                                    if (a != "")
-                                    {
-                                        ids += "'" + a + "',";
-                                    }
-                                }
-
-                                delQuery2.Clause += string.Format("AND ({0}.{1} not in ({2}) )", PROJECT_FURTHER_EXPANDING.TABLE_NAME, PROJECT_FURTHER_EXPANDING.MODEL_ID_FIELD, ids.TrimEnd(','));
-                            }
+                            ParamCollection delQuery2 = BuildProjectModelQuery(PROJECT_FURTHER_EXPANDING.PROJECT_NUMBER_FIELD, PROJECT_FURTHER_EXPANDING.TABLE_NAME + "." + PROJECT_FURTHER_EXPANDING.MODEL_ID_FIELD, row.PROJECT_NUMBER, editModel_ID);
                             BaseList deletes2 = bll.Select(delQuery2, typeof(PROJECT_FURTHER_EXPANDING));
                             foreach (PROJECT_FURTHER_EXPANDING del2 in deletes2)
                             {
@@ -217,21 +192,7 @@ namespace PDXmodelBase
                             bll.UpdateAllByParams(deletes2);
 
 
-                            ParamCollection delQuery3 = new ParamCollection();
-                            delQuery3.Clause = PROJECT_REVIVE.PROJECT_NUMBER_FIELD + "='" + row.PROJECT_NUMBER + "'";
-                            if (editModel_ID != "")
-                            {
-                                string ids = "";
-                                foreach (string a in editModel_ID.Split(','))
-                                {
-                                    if (a != "")
-                                    {
-                                        ids += "'" + a + "',";
-                                    }
-                                }
-
-                                delQuery3.Clause += string.Format("AND ({0}.{1} not in ({2}) )", PROJECT_REVIVE.TABLE_NAME, PROJECT_REVIVE.MODEL_ID_FIELD, ids.TrimEnd(','));
-                            }
+                            ParamCollection delQuery3 = BuildProjectModelQuery(PROJECT_REVIVE.PROJECT_NUMBER_FIELD, PROJECT_REVIVE.TABLE_NAME + "." + PROJECT_REVIVE.MODEL_ID_FIELD, row.PROJECT_NUMBER, editModel_ID);
                             BaseList deletes3 = bll.Select(delQuery3, typeof(PROJECT_REVIVE));
                             foreach (PROJECT_REVIVE del3 in deletes3)
                             {
@@ -247,18 +208,9 @@ namespace PDXmodelBase
                             row.PROJECT_NUMBER = ojb.txtProjectNumber ?? "";
                             row.PARENT_PROJECT = ojb.txtParent_Project ?? "";
 
-                            ParamCollection _pl = new ParamCollection();
-                            _pl.Clause = "email = '" + ojb.ccLeading_SD + "'";
-                            var temp1 = bll.Select(_pl, typeof(SYS_USER));
-                            row.LEADING_SD = temp1 is null ? "" : ((SYS_USER)temp1[0]).USER_NAME;
-
-                            _pl.Clause = "email = '" + ojb.ccBD + "'";
-                            var temp2 = bll.Select(_pl, typeof(SYS_USER));
-                            row.BD = temp2 is null ? "" : ((SYS_USER)temp2[0]).USER_NAME;
-
-                            _pl.Clause = "email = '" + ojb.ccSD + "'";
-                            var temp3 = bll.Select(_pl, typeof(SYS_USER));
-                            row.SD = temp3 is null ? "" : ((SYS_USER)temp3[0]).USER_NAME;
+                            row.LEADING_SD = GetUserNameByEmail((string)ojb.ccLeading_SD);
+                            row.BD = GetUserNameByEmail((string)ojb.ccBD);
+                            row.SD = GetUserNameByEmail((string)ojb.ccSD);
 
                             row.TYPE_OF_STUDY = ojb.txtType_of_Study ?? "";
                             row.TUMOR_TYPE = ojb.ddlTumor_Type ?? "";
@@ -285,18 +237,9 @@ namespace PDXmodelBase
                                 row.PROJECT_NUMBER = ojb.txtProjectNumber ?? "";
                                 row.PARENT_PROJECT = ojb.txtParent_Project ?? "";
 
-                                ParamCollection _pl = new ParamCollection();
-                                _pl.Clause = "email = '" + ojb.ccLeading_SD + "'";
-                                var temp1 = bll.Select(_pl, typeof(SYS_USER));
-                                row.LEADING_SD = temp1 is null ? "" : ((SYS_USER)temp1[0]).USER_NAME;
-
-                                _pl.Clause = "email = '" + ojb.ccBD + "'";
-                                var temp2 = bll.Select(_pl, typeof(SYS_USER));
-                                row.BD = temp2 is null ? "" : ((SYS_USER)temp2[0]).USER_NAME;
-
-                                _pl.Clause = "email = '" + ojb.ccSD + "'";
-                                var temp3 = bll.Select(_pl, typeof(SYS_USER));
-                                row.SD = temp3 is null ? "" : ((SYS_USER)temp3[0]).USER_NAME;
+                                row.LEADING_SD = GetUserNameByEmail((string)ojb.ccLeading_SD);
+                                row.BD = GetUserNameByEmail((string)ojb.ccBD);
+                                row.SD = GetUserNameByEmail((string)ojb.ccSD);
 
                                 row.TYPE_OF_STUDY = ojb.txtType_of_Study ?? "";
                                 row.TUMOR_TYPE = ojb.ddlTumor_Type ?? "";
@@ -344,7 +287,9 @@ namespace PDXmodelBase
                         //msg = SendEmail.SendMail_SMTP("html", Subject, title, toMails2, "Send successfully.");
 
                         ParamCollection pl = new ParamCollection();
-                        pl.Clause = " USER_NAME ='" + row.SD + "' or USER_NAME ='" + row.LEADING_SD + "'";
+                        pl.Clause = " USER_NAME = @sdName or USER_NAME = @leadingSdName";
+                        pl.Add(new ParamData("sdName", DbType.String, row.SD ?? ""));
+                        pl.Add(new ParamData("leadingSdName", DbType.String, row.LEADING_SD ?? ""));
                         BaseList userlist = bll.Select(pl, typeof(SYS_USER));
                         foreach (SYS_USER user in userlist)
                         {
@@ -375,6 +320,52 @@ namespace PDXmodelBase
             }
             var json = APItoJson(new { code, msg });
             return json;
+        }
+
+        /// <summary>
+        /// 构造参数化查询：projectField = @projectNumber [AND modelField NOT IN (@m0, @m1, ...)]
+        /// </summary>
+        private static ParamCollection BuildProjectModelQuery(string projectField, string modelField, string projectNumber, string modelIdCsv)
+        {
+            ParamCollection pc = new ParamCollection();
+            pc.Clause = projectField + " = @projectNumber";
+            pc.Add(new ParamData("projectNumber", DbType.String, projectNumber ?? ""));
+
+            List<string> names = new List<string>();
+            foreach (string id in (modelIdCsv ?? "").Split(','))
+            {
+                if (id != "")
+                {
+                    string name = "m" + names.Count;
+                    names.Add("@" + name);
+                    pc.Add(new ParamData(name, DbType.String, id));
+                }
+            }
+            if (names.Count > 0)
+            {
+                pc.Clause += string.Format(" AND ({0} not in ({1}) )", modelField, string.Join(",", names));
+            }
+            return pc;
+        }
+
+        /// <summary>
+        /// 按邮箱参数化查询用户名。与原逻辑一致：查不到用户时 [0] 会抛异常，由外层 catch 返回 error。
+        /// </summary>
+        private string GetUserNameByEmail(string email)
+        {
+            ParamCollection pc = new ParamCollection();
+            pc.Clause = SYS_USER.EMAIL_FIELD + " = @userEmail";
+            pc.Add(new ParamData("userEmail", DbType.String, email ?? ""));
+            BaseList users = bll.Select(pc, typeof(SYS_USER));
+            return users is null ? "" : ((SYS_USER)users[0]).USER_NAME;
+        }
+
+        /// <summary>
+        /// 转义 DataTable.Select 过滤表达式中的字符串值（单引号加倍）
+        /// </summary>
+        private static string EscapeFilterValue(string value)
+        {
+            return (value ?? "").Replace("'", "''");
         }
 
         /// <summary>
@@ -433,6 +424,12 @@ namespace PDXmodelBase
         [HttpPost]
         public HttpResponseMessage importAnimalInfo()
         {
+            if (!IsValidApiKey())
+            {
+                var unauthorized = APItoJson(new { code = "error", msg = "Unauthorized." });
+                unauthorized.StatusCode = HttpStatusCode.Unauthorized;
+                return unauthorized;
+            }
             string msg = "";
             string code = "";
             try
@@ -604,7 +601,9 @@ namespace PDXmodelBase
                                     #region 更新//新增
 
                                     ParamCollection paralist = new ParamCollection();
-                                    paralist.Clause = "MODEL_ID= '" + MODEL_ID + "' and Animal_Number = '" + cells[i, 0].StringValue + "'";
+                                    paralist.Clause = "MODEL_ID = @modelId and Animal_Number = @animalNumber";
+                                    paralist.Add(new ParamData("modelId", DbType.String, MODEL_ID ?? ""));
+                                    paralist.Add(new ParamData("animalNumber", DbType.String, cells[i, 0].StringValue ?? ""));
                                     BaseList animaData = bll.Select(paralist, typeof(ANIMAL_INFO));
                                     if (animaData.Count > 0)
                                     {
@@ -705,9 +704,14 @@ namespace PDXmodelBase
 
                                         #region 添加1.小鼠体重涨幅计算;本次体重-上一次体重/上一次；2.小鼠去瘤体重：小鼠测量体重-单只小鼠荷瘤总和/1000（1000mm3体积设置为1g）
                                         ParamCollection pl = new ParamCollection();
-                                        pl.Clause = "MODEL_ID= '" + newRow.MODEL_ID + "' and Animal_Number = '" + newRow.ANIMAL_NUMBER + "'";
-                                        pl.Clause += " and Rn = '" + newRow.RN + "' and Pn = '" + newRow.PN + "'";
-                                        pl.Clause += " and Date_of_Update < '" + newRow.DATE_OF_UPDATE.ToString() + "'";
+                                        pl.Clause = "MODEL_ID = @modelId and Animal_Number = @animalNumber";
+                                        pl.Clause += " and Rn = @rn and Pn = @pn";
+                                        pl.Clause += " and Date_of_Update < @dateOfUpdate";
+                                        pl.Add(new ParamData("modelId", DbType.String, newRow.MODEL_ID ?? ""));
+                                        pl.Add(new ParamData("animalNumber", DbType.String, newRow.ANIMAL_NUMBER ?? ""));
+                                        pl.Add(new ParamData("rn", DbType.String, newRow.RN ?? ""));
+                                        pl.Add(new ParamData("pn", DbType.String, newRow.PN ?? ""));
+                                        pl.Add(new ParamData("dateOfUpdate", DbType.DateTime, newRow.DATE_OF_UPDATE));
                                         BaseList LogData = bll.Select(pl, "Date_of_Update desc", typeof(ANIMAL_INFO_LOGS));
                                         if (LogData.Count > 0)
                                         {
@@ -755,7 +759,7 @@ namespace PDXmodelBase
                                                             {
                                                                 email_to1.Remove(aa[2]);
                                                             }
-                                                            email_to1.Add(aa[2], tb_email1.Select("LEADER = '" + aa[2] + "' ").CopyToDataTable());
+                                                            email_to1.Add(aa[2], tb_email1.Select("LEADER = '" + EscapeFilterValue(aa[2]) + "' ").CopyToDataTable());
                                                             break;
                                                         }
                                                     }
@@ -763,12 +767,15 @@ namespace PDXmodelBase
 
                                                     #region 发送给预约老鼠的项目SD
                                                     ParamCollection pls2 = new ParamCollection();
-                                                    pls2.Clause = "Animal_Number = '" + newRow.ANIMAL_NUMBER + "' and Model_ID='" + newRow.MODEL_ID + "'";
+                                                    pls2.Clause = "Animal_Number = @animalNumber and Model_ID = @modelId";
+                                                    pls2.Add(new ParamData("animalNumber", DbType.String, newRow.ANIMAL_NUMBER ?? ""));
+                                                    pls2.Add(new ParamData("modelId", DbType.String, newRow.MODEL_ID ?? ""));
                                                     BaseList BookingData = bll.Select(pls2, typeof(PROJECT_BOOKING));
                                                     foreach (PROJECT_BOOKING dr in BookingData)
                                                     {
                                                         ParamCollection pl2 = new ParamCollection();
-                                                        pl2.Clause = "USER_NAME = '" + dr.SD + "'";
+                                                        pl2.Clause = "USER_NAME = @userName";
+                                                        pl2.Add(new ParamData("userName", DbType.String, dr.SD ?? ""));
                                                         BaseList user = bll.Select(pl2, typeof(SYS_USER));
                                                         if (user.Count > 0)
                                                         {
@@ -797,7 +804,7 @@ namespace PDXmodelBase
                                                             {
                                                                 email_to1.Remove(email);
                                                             }
-                                                            email_to1.Add(email, tb_email1.Select("SD = '" + dr.SD + "' ").CopyToDataTable());
+                                                            email_to1.Add(email, tb_email1.Select("SD = '" + EscapeFilterValue(dr.SD) + "' ").CopyToDataTable());
                                                         }
                                                     }
                                                     #endregion
@@ -841,7 +848,7 @@ namespace PDXmodelBase
                                                     {
                                                         email_to2.Remove(aa[2]);
                                                     }
-                                                    email_to2.Add(aa[2], tb_email2.Select("LEADER = '" + aa[2] + "' ").CopyToDataTable());
+                                                    email_to2.Add(aa[2], tb_email2.Select("LEADER = '" + EscapeFilterValue(aa[2]) + "' ").CopyToDataTable());
                                                     break;
                                                 }
                                             }
@@ -851,16 +858,21 @@ namespace PDXmodelBase
                                         {
                                             #region 发送给预约老鼠的项目SD
                                             ParamCollection pls2 = new ParamCollection();
-                                            pls2.Clause = "Animal_Number = '" + newRow.ANIMAL_NUMBER + "' and Model_ID='" + newRow.MODEL_ID + "'";
+                                            pls2.Clause = "Animal_Number = @animalNumber and Model_ID = @modelId";
+                                            pls2.Add(new ParamData("animalNumber", DbType.String, newRow.ANIMAL_NUMBER ?? ""));
+                                            pls2.Add(new ParamData("modelId", DbType.String, newRow.MODEL_ID ?? ""));
                                             BaseList BookingData = bll.Select(pls2, typeof(PROJECT_BOOKING));
                                             foreach (PROJECT_BOOKING dr in BookingData)
                                             {
                                                 ParamCollection p3 = new ParamCollection();
-                                                p3.Clause = "REQUEST_ID ='" + dr.REQUEST_ID.ToString() + "' and Model_ID='" + dr.MODEL_ID + "' and Inoculation = ''";
+                                                p3.Clause = "REQUEST_ID = @requestId and Model_ID = @modelId and Inoculation = ''";
+                                                p3.Add(new ParamData("requestId", DbType.Decimal, dr.REQUEST_ID));
+                                                p3.Add(new ParamData("modelId", DbType.String, dr.MODEL_ID ?? ""));
                                                 BaseList monitorData = bll.Select(p3, typeof(PROJECT_MONITOR));
 
                                                 ParamCollection pl2 = new ParamCollection();
-                                                pl2.Clause = "USER_NAME = '" + dr.SD + "'";
+                                                pl2.Clause = "USER_NAME = @userName";
+                                                pl2.Add(new ParamData("userName", DbType.String, dr.SD ?? ""));
                                                 BaseList user = bll.Select(pl2, typeof(SYS_USER));
                                                 if (monitorData.Count > 0 && user.Count > 0)
                                                 {
@@ -886,7 +898,7 @@ namespace PDXmodelBase
                                                     {
                                                         email_to2.Remove(email);
                                                     }
-                                                    email_to2.Add(email, tb_email2.Select("SD = '" + dr.SD + "' ").CopyToDataTable());
+                                                    email_to2.Add(email, tb_email2.Select("SD = '" + EscapeFilterValue(dr.SD) + "' ").CopyToDataTable());
                                                 }
                                             }
                                             #endregion
@@ -898,7 +910,8 @@ namespace PDXmodelBase
                                     else
                                     {
                                         ParamCollection p1 = new ParamCollection();
-                                        p1.Clause = "MODEL_ID= '" + MODEL_ID + "' and Current_Project_Number = 'No live animals'";
+                                        p1.Clause = "MODEL_ID = @modelId and Current_Project_Number = 'No live animals'";
+                                        p1.Add(new ParamData("modelId", DbType.String, MODEL_ID ?? ""));
                                         BaseList nolive = bll.Select(p1, typeof(ANIMAL_INFO));
                                         if (nolive.Count > 0)
                                         {
@@ -1358,6 +1371,12 @@ namespace PDXmodelBase
         [HttpPost]
         public HttpResponseMessage saveAnimalBooking([FromBody] savebooking oData)
         {
+            if (!IsValidApiKey())
+            {
+                var unauthorized = APItoJson(new { code = "error", msg = "Unauthorized." });
+                unauthorized.StatusCode = HttpStatusCode.Unauthorized;
+                return unauthorized;
+            }
             string msg = "";
             string code = "";
             try
@@ -1372,7 +1391,8 @@ namespace PDXmodelBase
                 string txtRevive = oData.Revive ?? "";
 
                 ParamCollection query = new ParamCollection();
-                query.Clause = REQUEST.PROJECT_NUMBER_FIELD + "='" + txtProject_Number.Trim() + "'";
+                query.Clause = REQUEST.PROJECT_NUMBER_FIELD + " = @projectNumber";
+                query.Add(new ParamData("projectNumber", DbType.String, txtProject_Number.Trim()));
                 query.Clause += " and Isdelete = 'N'";
                 BaseList requestData = bll.Select(query, typeof(REQUEST));
                 if (requestData.Count > 0)
@@ -1381,7 +1401,8 @@ namespace PDXmodelBase
                     #region save booking
                     string _del_project = "";
                     ParamCollection paraList1 = new ParamCollection();
-                    paraList1.Clause = ANIMAL_INFO.ANIMAL_NUMBER_FIELD + "='" + hfAnimal_Number + "'";
+                    paraList1.Clause = ANIMAL_INFO.ANIMAL_NUMBER_FIELD + " = @animalNumber";
+                    paraList1.Add(new ParamData("animalNumber", DbType.String, hfAnimal_Number));
                     BaseList animal = bll.Select(paraList1, typeof(ANIMAL_INFO));
                     string doi = "";
                     if (animal.Count > 0)
@@ -1389,8 +1410,10 @@ namespace PDXmodelBase
                         doi = ((ANIMAL_INFO)animal[0]).DOI_F;
                     }
                     ParamCollection paraList = new ParamCollection();
-                    paraList.Clause = PROJECT_BOOKING.ANIMAL_NUMBER_FIELD + "='" + hfAnimal_Number + "'";
-                    paraList.Clause += " and " + PROJECT_BOOKING.DOI_FIELD + "='" + doi + "'";
+                    paraList.Clause = PROJECT_BOOKING.ANIMAL_NUMBER_FIELD + " = @animalNumber";
+                    paraList.Clause += " and " + PROJECT_BOOKING.DOI_FIELD + " = @doi";
+                    paraList.Add(new ParamData("animalNumber", DbType.String, hfAnimal_Number));
+                    paraList.Add(new ParamData("doi", DbType.String, doi ?? ""));
                     BaseList data = bll.Select(paraList, typeof(PROJECT_BOOKING));
                     if (txtAnimal_Booking != "")
                     {
@@ -1412,8 +1435,10 @@ namespace PDXmodelBase
                         else
                         {
                             ParamCollection q1 = new ParamCollection();
-                            q1.Clause = PROJECT_BOOKING.MODEL_ID_FIELD + "='" + book_MODEL_ID + "'";
-                            q1.Clause += " And " + PROJECT_BOOKING.ANIMAL_NUMBER_FIELD + " in (select Animal_Number from ANIMAL_INFO where MODEL_ID = '" + book_MODEL_ID + "' and DOI = '" + doi + "')";
+                            q1.Clause = PROJECT_BOOKING.MODEL_ID_FIELD + " = @modelId";
+                            q1.Clause += " And " + PROJECT_BOOKING.ANIMAL_NUMBER_FIELD + " in (select Animal_Number from ANIMAL_INFO where MODEL_ID = @modelId and DOI = @doi)";
+                            q1.Add(new ParamData("modelId", DbType.String, book_MODEL_ID));
+                            q1.Add(new ParamData("doi", DbType.String, doi ?? ""));
                             BaseList maxdata = bll.Select(q1, typeof(PROJECT_BOOKING));
 
                             row = new PROJECT_BOOKING(DealModel.New);
@@ -1435,7 +1460,9 @@ namespace PDXmodelBase
                         string Subject = string.Format("New HuData Animal booking!");
                         string title = "<span style=\"color: Red\">The animal " + hfAnimal_Number + " in " + book_MODEL_ID + " has been booked!</span></br>" + requestEmailtitle(body);
                         ParamCollection pl = new ParamCollection();
-                        pl.Clause = " USER_NAME ='" + row.SD + "' or USER_NAME ='" + row.LEADING_SD + "'";
+                        pl.Clause = " USER_NAME = @sdName or USER_NAME = @leadingSdName";
+                        pl.Add(new ParamData("sdName", DbType.String, row.SD ?? ""));
+                        pl.Add(new ParamData("leadingSdName", DbType.String, row.LEADING_SD ?? ""));
                         BaseList userlist = bll.Select(pl, typeof(SYS_USER));
                         foreach (SYS_USER user in userlist)
                         {
@@ -1480,13 +1507,17 @@ namespace PDXmodelBase
 
                     #region save pro-monitor(booking)
                     ParamCollection pls = new ParamCollection();
-                    pls.Clause += " MODEL_ID='" + book_MODEL_ID + "' and Booking = '" + _del_project + "'";
+                    pls.Clause += " MODEL_ID = @modelId and Booking = @project";
+                    pls.Add(new ParamData("modelId", DbType.String, book_MODEL_ID));
+                    pls.Add(new ParamData("project", DbType.String, _del_project ?? ""));
                     BaseList bookeddata = bll.Select(pls, typeof(PROJECT_BOOKING));
 
                     if (bookeddata.Count == 1)
                     {
                         ParamCollection pl1 = new ParamCollection();
-                        pl1.Clause += " BOOKING_ANIMALS = '' and Model_ID = '" + book_MODEL_ID + "' and Project_Number='" + _del_project + "'";
+                        pl1.Clause += " BOOKING_ANIMALS = '' and Model_ID = @modelId and Project_Number = @project";
+                        pl1.Add(new ParamData("modelId", DbType.String, book_MODEL_ID));
+                        pl1.Add(new ParamData("project", DbType.String, _del_project ?? ""));
                         BaseList monitor = bll.Select(pl1, typeof(PROJECT_MONITOR));
                         foreach (PROJECT_MONITOR dr in monitor)
                         {
@@ -1496,13 +1527,17 @@ namespace PDXmodelBase
                         }
                         //子项目依附主项目
                         ParamCollection pl = new ParamCollection();
-                        pl.Clause += " REQUEST_ID in (select [REQUEST_ID] from [PIGGYBACKED] where Model_ID = '" + book_MODEL_ID + "' and PIGGYBACKED_BY ='" + _del_project + "')";
+                        pl.Clause += " REQUEST_ID in (select [REQUEST_ID] from [PIGGYBACKED] where Model_ID = @modelId and PIGGYBACKED_BY = @project)";
+                        pl.Add(new ParamData("modelId", DbType.String, book_MODEL_ID));
+                        pl.Add(new ParamData("project", DbType.String, _del_project ?? ""));
                         BaseList childrenData = bll.Select(pl, typeof(REQUEST));
                         if (childrenData.Count > 0)
                         {
                             REQUEST childrow = (REQUEST)childrenData[0];
                             ParamCollection pl2 = new ParamCollection();
-                            pl2.Clause += " BOOKING_ANIMALS = '' and Model_ID = '" + childrow.MODEL_ID + "' and Project_Number='" + childrow.PROJECT_NUMBER + "'";
+                            pl2.Clause += " BOOKING_ANIMALS = '' and Model_ID = @modelId and Project_Number = @project";
+                            pl2.Add(new ParamData("modelId", DbType.String, childrow.MODEL_ID ?? ""));
+                            pl2.Add(new ParamData("project", DbType.String, childrow.PROJECT_NUMBER ?? ""));
                             BaseList monitor2 = bll.Select(pl2, typeof(PROJECT_MONITOR));
                             foreach (PROJECT_MONITOR dr in monitor2)
                             {
@@ -1516,7 +1551,9 @@ namespace PDXmodelBase
                     else if (bookeddata.Count == 0)
                     {
                         ParamCollection pl1 = new ParamCollection();
-                        pl1.Clause += " BOOKING_ANIMALS <> '' and Model_ID = '" + book_MODEL_ID + "' and Project_Number='" + _del_project + "'";
+                        pl1.Clause += " BOOKING_ANIMALS <> '' and Model_ID = @modelId and Project_Number = @project";
+                        pl1.Add(new ParamData("modelId", DbType.String, book_MODEL_ID));
+                        pl1.Add(new ParamData("project", DbType.String, _del_project ?? ""));
                         BaseList monitor = bll.Select(pl1, typeof(PROJECT_MONITOR));
                         foreach (PROJECT_MONITOR dr in monitor)
                         {
@@ -1526,13 +1563,17 @@ namespace PDXmodelBase
                         }
                         //子项目依附主项目
                         ParamCollection pl = new ParamCollection();
-                        pl.Clause += " REQUEST_ID in (select [REQUEST_ID] from [PIGGYBACKED] where Model_ID = '" + book_MODEL_ID + "' and PIGGYBACKED_BY ='" + _del_project + "')";
+                        pl.Clause += " REQUEST_ID in (select [REQUEST_ID] from [PIGGYBACKED] where Model_ID = @modelId and PIGGYBACKED_BY = @project)";
+                        pl.Add(new ParamData("modelId", DbType.String, book_MODEL_ID));
+                        pl.Add(new ParamData("project", DbType.String, _del_project ?? ""));
                         BaseList childrenData = bll.Select(pl, typeof(REQUEST));
                         if (childrenData.Count > 0)
                         {
                             REQUEST childrow = (REQUEST)childrenData[0];
                             ParamCollection pl2 = new ParamCollection();
-                            pl2.Clause += " BOOKING_ANIMALS <> '' and Model_ID = '" + childrow.MODEL_ID + "' and Project_Number='" + childrow.PROJECT_NUMBER + "'";
+                            pl2.Clause += " BOOKING_ANIMALS <> '' and Model_ID = @modelId and Project_Number = @project";
+                            pl2.Add(new ParamData("modelId", DbType.String, childrow.MODEL_ID ?? ""));
+                            pl2.Add(new ParamData("project", DbType.String, childrow.PROJECT_NUMBER ?? ""));
                             BaseList monitor2 = bll.Select(pl2, typeof(PROJECT_MONITOR));
                             foreach (PROJECT_MONITOR dr in monitor2)
                             {

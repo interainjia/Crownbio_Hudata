@@ -1,4 +1,14 @@
-﻿# 2026.11.18
+﻿# 2026.11.19
+
+## 安全修复：HudataController 中 SQL 拼接全部改为参数化；saveAnimalBooking、importAnimalInfo 增加 API Key 鉴权
+
+- `CrownbioHubase/HudataController.cs`：
+  - `SaveRequest`：子项目重复校验、按 ID 查 Request、删除旧 BOOKING / FURTHER_EXPANDING / REVIVE（`NOT IN` 列表改为 `@m0, @m1, ...`，新增 `BuildProjectModelQuery`）、按邮箱查 Leading SD / BD / SD（新增 `GetUserNameByEmail`）、查邮件收件人，全部改为参数化
+  - `importAnimalInfo`：入口增加 `X-API-Key` 校验（同上，失败返回 401，不读取上传文件）；ANIMAL_INFO / ANIMAL_INFO_LOGS / PROJECT_BOOKING / PROJECT_MONITOR / SYS_USER 共 9 处查询改为参数化；`Date_of_Update` 改为按 DateTime 参数比较（原为 `ToString()` 拼接，受服务器区域设置影响）；`DataTable.Select` 过滤表达式中的值转义单引号（新增 `EscapeFilterValue`）
+  - `saveAnimalBooking`：11 处查询改为参数化；入口增加与 `SaveRequest` 相同的 `X-API-Key` 校验，失败返回 HTTP 401 `{"code":"error","msg":"Unauthorized."}`
+- **部署时须把 `HudataApiKey` 提供给 `/actionapi/Hudata/saveAnimalBooking`、`/actionapi/Hudata/importAnimalInfo` 的外部调用方**（仓库内无页面调用这两个接口；网站的 ImportAnimalInfo.aspx 页面不走此接口），否则调用方全部 401
+
+# 2026.11.18
 
 ## 安全修复：用户密码由可逆 DES 加密改为 PBKDF2 加盐哈希
 
