@@ -31,7 +31,12 @@ namespace CrownbioHuData.HuData
                 script.Append("getCountry('" + HttpUtility.JavaScriptStringEncode(userLogin.COUNTRY) + "');");
                 script.Append("$('#Phone').val('" + HttpUtility.JavaScriptStringEncode(userLogin.PHONE) + "');");
                 script.Append("$('#Fax').val('" + HttpUtility.JavaScriptStringEncode(userLogin.FAX) + "');");
-                // 仅支持 Sign In With Azure，密码字段已停用：不再解密、不再把密码输出到页面
+                // 密码不再解密、不输出到页面（库中只存哈希）。外部客户可在此设置新密码（留空不修改），
+                // 公司域账号（@crownbio.com）密码由 Azure AD 管理，密码框保持禁用
+                if (!PDXmodelBase.HuData.userLogin.IsCrownbioEmail(userLogin.EMAIL))
+                {
+                    script.Append("$('#Password, #ConfirmPassword').prop('disabled', false).attr('placeholder', 'Leave blank to keep current password');");
+                }
                 if (userLogin.EMAIL == "trial@crownbio.com")
                 {
                     script.Append("document.getElementById(\"changeInfo\").style.display = \"none\";");

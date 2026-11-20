@@ -21,17 +21,29 @@ namespace PDXmodelBase.HuData
         string azureAdUpn = "";       // 登录账号
         protected void Page_Load(object sender, EventArgs e)
         {
-            // 仅支持 Sign In With Azure；用户名/密码登录已停用
+            // 1. 优先尝试 Azure AD 登录
             ParseAzureAdUserInfo();
 
-            // 清除旧版 "Remember Me" 写入的用户名/明文密码 Cookie
             if (!IsPostBack)
             {
+                // 清除旧版 "Remember Me" 写入的用户名/明文密码 Cookie
                 ExpireCookie("Hudatausername");
                 ExpireCookie("HudatauserName");
                 ExpireCookie("Hudatapassword");
+
+                // 2. 没有走 Azure AD 时，回填 Remember Me 记住的用户名（只记用户名，不记密码）
+                HttpCookie remembered = Request.Cookies[RememberUserCookieName];
+                if (string.IsNullOrEmpty(azureAdUserName) && remembered != null && !string.IsNullOrEmpty(remembered.Value))
+                {
+                    string jsName = HttpUtility.JavaScriptStringEncode(HttpUtility.UrlDecode(remembered.Value));
+                    ClientScript.RegisterStartupScript(GetType(), "rememberUser",
+                        $"<script type='text/javascript'>$(function(){{$('#username').val('{jsName}');$('#id_remember').attr('checked', 'checked');$('#password').focus();}});</script>");
+                }
             }
         }
+
+        /// <summary>Remember Me 记住用户名的 Cookie（由 userLogin.ashx 账号密码登录成功后写入）</summary>
+        public const string RememberUserCookieName = "HudataRememberUser";
 
         private void ExpireCookie(string name)
         {

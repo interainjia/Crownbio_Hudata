@@ -80,9 +80,31 @@
             var r = window.location.search.substr(1).match(reg);
             if (r != null) return unescape(r[2]); return null;
         }
+        // 公司域账号（@crownbio.com / *.crownbio.com）密码由 Azure AD 管理，注册时无需填写密码
+        function isCrownbioEmail(email) {
+            return /(@|\.)crownbio\.com$/i.test($.trim(email || ''));
+        }
+        function togglePasswordRows() {
+            if (isCrownbioEmail($('#Email').val())) {
+                $('.pwd-row').hide();
+                $('#crownbio-pwd-tip').show();
+            } else {
+                $('.pwd-row').show();
+                $('#crownbio-pwd-tip').hide();
+            }
+        }
+        $(function () {
+            $('#Email').bind('keyup change blur', togglePasswordRows);
+            togglePasswordRows();
+        });
+
         function register_click() {
             var flag = true;
             $('#form1 input').each(function () {
+                // 隐藏的密码行（公司域账号）不校验
+                if ($(this).closest('tr').is(':hidden')) {
+                    return;
+                }
                 if ($(this).attr('required') || $(this).attr('validType')) {
                     if (!$(this).validatebox('isValid')) {
                         flag = false;
@@ -109,7 +131,7 @@
                 var Fax = $('#Fax').val();
                 var Email = $('#Email').val();
           
-                var Password = $('#Password').val();
+                var Password = isCrownbioEmail(Email) ? "" : $('#Password').val();
                 if (First_name != "" && Last_name != "") {
                     jQuery('#activity_pane').showLoading(
                         {
@@ -235,12 +257,16 @@
                             <input id="Email" class="easyui-validatebox" required="true" validtype="email" />Registration using personal email address will be rejected.</td>
                     </tr>
                    
-                    <tr>
+                    <tr id="crownbio-pwd-tip" style="display: none;">
+                        <td class="td_left">Password:&nbsp;</td>
+                        <td class="td_right">Not required for CrownBio accounts. Your password is managed by Azure AD, please log in with Sign In With Azure or your domain password.</td>
+                    </tr>
+                    <tr class="pwd-row">
                         <td class="td_left">Password:<span style="color: Red">*</span>&nbsp;</td>
                         <td class="td_right">
                             <input id="Password" class="easyui-validatebox" required="true" validtype="safepass" type="password" /></td>
                     </tr>
-                    <tr>
+                    <tr class="pwd-row">
                         <td class="td_left">Confirm Password:<span style="color: Red">*</span>&nbsp;</td>
                         <td class="td_right">
                             <input id="ConfirmPassword" class="easyui-validatebox" required="true" validtype="ConfirmPassword" type="password" /></td>

@@ -103,16 +103,22 @@ namespace PDXmodelBase.HuData
             }
             switch (Method)
             {
-                // 用户名/密码登录、试用账号登录、注册、找回密码均已停用，仅支持 Sign In With Azure（userLoginAuto）
+                // 试用账号（共享的 AACR@2013.org 固定账号）登录保持停用
                 case "trial":
-                case "userLogin":
-                case "register":
-                case "forgot":
                     context.Response.StatusCode = 403;
-                    context.Response.Write(PasswordLoginDisabledMsg);
+                    context.Response.Write("Trial login is disabled.");
+                    break;
+                case "userLogin":
+                    ReturnLogin(context, name, pwd);
                     break;
                 case "userLoginAuto":
                     ReturnLoginAuto(context, name, pwd);
+                    break;
+                case "register":
+                    Returnregister(context, First_name, Last_name, Position, Department, Institution, Street_Address, City, Country, Phone, Fax, Email, Password, Interest);
+                    break;
+                case "forgot":
+                    ReturnForgot(context, Email);
                     break;
                 case "changeInfo":
                     ReturnChange(context, First_name, Last_name, Position, Department, Institution, Street_Address, City, Country, Phone, Fax, Password, Interest);
@@ -128,7 +134,42 @@ namespace PDXmodelBase.HuData
             }
         }
 
-        private const string PasswordLoginDisabledMsg = "Username/password login is disabled. Please use Sign In With Azure.";
+        private const string CrownbioPasswordMsg = "The password of a CrownBio account is managed by Azure AD. Please use Sign In With Azure, or reset your password at https://password.crownbio.com.";
+
+        private const string PasswordRuleMsg = "Your password must contain at least 6 characters and be consist of both numbers and letters, e.g. Crown01. The password is case sensitive.";
+
+        /// <summary>
+        /// 是否为公司域账号（@crownbio.com 或 *.crownbio.com）：密码由 Azure AD 域控管理，HuData 不保存、不修改其密码
+        /// </summary>
+        public static bool IsCrownbioEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return false;
+            }
+            string e = email.Trim();
+            return e.EndsWith("@crownbio.com", StringComparison.OrdinalIgnoreCase)
+                || e.EndsWith(".crownbio.com", StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// 外部客户密码规则（与 Register.aspx / ChangeUsers.aspx 前端校验一致）：至少 6 位，同时包含字母和数字，不含空白字符
+        /// </summary>
+        private static bool IsValidExternalPassword(string password)
+        {
+            if (string.IsNullOrEmpty(password) || password.Length < 6)
+            {
+                return false;
+            }
+            bool hasLetter = false, hasDigit = false;
+            foreach (char c in password)
+            {
+                if (char.IsWhiteSpace(c)) return false;
+                if (char.IsLetter(c)) hasLetter = true;
+                if (char.IsDigit(c)) hasDigit = true;
+            }
+            return hasLetter && hasDigit;
+        }
 
        
         public string MStoJson(DataTable dt)
@@ -182,6 +223,12 @@ namespace PDXmodelBase.HuData
         }
         public void ReturnForgot(HttpContext context, string email)
         {
+            // 公司域账号密码由 Azure AD 管理，不在 HuData 中重置
+            if (IsCrownbioEmail(email))
+            {
+                context.Response.Write(CrownbioPasswordMsg);
+                return;
+            }
             BaseList data = bll.Select(QueryEmail(email), typeof(SYS_USER));
             string dd = "Email address dose not exist.";
             if (data.Count > 0)
@@ -301,12 +348,19 @@ namespace PDXmodelBase.HuData
                 sl.CurModel = DealModel.None;
 
 
+                // Remember Me 只记住用户名（7 天），不再把明文密码写入 Cookie
                 if (remember == "true")
                 {
-                    context.Response.Cookies["Hudatausername"].Value = name;
-                    context.Response.Cookies["Hudatapassword"].Value = pwd;
-                    context.Response.Cookies["HudatauserName"].Expires = DateTime.Now.AddDays(7);//设置过期时间
-                    context.Response.Cookies["Hudatapassword"].Expires = DateTime.Now.AddDays(7);//设置过期时间
+                    context.Response.Cookies.Add(new HttpCookie(Login.RememberUserCookieName, HttpUtility.UrlEncode(name))
+                    {
+                        Expires = DateTime.Now.AddDays(7),
+                        HttpOnly = true,
+                        Secure = context.Request.IsSecureConnection
+                    });
+                }
+                else
+                {
+                    context.Response.Cookies.Add(new HttpCookie(Login.RememberUserCookieName, "") { Expires = DateTime.Now.AddDays(-1) });
                 }
 
                 //FormsAuthentication.SetAuthCookie(name, false);
@@ -417,6 +471,19 @@ namespace PDXmodelBase.HuData
         }
         public void Returnregister(HttpContext context, string First_name, string Last_name, string Position, string Department, string Institution, string Street_Address, string City, string Country, string Phone, string Fax, string Email, string Password, string Interest)
         {
+            Email = (Email ?? "").Trim();
+            if (string.IsNullOrEmpty(Email))
+            {
+                context.Response.Write("Please enter your company email.");
+                return;
+            }
+            // 外部客户必须设置密码；公司域账号密码由 Azure AD 管理，忽略提交的密码
+            bool isCrownbio = IsCrownbioEmail(Email);
+            if (!isCrownbio && !IsValidExternalPassword(Password))
+            {
+                context.Response.Write(PasswordRuleMsg);
+                return;
+            }
             if (bll.Find(-1, Email, typeof(SYS_USER)))
             {
                 context.Response.Write("Email address already exists!");
@@ -435,7 +502,8 @@ namespace PDXmodelBase.HuData
                 currentRow.USER_NAME = First_name + " " + Last_name;
                 if (isNew)
                 {
-                    currentRow.USER_PWD = PasswordHasher.Hash(Password);
+                    // 公司域账号：登录时由 AD 校验密码，本地只保存一个无人知晓的随机密码哈希（不可用于登录）
+                    currentRow.USER_PWD = PasswordHasher.Hash(isCrownbio ? PasswordHasher.GenerateRandomSecret() : Password);
                 }
 
                 currentRow.EMAIL = Email;
@@ -510,7 +578,16 @@ namespace PDXmodelBase.HuData
                 currentRow.CurModel = DealModel.Modify;
                 currentRow.USER_CODE = Email;
                 currentRow.USER_NAME = First_name + " " + Last_name;
-                // 仅支持 Sign In With Azure，不再修改密码（USER_PWD 保持不变）
+                // 外部客户填写了新密码才修改；公司域账号密码由 Azure AD 管理，USER_PWD 保持不变
+                if (!IsCrownbioEmail(Email) && !string.IsNullOrEmpty(Password))
+                {
+                    if (!IsValidExternalPassword(Password))
+                    {
+                        context.Response.Write(PasswordRuleMsg);
+                        return;
+                    }
+                    currentRow.USER_PWD = PasswordHasher.Hash(Password);
+                }
                 currentRow.CITY = City;
                 currentRow.COUNTRY = Country;
                 currentRow.DEPARTMENT = Department;

@@ -1,4 +1,24 @@
-﻿# 2026.11.19
+﻿# 2026.11.20
+
+## 恢复账号 + 密码登录、用户注册、找回密码（与 Sign In With Azure 并存）
+
+安全问题已修复，撤销 2026.11.17 "网站登录只保留 Sign In With Azure" 中对账号密码登录的隐藏，同时保留当时的安全改进。
+
+- `CrownbioHubase/HuData/Login.aspx`：恢复 Username/Password 输入框、Log in 按钮、Remember Me、"Not a user? Register now!"、"Forgot your password?"（改为指向 `Forget.aspx`，公司员工提示到 password.crownbio.com 重置）；Sign In With Azure 仍优先显示；账号密码改为由 jQuery 编码提交（原 `URLencode` 用 `escape`，非 ASCII 字符会出错）
+- `CrownbioHubase/HuData/Login.aspx.cs`：Remember Me 只记住用户名（新 Cookie `HudataRememberUser`，HttpOnly，7 天，回填时 JS 转义）；仍清除旧版保存明文密码的 `Hudatausername` / `Hudatapassword` Cookie
+- `CrownbioHubase/HuData/userLogin.ashx.cs`：
+  - 恢复 `M=userLogin`、`register`、`forgot`；`trial`（共享试用账号 AACR@2013.org）仍停用
+  - 登录逻辑不变：`@crownbio.com` 账号由 AD 域校验密码，外部客户校验本地 PBKDF2 密码哈希
+  - 注册：邮箱以 `@crownbio.com` / `.crownbio.com` 结尾时无需密码（密码由 Azure 域控管理），本地保存一个随机密码的哈希（不可用于登录）；外部客户必须设置密码，服务端也校验密码规则（至少 6 位，含字母和数字，无空白）
+  - 找回密码：`@crownbio.com` 账号不重置，提示使用 Sign In With Azure 或 password.crownbio.com
+  - 修改个人信息（`changeInfo`）：外部客户填写新密码时才修改密码（保存哈希）；公司域账号不修改密码
+- `Register.aspx`：输入公司域邮箱时隐藏 Password / Confirm Password 并显示提示，提交时不发送密码；外部邮箱照常必填
+- `Register.aspx.cs`、`Forget.aspx.cs`：去掉跳回 `Login.aspx` 的重定向
+- `ChangeUsers.aspx(.cs)`：外部客户的密码框可用（留空表示不修改，不预填密码）；公司域账号仍禁用，显示 "Managed by Azure"
+
+---
+
+# 2026.11.19
 
 ## 安全修复：HudataController 中 SQL 拼接全部改为参数化；saveAnimalBooking、importAnimalInfo 增加 API Key 鉴权
 

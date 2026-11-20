@@ -10,6 +10,33 @@
     <script src="../Common/easyui-1.2.5/jquery-1.7.1.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="../Common/easyui-1.2.5/jquery.easyui.min.js"></script>
     <link rel="stylesheet" type="text/css" href="../Common/easyui-1.2.5/themes/default/easyui.css" />
+    <script type="text/javascript">
+        $(function () {
+            function isPlaceholer() {
+                var input = document.createElement('input');
+                return "placeholder" in input;
+            }
+            //不支持的代码
+            if (!isPlaceholer()) {
+                input("username", "Username"); //s即时input框的ID
+                input("password", "Password"); //s即时input框的ID
+            }
+            function input(theInput, val) {
+                var $input = $("#" + theInput + "");
+                var val = val;
+                $input.attr({ value: val });
+                $input.focus(function () {
+                    if ($input.val() == val) {
+                        $(this).attr({ value: "" });
+                    }
+                }).blur(function () {
+                    if ($input.val() == "") {
+                        $(this).attr({ value: val });
+                    }
+                });
+            }
+        });
+    </script>
     <style type="text/css">
         html, body {
             height: 100%;
@@ -364,35 +391,73 @@
             }
     </style>
 
+    <script type="text/javascript">
+        function quickQueryCust(evt) {
+            evt = (evt) ? evt : ((window.event) ? window.event : "") //兼容IE和Firefox获得keyBoardEvent对象
+            var key = evt.keyCode ? evt.keyCode : evt.which; //兼容IE和Firefox获得keyBoardEvent对象的键值
+            if (key == 13) { //判断是否是回车事件。
+                userLogin_click();
+
+            }
+        }
+    </script>
 
 
 
 
     <script type="text/javascript">
-        // 仅支持 Sign In With Azure：账号以服务端校验后的 identity_token 中的邮箱为准，不再提交用户名/密码
+        // 登录结果统一处理
+        function handleLoginResult(results, showError) {
+            //表示从start，到end之间的字符串，包括start位置的字符但是不包括end位置的字符
+            var msg = results.substring(0, results.indexOf(':'));
+            //表示从start位置开始取length个字符串
+            var days = results.substr(results.indexOf(':') + 1, results.length - results.indexOf(':') - 1);
+            if (results == "Successful login") {
+                window.location.href = "index.aspx";
+            }
+            else if (msg == "User Trial") {
+                $.messager.alert("login", days + " days remaining for your trial period", "info", function () {
+                    window.location.href = "index.aspx";
+                });
+            }
+            else {
+                showError(results);
+            }
+        }
+
+        // Sign In With Azure：账号以服务端校验后的 identity_token 中的邮箱为准，不提交用户名/密码
         function userLogin_auto(isAzureAd) {
             if (isAzureAd) {
                 $.ajax({
                     type: "POST",
                     url: "userLogin.ashx?M=userLoginAuto",
                     success: function (results) {
-                        //表示从start，到end之间的字符串，包括start位置的字符但是不包括end位置的字符
-                        var msg = results.substring(0, results.indexOf(':'));
-                        //表示从start位置开始取length个字符串
-                        var days = results.substr(results.indexOf(':') + 1, results.length - results.indexOf(':') - 1);
-                        if (results == "Successful login") {
-                            window.location.href = "index.aspx";
-                        }
-                        else if (msg == "User Trial") {
-                            $.messager.alert("login", days + " days remaining for your trial period", "info", function () {
-                                window.location.href = "index.aspx";
-                            });
-                        }
-                        else {
-                            // 用户名/密码登录已停用，Azure 登录失败时在页面上提示（不弹框）
-                            console.log("登录失败信息：", results);
-                            $('#login-error').text(results).show();
-                        }
+                        handleLoginResult(results, function (err) {
+                            // Azure 登录失败时在页面上提示（不弹框）
+                            console.log("登录失败信息：", err);
+                            $('#login-error').text(err).show();
+                        });
+                    }
+                })
+            }
+        }
+
+        // 账号 + 密码登录：@crownbio.com 账号由 AD 域校验密码，外部客户账号校验本地密码哈希
+        function userLogin_click() {
+            var name = $.trim($('#username').val());
+            var pwd = $('#password').val();
+            if (name != "" && pwd != "") {
+                $.ajax({
+                    type: "POST",
+                    url: "userLogin.ashx?M=userLogin",
+                    data: { name: name, pwd: pwd, remember: $('#id_remember').is(':checked') ? "true" : "false" },
+                    success: function (results) {
+                        handleLoginResult(results, function (err) {
+                            $.messager.alert("info", err, "info", null);
+                        });
+                    },
+                    error: function (xhr) {
+                        $.messager.alert("info", xhr.responseText || "Login failed.", "info", null);
                     }
                 })
             }
@@ -410,14 +475,58 @@
             </a>
         </div>
         <div id="azure-callout">
-            Please use <strong>Sign In With Azure</strong> to log in.
+            CrownBio employees, please use <strong>Sign In With Azure</strong> to log in.
         </div>
         <a id="azure-signin" href="https://uc.crownbio.com/sysuser/loginazure?r=hudata.crownbio.com/HuData/Login.aspx&amp;s=1&amp;l=en-US">
             <span class="ms-logo"></span>Sign In With Azure
         </a>
-        <%-- 用户名/密码登录已停用，仅支持 Sign In With Azure --%>
         <div id="login-error" style="display: none; color: #c00; text-align: center; margin: 10px auto; width: 300px;"></div>
-        <div style="text-align: center; margin: 15px auto;">We recommend Google Chrome or Firefox for the best browser experience on this website.</div>
+        <div id="divider">OR</div>
+        <fieldset id="inputs">
+
+            <input id="username" type="text" placeholder="Username" autofocus required />
+
+            <input id="password" type="password" onkeydown="return quickQueryCust(event)" placeholder="Password" required />
+
+        </fieldset>
+        <fieldset id="actions">
+            <table>
+                <tr>
+                    <td style="width: 280px;">
+                        <input id="submit" value="Log in" onclick="userLogin_click()" />
+                    </td>
+                    <td style="width: 200px;">
+                        <input id="id_remember" name="id_remember" type="checkbox" style="float: left" /><label
+                            for="id_remember" title="If checked your username will be remembered on this computer for 1 week">
+                            Remember Me</label></td>
+
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td style="width: 280px;">
+                        <a style="float: left;margin:5px" href="Register.aspx">Not a user? Register now!</a>
+                    </td>
+                    <td style="width: 200px">
+                        &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 200px">
+                        <a style="float: left;margin:5px" href="Forget.aspx" title="CrownBio employees: please reset your password at password.crownbio.com">Forgot your password?</a>
+                    </td>
+                    <td style="width: 200px">
+                        &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td style="margin:5px" colspan="2">We recommend Google Chrome or Firefox for the best browser experience on this website.</td>
+                </tr>
+            </table>
+
+
+            <%--  <a href="">Forgot your password?</a>--%>
+        </fieldset>
     </form>
 </body>
 </html>
