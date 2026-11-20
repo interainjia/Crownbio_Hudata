@@ -216,7 +216,10 @@ namespace PDXmodelBase.HuData
                 //Body.Append("Below please find your login credentials:\r\n");
                 //Body.Append("Username: " + row.EMAIL + "\r\n");
                 //Body.Append("Password: " + DEncryptHelper.Decrypt(row.USER_PWD) + "\r\n\r\n");
-                Body.Append("Login using your username and password is required to access the database.\r\n\r\n");
+                // 冠科员工只能用 Sign In With Azure 登录
+                Body.Append(IsCrownbioEmail(row.EMAIL)
+                    ? "Please log in with Sign In With Azure to access the database.\r\n\r\n"
+                    : "Login using your username and password is required to access the database.\r\n\r\n");
                 Body.Append("Happy HuDataing!\r\n\r\n");
                 Body.Append("The Administrator");
                 string[] toMails = { row.EMAIL };

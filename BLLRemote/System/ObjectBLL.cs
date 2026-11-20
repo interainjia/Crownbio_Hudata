@@ -1069,11 +1069,12 @@ namespace Crownbio.BLL
         /// <param name="userName"></param>
         /// <param name="password">明文密码</param>
         /// <returns></returns>
+        public const string CrownbioUseAzureMsg = "CrownBio employees, please use Sign In With Azure.";
+
         public SYS_USER Login(HttpContext context, string userName, string password)
         {
             password = password ?? "";
             BaseList userList = new BaseList();
-            bool isInAD = false;
             #region not in AD
             ParamCollection paraList = new ParamCollection();
             paraList.Clause = "email = @loginEmail and (email not like '%@crownbio.com%' or email is null)";
@@ -1090,48 +1091,14 @@ namespace Crownbio.BLL
 
             if (userList.Count == 0)
             {
-                bool isAdAuthenticated = false;
-                try
-                {
-                    isAdAuthenticated = ActiveDirectoryConnector.IsUserLoggedIn(userName, password);
-                }
-                catch (ActiveDirectoryUserNotFoundException)
-                {
-                    // 新旧两个域都确实没有这个账号，维持原有行为：走到下面统一提示"用户不存在"。
-                    isAdAuthenticated = false;
-                }
-                catch (Exception ex)
-                {
-                    // 密码错误、账号锁定/过期等域里能确认账号存在的具体原因，
-                    // 不要被误判成"用户不存在"；其中密码过期单独给出更精确的提示，
-                    // 其余情况维持原有的"密码不正确"提示。
-                    SYS_USER adPasswordErrorResult = new SYS_USER();
-                    if (ex.Message.IndexOf("password has expired", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        adPasswordErrorResult.ErrMsg = LanguageHelper.GetResourceText("USER_PWD_EXPIRED");
-                    }
-                    else
-                    {
-                        adPasswordErrorResult.ErrMsg = LanguageHelper.GetResourceText("USER_PWD") + LanguageHelper.GetResourceText("Incorrect");
-                    }
-                    adPasswordErrorResult.IS_Login = false;
-                    return adPasswordErrorResult;
-                }
-
-                if (isAdAuthenticated)
-                {
-                    #region in AD
-                    if (userName.IndexOf("crownbio", StringComparison.CurrentCultureIgnoreCase) < 0)
-                    {
-                        userName = userName + "@crownbio.com";
-                    }
-                    ParamCollection paraList2 = new ParamCollection();
-                    paraList2.Clause = SYS_USER.EMAIL_FIELD + " = @adEmail";
-                    paraList2.Add(new ParamData("adEmail", DbType.String, userName));
-                    userList = Select(paraList2, typeof(SYS_USER));
-                    isInAD = true;
-                    #endregion
-                }
+                // 冠科员工（公司域账号）不能再用账号 + 密码登录，只能用 Sign In With Azure（LoginSSO）。
+                // 原来这里会调用 ActiveDirectoryConnector.IsUserLoggedIn 校验域密码，现已去掉，也不再向域控提交员工密码。
+                SYS_USER notAllowed = new SYS_USER();
+                notAllowed.IS_Login = false;
+                notAllowed.ErrMsg = userName.IndexOf("crownbio", StringComparison.OrdinalIgnoreCase) >= 0
+                    ? CrownbioUseAzureMsg
+                    : LanguageHelper.GetResourceText("USER_NOT_EXIST") + " " + CrownbioUseAzureMsg;
+                return notAllowed;
             }
 
             SYS_USER userLogin = null;
@@ -1144,7 +1111,7 @@ namespace Crownbio.BLL
                     userLogin.ErrMsg = LanguageHelper.GetResourceText("USER_NOT_AVAILABLE");
                     userLogin.IS_Login = false;
                 }
-                else if (!isInAD && !VerifyUserPassword(userLogin, password))
+                else if (!VerifyUserPassword(userLogin, password))
                 {
                     userLogin = new SYS_USER();
                     userLogin.ErrMsg = LanguageHelper.GetResourceText("USER_PWD") + LanguageHelper.GetResourceText("Incorrect");

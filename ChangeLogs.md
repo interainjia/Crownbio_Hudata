@@ -8,7 +8,11 @@
 - `CrownbioHubase/HuData/Login.aspx.cs`：Remember Me 只记住用户名（新 Cookie `HudataRememberUser`，HttpOnly，7 天，回填时 JS 转义）；仍清除旧版保存明文密码的 `Hudatausername` / `Hudatapassword` Cookie
 - `CrownbioHubase/HuData/userLogin.ashx.cs`：
   - 恢复 `M=userLogin`、`register`、`forgot`；`trial`（共享试用账号 AACR@2013.org）仍停用
-  - 登录逻辑不变：`@crownbio.com` 账号由 AD 域校验密码，外部客户校验本地 PBKDF2 密码哈希
+  - 账号密码登录**仅限外部客户**（校验本地 PBKDF2 密码哈希）；冠科员工只能用 Sign In With Azure：
+    - `BLLRemote/System/ObjectBLL.cs` `Login()`：去掉找不到外部账号时调用 `ActiveDirectoryConnector.IsUserLoggedIn` 校验域密码的分支（原来员工可用域账号 + 域密码登录），不再向域控/UC 提交员工密码；用户名含 crownbio 时提示 `CrownBio employees, please use Sign In With Azure.`，其余找不到的账号提示 `Invalid Username! CrownBio employees, please use Sign In With Azure.`
+    - `LoginSSO()`（Sign In With Azure）未改动
+    - 审批通过邮件（`ApproveUser`）：员工账号提示用 Sign In With Azure 登录
+    - `Login.aspx` 提示文字增加 "Username / password login is for external customers only."
   - 注册：邮箱以 `@crownbio.com` / `.crownbio.com` 结尾时无需密码（密码由 Azure 域控管理），本地保存一个随机密码的哈希（不可用于登录）；外部客户必须设置密码，服务端也校验密码规则（至少 6 位，含字母和数字，无空白）
   - 找回密码改为**邮件确认链接**（原来任何人输入别人的邮箱即可直接把对方密码改掉，并且会提示邮箱是否存在）：
     - `M=forgot` 不再修改密码，只给账号邮箱发送重置链接 `Forget.aspx?token=...`；无论邮箱是否存在都返回同样的提示；未审批/已停用账号不发送

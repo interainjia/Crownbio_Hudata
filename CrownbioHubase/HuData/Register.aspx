@@ -259,7 +259,7 @@
                    
                     <tr id="crownbio-pwd-tip" style="display: none;">
                         <td class="td_left">Password:&nbsp;</td>
-                        <td class="td_right">Not required for CrownBio accounts. Your password is managed by Azure AD, please log in with Sign In With Azure or your domain password.</td>
+                        <td class="td_right">Not required for CrownBio accounts. Your password is managed by Azure AD, please log in with Sign In With Azure.</td>
                     </tr>
                     <tr class="pwd-row">
                         <td class="td_left">Password:<span style="color: Red">*</span>&nbsp;</td>

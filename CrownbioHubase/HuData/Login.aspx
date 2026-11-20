@@ -442,7 +442,7 @@
             }
         }
 
-        // 账号 + 密码登录：@crownbio.com 账号由 AD 域校验密码，外部客户账号校验本地密码哈希
+        // 账号 + 密码登录：仅限外部客户（校验本地密码哈希）；冠科员工只能用 Sign In With Azure
         function userLogin_click() {
             var name = $.trim($('#username').val());
             var pwd = $('#password').val();
@@ -475,7 +475,8 @@
             </a>
         </div>
         <div id="azure-callout">
-            CrownBio employees, please use <strong>Sign In With Azure</strong> to log in.
+            CrownBio employees, please use <strong>Sign In With Azure</strong> to log in.<br />
+            Username / password login is for external customers only.
         </div>
         <a id="azure-signin" href="https://uc.crownbio.com/sysuser/loginazure?r=hudata.crownbio.com/HuData/Login.aspx&amp;s=1&amp;l=en-US">
             <span class="ms-logo"></span>Sign In With Azure
