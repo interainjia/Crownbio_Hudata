@@ -10,7 +10,15 @@
   - 恢复 `M=userLogin`、`register`、`forgot`；`trial`（共享试用账号 AACR@2013.org）仍停用
   - 登录逻辑不变：`@crownbio.com` 账号由 AD 域校验密码，外部客户校验本地 PBKDF2 密码哈希
   - 注册：邮箱以 `@crownbio.com` / `.crownbio.com` 结尾时无需密码（密码由 Azure 域控管理），本地保存一个随机密码的哈希（不可用于登录）；外部客户必须设置密码，服务端也校验密码规则（至少 6 位，含字母和数字，无空白）
-  - 找回密码：`@crownbio.com` 账号不重置，提示使用 Sign In With Azure 或 password.crownbio.com
+  - 找回密码改为**邮件确认链接**（原来任何人输入别人的邮箱即可直接把对方密码改掉，并且会提示邮箱是否存在）：
+    - `M=forgot` 不再修改密码，只给账号邮箱发送重置链接 `Forget.aspx?token=...`；无论邮箱是否存在都返回同样的提示；未审批/已停用账号不发送
+    - 令牌 = USER_ID | 过期时间(1 小时) | 当前密码哈希指纹，用 `MachineKey.Protect` 加密签名，无需新增数据库表；密码修改后指纹变化，链接只能用一次
+    - 重置邮件直接调用 `GraphMailSender.Send`，**不密送管理员**（`SendEmail.SendMail_SMTP` 会 BCC 管理员，旧版找回密码邮件里的明文新密码也会被密送）
+    - 链接地址取 Web.config `HudataSiteUrl`（未配置时为 `https://hudata.crownbio.com`），不使用请求 Host 头，防止伪造 Host 把令牌引到其他网站
+    - 新增 `M=resetPassword`（token + Password）：校验令牌和密码规则后保存新密码哈希
+    - `@crownbio.com` 账号不重置，提示使用 Sign In With Azure 或 password.crownbio.com
+  - `Forget.aspx(.cs)`：带 `token` 打开时显示"设置新密码"表单（令牌无效/过期/已使用时直接提示）；页面禁止缓存、`Referrer-Policy: no-referrer`
+  - **部署注意**：服务器 Web.config 未配置 `<machineKey>` 时使用 IIS 自动生成的密钥，应用池重启后若密钥变化，未使用的重置链接会失效（用户重新申请即可）；多台服务器负载均衡时须配置相同的 `<machineKey>`
   - 修改个人信息（`changeInfo`）：外部客户填写新密码时才修改密码（保存哈希）；公司域账号不修改密码
 - `Register.aspx`：输入公司域邮箱时隐藏 Password / Confirm Password 并显示提示，提交时不发送密码；外部邮箱照常必填
 - `Register.aspx.cs`、`Forget.aspx.cs`：去掉跳回 `Login.aspx` 的重定向

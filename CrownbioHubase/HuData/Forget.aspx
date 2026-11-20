@@ -5,7 +5,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>User Registration</title>
+    <meta name="referrer" content="no-referrer" />
+    <title>Reset Password</title>
     <link href="../Common/waiting/showLoading.css" rel="stylesheet" media="screen" />
     <link rel="shortcut icon" href="../images/favicon.svg" />
 	<link rel="stylesheet" type="text/css" href="../Common/easyui-1.2.5/themes/icon.css" />
@@ -91,6 +92,46 @@ input[type=checkbox]{ width: 20px; margin: 0; display: inline-block; }
     </script>
 
     <script type="text/javascript">
+        // 通过邮件中的重置链接设置新密码
+        function GetQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return decodeURIComponent(r[2]); return null;
+        }
+        function reset_click() {
+            var Password = $('#Password').val();
+            if (!safePassword(Password)) {
+                alert('Your password must contain at least 6 characters and be consist of both numbers and letters, e.g. Crown01. The password is case sensitive.');
+                return false;
+            }
+            if (Password !== $('#ConfirmPassword').val()) {
+                alert('Retype password must match to password.');
+                return false;
+            }
+            $('#resetBtn').attr('disabled', 'disabled');
+            $.ajax({
+                type: "POST",
+                url: "userLogin.ashx?M=resetPassword",
+                data: { token: GetQueryString('token'), Password: Password },
+                success: function (results) {
+                    $('#resetBtn').removeAttr('disabled');
+                    if (results == "Your password has been reset. Please log in with your new password.") {
+                        $.messager.alert("reset password", results, "info", function () {
+                            window.location.href = "Login.aspx";
+                        });
+                    } else {
+                        $.messager.alert("reset password", results, "info", null);
+                    }
+                },
+                error: function () {
+                    $('#resetBtn').removeAttr('disabled');
+                    alert('Failed to reset password, please try again.');
+                }
+            })
+        }
+    </script>
+
+    <script type="text/javascript">
         $.extend($.fn.validatebox.defaults.rules, {
             safepass: {// 验证密码
                 validator: function (value, param) {
@@ -168,7 +209,8 @@ input[type=checkbox]{ width: 20px; margin: 0; display: inline-block; }
     <form id="form1" runat="server">
     
     <div style="text-align:center;margin:0 auto; padding-top:30px;width: 800px; height: 600px;" id="activity_pane">
-       <table width="100%" border="0" align="center" cellpadding="0" cellspacing="1" class="tb1">
+       <%-- 第一步：输入邮箱，发送重置链接 --%>
+       <table id="request-pane" width="100%" border="0" align="center" cellpadding="0" cellspacing="1" class="tb1">
        <tr>
             <td style="background-color:rgb(255, 255, 255);text-align:center; font-size: large; font-weight: bolder; color: #FF9900;" 
                 colspan="2">Forgot Your Password?</td>  
@@ -176,7 +218,7 @@ input[type=checkbox]{ width: 20px; margin: 0; display: inline-block; }
 		
        <tr>
             <td class="td_right"
-                colspan="2">Please enter the email you gave us when you created this account. If we find an account with the email address, we will send you an email.</td>  
+                colspan="2">Please enter the email you gave us when you created this account. If we find an account with the email address, we will send you an email with a link to reset your password. CrownBio employees: please reset your password at <a href="https://password.crownbio.com">password.crownbio.com</a>.</td>
        </tr>
 		
          <tr>
@@ -189,10 +231,34 @@ input[type=checkbox]{ width: 20px; margin: 0; display: inline-block; }
             </td>
             <td class="td_right">
              <input id="forgot" type="button" value="Submit" onclick="forgot_click()" class="button orange"/>
-               <input id="back" type="button" value="Back" class="button orange"  onclick="javascript:history.go(-1);"/> 
+               <input id="back" type="button" value="Back" class="button orange"  onclick="javascript:history.go(-1);"/>
             </td>
         </tr>
         </table>
+
+       <%-- 第二步：从邮件链接打开（?token=...），设置新密码 --%>
+       <table id="reset-pane" style="display:none;" width="100%" border="0" align="center" cellpadding="0" cellspacing="1" class="tb1">
+       <tr>
+            <td style="background-color:rgb(255, 255, 255);text-align:center; font-size: large; font-weight: bolder; color: #FF9900;"
+                colspan="2">Choose a New Password</td>
+       </tr>
+       <tr>
+			<td class="td_left">New Password:<span style="color:Red">*</span>&nbsp;</td>
+			<td class="td_right"><input id="Password" type="password" autocomplete="new-password" /></td>
+		</tr>
+       <tr>
+			<td class="td_left">Confirm Password:<span style="color:Red">*</span>&nbsp;</td>
+			<td class="td_right"><input id="ConfirmPassword" type="password" autocomplete="new-password" /></td>
+		</tr>
+        <tr>
+            <td class="td_left"></td>
+            <td class="td_right">
+             <input id="resetBtn" type="button" value="Submit" onclick="reset_click()" class="button orange"/>
+            </td>
+        </tr>
+        </table>
+
+       <div id="reset-invalid" style="display:none; color:#c00; font-size:16px; margin:20px;"></div>
 	</div>
     </form>
 

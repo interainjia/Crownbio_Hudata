@@ -120,6 +120,9 @@ namespace PDXmodelBase.HuData
                 case "forgot":
                     ReturnForgot(context, Email);
                     break;
+                case "resetPassword":
+                    ReturnResetPassword(context, context.Request.Form["token"], Password);
+                    break;
                 case "changeInfo":
                     ReturnChange(context, First_name, Last_name, Position, Department, Institution, Street_Address, City, Country, Phone, Fax, Password, Interest);
                     break;
@@ -229,36 +232,152 @@ namespace PDXmodelBase.HuData
                 context.Response.Write(CrownbioPasswordMsg);
                 return;
             }
+            email = (email ?? "").Trim();
+            if (email == "")
+            {
+                context.Response.Write("Please enter your email.");
+                return;
+            }
+
+            // 不论邮箱是否存在都返回同样的提示，避免被用来探测哪些邮箱已注册
             BaseList data = bll.Select(QueryEmail(email), typeof(SYS_USER));
-            string dd = "Email address dose not exist.";
             if (data.Count > 0)
             {
                 SYS_USER row = (SYS_USER)data[0];
-                string Subject = string.Format("HuData-Retrieve Password!");
-                StringBuilder Body = new StringBuilder();
-                Body.Append("Dear " + row.FIRST_NAME + ",\r\n");
-                Body.Append("Thanks for using HuData. Your password has been recovered.\r\n");
-                Body.Append("Below please find your login credentials:\r\n");
-                Body.Append("Username: " + row.EMAIL + "\r\n");
-                string newpw = UtitityHelper.GenerateRandom(6);
-                Body.Append("New Password: " + newpw + "\r\n\r\n");
-                Body.Append("Login using your username and password is required to access the database.\r\n\r\n");
-                Body.Append("Happy HuBasing!\r\n\r\n");
-                Body.Append("The Administrator");
-
-                string[] toMails = { row.EMAIL };
-                dd = SendEmail.SendMail_SMTP("Text", Subject, Body.ToString(), toMails, "An email has been sent.");
-
-                if (dd == "An email has been sent.")
+                // 未审批 / 已停用的账号不发送重置邮件
+                if (row.IS_AVAILABLE != "N")
                 {
-                    row.CurModel = DealModel.Modify;
-                    row.USER_PWD = PasswordHasher.Hash(newpw);
-                    bll.Update(row);
-                    row.CurModel = DealModel.None;
+                    string link = GetSiteBaseUrl() + "/HuData/Forget.aspx?token=" + CreateResetToken(row);
+                    StringBuilder Body = new StringBuilder();
+                    Body.Append("Dear " + row.FIRST_NAME + ",\r\n\r\n");
+                    Body.Append("We received a request to reset the password of your HuData account (" + row.EMAIL + ").\r\n");
+                    Body.Append("To choose a new password, open the link below. The link is valid for "
+                        + (int)ResetLinkLifetime.TotalMinutes + " minutes and can only be used once:\r\n\r\n");
+                    Body.Append(link + "\r\n\r\n");
+                    Body.Append("If you did not request this, you can ignore this email. Your current password stays unchanged.\r\n\r\n");
+                    Body.Append("The Administrator");
+                    try
+                    {
+                        // 直接调用 GraphMailSender，不使用 SendEmail.SendMail_SMTP：后者会密送管理员，重置链接只能发给账号本人
+                        GraphMailSender.Send("HuData - Reset your password", Body.ToString(), false, new[] { row.EMAIL });
+                    }
+                    catch (Exception ex)
+                    {
+                        LogHelper.Log(ex, "Password reset email failed: " + row.EMAIL);
+                    }
                 }
             }
-            context.Response.Write(dd);
+            context.Response.Write(ResetEmailSentMsg);
         }
+
+        private const string ResetEmailSentMsg = "If an account with this email exists, we have sent it an email with a link to reset the password. The link is valid for 1 hour.";
+        private const string ResetLinkInvalidMsg = "This password reset link is invalid, has expired or has already been used. Please request a new one.";
+        private const string ResetTokenPurpose = "HuData.PasswordReset.v1";
+        private static readonly TimeSpan ResetLinkLifetime = TimeSpan.FromHours(1);
+
+        /// <summary>
+        /// 重置链接中使用的站点地址：取 Web.config appSettings 的 HudataSiteUrl，未配置时为 https://hudata.crownbio.com。
+        /// 不使用请求的 Host 头，防止伪造 Host 让重置链接指向其他网站。
+        /// </summary>
+        private static string GetSiteBaseUrl()
+        {
+            string url = System.Configuration.ConfigurationManager.AppSettings["HudataSiteUrl"];
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                url = "https://hudata.crownbio.com";
+            }
+            return url.Trim().TrimEnd('/');
+        }
+
+        private static string PasswordFingerprint(string storedPassword)
+        {
+            using (var sha = System.Security.Cryptography.SHA256.Create())
+            {
+                return Convert.ToBase64String(sha.ComputeHash(Encoding.UTF8.GetBytes(storedPassword ?? "")));
+            }
+        }
+
+        /// <summary>
+        /// 生成重置令牌：USER_ID | 过期时间 | 当前密码哈希的指纹，用 MachineKey 加密并签名（无需新增数据库表）。
+        /// 密码一旦修改指纹就不再匹配，因此链接只能使用一次，旧链接也随之失效。
+        /// </summary>
+        private static string CreateResetToken(SYS_USER user)
+        {
+            string payload = user.USER_ID.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                + "|" + DateTime.UtcNow.Add(ResetLinkLifetime).Ticks.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                + "|" + PasswordFingerprint(user.USER_PWD);
+            byte[] protectedBytes = MachineKey.Protect(Encoding.UTF8.GetBytes(payload), ResetTokenPurpose);
+            return HttpServerUtility.UrlTokenEncode(protectedBytes);
+        }
+
+        /// <summary>
+        /// 校验重置令牌，有效时返回对应用户，否则返回 null（error 为提示信息）
+        /// </summary>
+        public static SYS_USER ValidateResetToken(string token, out string error)
+        {
+            error = ResetLinkInvalidMsg;
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return null;
+            }
+            string payload;
+            try
+            {
+                byte[] bytes = MachineKey.Unprotect(HttpServerUtility.UrlTokenDecode(token.Trim()), ResetTokenPurpose);
+                payload = Encoding.UTF8.GetString(bytes);
+            }
+            catch (Exception)
+            {
+                // 被篡改、格式错误或服务器 machineKey 已变化
+                return null;
+            }
+            string[] parts = payload.Split('|');
+            if (parts.Length != 3 || !long.TryParse(parts[1], out long expiryTicks) || expiryTicks < DateTime.UtcNow.Ticks)
+            {
+                return null;
+            }
+
+            ParamCollection paraList = new ParamCollection();
+            paraList.Clause = string.Format("({0}.{1} =@{1})", SYS_USER.TABLE_NAME, SYS_USER.USER_ID_FIELD);
+            paraList.Add(new ParamData(SYS_USER.USER_ID_FIELD, DbType.String, parts[0]));
+            BaseList data = new ObjectBLL().Select(paraList, typeof(SYS_USER));
+            if (data.Count == 0)
+            {
+                return null;
+            }
+            SYS_USER row = (SYS_USER)data[0];
+            if (row.IS_AVAILABLE == "N" || IsCrownbioEmail(row.EMAIL) || PasswordFingerprint(row.USER_PWD) != parts[2])
+            {
+                return null;
+            }
+            error = "";
+            return row;
+        }
+
+        /// <summary>
+        /// 通过邮件中的重置链接设置新密码（M=resetPassword，参数 token、Password）
+        /// </summary>
+        public void ReturnResetPassword(HttpContext context, string token, string password)
+        {
+            SYS_USER row = ValidateResetToken(token, out string error);
+            if (row == null)
+            {
+                context.Response.Write(error);
+                return;
+            }
+            if (!IsValidExternalPassword(password))
+            {
+                context.Response.Write(PasswordRuleMsg);
+                return;
+            }
+            row.CurModel = DealModel.Modify;
+            row.USER_PWD = PasswordHasher.Hash(password);
+            bll.Update(row);
+            row.CurModel = DealModel.None;
+            context.Response.Write(ResetPasswordDoneMsg);
+        }
+
+        public const string ResetPasswordDoneMsg = "Your password has been reset. Please log in with your new password.";
         /// <summary>
         /// DisableUser
         /// </summary>
